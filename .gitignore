@@ -7,6 +7,10 @@ node_modules/
 # Runtime data (written by server at runtime, not source code)
 data/defect_columns.json
 
+# Local generated and extraction artifacts
+output/
+tmp_msg_extract/
+
 # OS
 .DS_Store
 
