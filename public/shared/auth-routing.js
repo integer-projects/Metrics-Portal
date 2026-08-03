@@ -13,8 +13,8 @@
     function loginDestination(response) {
         const user = response.user || {};
         const department = user.departmentKey || 'PL';
-        if (user.role === 'Supervisor' && response.adminToken) return adminDestination(department);
         if (department === 'PL' && response.serverSession) return '/pl/';
+        if (user.role === 'Supervisor' && response.adminToken) return adminDestination(department);
         return '/';
     }
 

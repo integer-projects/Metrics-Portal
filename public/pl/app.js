@@ -22,7 +22,7 @@
             'spoolCheckSequence', 'spoolCheckNumber', 'goodParts', 'startQuantity', 'endQuantity',
             'totalDefects', 'qualityYield', 'notesLabel', 'notes', 'rootCauseDetails', 'defectList', 'jobErrors', 'submitJobButton', 'event',
             'eventDuration', 'eventErrors', 'submitEventButton', 'alertOverlay',
-            'alertTitle', 'alertMessages', 'alertCloseButton', 'themeSelect', 'toast']
+            'alertTitle', 'alertMessages', 'alertCloseButton', 'themeSelect', 'adminLink', 'toast']
             .forEach((id) => { elements[id] = byId(id); });
     }
 
@@ -438,6 +438,7 @@
             const config = configResult.data || {};
             defectNames = (config.defects || []).map((item) => item.name).filter(Boolean);
             const operatorNames = Array.from(new Set((config.operators || []).map((item) => item.name).filter(Boolean)));
+            if (elements.adminLink) elements.adminLink.hidden = session.role !== 'Supervisor';
             document.querySelectorAll('[data-operator-select]').forEach((select) => {
                 populateSelect(select, operatorNames, 'Select operator…');
             });

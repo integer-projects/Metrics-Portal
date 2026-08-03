@@ -186,11 +186,11 @@
             try { savedUser = JSON.parse(localStorage.getItem('currentUser')); } catch (error) {}
             if (!savedUser) return;
             const department = savedUser.departmentKey || 'PL';
-            if (savedUser.role === 'Supervisor' && localStorage.getItem('adminToken')) {
-                window.location.href = AuthRouting.adminDestination(department);
-                return;
-            }
             if (department !== 'PL') {
+                if (savedUser.role === 'Supervisor' && localStorage.getItem('adminToken')) {
+                    window.location.href = AuthRouting.adminDestination(department);
+                    return;
+                }
                 window.location.href = '/';
                 return;
             }
