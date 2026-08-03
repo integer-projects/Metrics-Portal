@@ -63,6 +63,19 @@ function createSmartsheetDeliveryAdapter(options = {}) {
         return null;
     }
 
+    function normalizeCellValue(column, value) {
+        if (column.type === 'CHECKBOX') {
+            if (value === true || value === false) return value;
+            if (String(value).trim().toLowerCase() === 'true') return true;
+            if (String(value).trim().toLowerCase() === 'false') return false;
+        }
+        if (['NUMBER', 'CURRENCY', 'PERCENT'].includes(column.type) && typeof value === 'string' && value.trim() !== '') {
+            const parsed = Number(value);
+            if (Number.isFinite(parsed)) return parsed;
+        }
+        return value;
+    }
+
     function buildCell(column, value) {
         if (value === undefined || value === null || value === '') return null;
         if (column.type === 'MULTI_PICKLIST' || Array.isArray(value)) {
@@ -76,7 +89,7 @@ function createSmartsheetDeliveryAdapter(options = {}) {
                 strict: false
             };
         }
-        return { columnId: column.id, value, strict: false };
+        return { columnId: column.id, value: normalizeCellValue(column, value), strict: false };
     }
 
     return {
