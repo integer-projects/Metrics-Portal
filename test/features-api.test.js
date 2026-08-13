@@ -10,6 +10,7 @@ test('feature endpoint exposes rollout state without configuration secrets', asy
         serverSessions: true,
         serverWorkspaces: true,
         plDatabaseSubmissions: true,
+        ptfeDatabaseSubmissions: false,
         sessionDepartments: { PL: true, PTFE: false, PI: false }
     };
     const app = express();

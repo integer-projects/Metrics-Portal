@@ -50,6 +50,9 @@ function createSubmissionRouter(options) {
 
     router.post('/', requirePortalSession, async (req, res, next) => {
         try {
+            if (options.isDepartmentEnabled && !options.isDepartmentEnabled(req.actor.department)) {
+                return res.status(503).json({ success: false, error: `${req.actor.department} durable submissions are not enabled in this environment.` });
+            }
             const input = {
                 ...req.body,
                 department: req.actor.department,

@@ -11,7 +11,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 ## Current Program State
 
 - Status: The PL production migration is complete. The July 20 staged release was followed by the supervised August 3 database cutover. PL now uses PostgreSQL-backed sessions, server workspaces, durable submission capture, and the separate PM2 Smartsheet worker. Real production jobs and events have converged to `submitted` with remote row IDs, no stuck PL records were found during the August 13 review, and the daily backup task continues returning success. The legacy `PL-Portal` was stopped and saved in PM2 on August 13 without uninstalling or deleting it. PTFE and PI remain on compatibility/direct-Smartsheet behavior pending their phases.
-- Current phase: Phase 4 - PL stabilization, with Phase 7 operations hardening in parallel and Phase 5 PTFE discovery next.
+- Current phase: Phase 4 - PL stabilization, with Phase 7 operations hardening in parallel and Phase 5 PTFE implementation in progress.
 - Production: `C:\serverdata\repos\metrics-portal` runs PM2 web process `metrics-portal` on port 3002 and worker `metrics-portal-worker`. PL database/session/workspace features are enabled; PTFE and PI session/database features are disabled. The legacy `PL-Portal` PM2 entry is stopped and retained temporarily for rollback.
 - Target architecture: One platform with separate PL, PTFE, and PI applications, PostgreSQL as the operational system of record, and asynchronous Smartsheet synchronization.
 - First department migration: Precision Liner.
@@ -40,17 +40,19 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Verified the daily scheduled backup task, production health and feature state, recent PL database/outbox convergence, and zero stuck PL records on August 13.
 - Stopped and saved the legacy `PL-Portal` process without deleting its PM2 entry or files.
 - Audited the PTFE compatibility page, server write paths, calculations, validation, master-log mapping, and Job x Job End Shift contract; recorded the bounded Phase 5 durable design.
+- Implemented the first PTFE durable foundation slice: an independent disabled runtime flag, dependency validation, feature reporting, a browser-compatible calculation/validation/payload/shift model, and focused automated coverage.
+- Implemented the isolated PTFE database page, guarded login/API routing, versioned server-workspace controller, server-owned idempotent job/event-to-shift transition, and partial-safe per-row End Shift database capture without enabling production PTFE flags.
 
 ## Active Work
 
-- Continue the 30-day PL stabilization observation through September 2, 2026, finish PL SOP/support handoff, and prepare the bounded Phase 5 PTFE current-state inventory and migration work package.
+- Continue the 30-day PL stabilization observation through September 2, 2026, finish PL SOP/support handoff, and implement the bounded Phase 5 PTFE migration work package without changing production PTFE routing.
 
 ## Next Actions
 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
 2. Finalize the PL operator and supervisor support/SOP handoff and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
-4. Implement the bounded PTFE model, isolated page, server workspace, independent feature flag, two destination contracts, and automated coverage from `16-ptfe-migration.md`.
+4. Build the two PTFE destination-contract validators and guarded `Submission ID` expansion, then create isolated non-production destination and UAT/rollback tooling.
 5. Complete internal DNS/TLS, routed synchronization alerts, unattended backup-task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
 
 ## Open Decisions
@@ -80,6 +82,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - PM2 showed `metrics-portal` and `metrics-portal-worker` online. The latest ten PL job/event rows were `submitted` in both submission and outbox state with Smartsheet remote row IDs; the stuck-item query returned zero rows.
 - The scheduled backup task last ran August 13 at 1:00 AM with result `0` and the next run scheduled for August 14 at 1:00 AM.
 - Local Markdown links pass validation and the production dependency audit reports zero vulnerabilities.
+- PTFE focused model, routing, submission-gate, workspace-transition, page-contract, and browser checks pass. The rendered page completed job, server-owned shift append, refresh persistence, and event workflows without console errors. The full local suite now passes 100 tests with three expected database-only skips.
 - Release PR #9 GitHub Actions run 29741738237 passed against PostgreSQL 18 on July 20, 2026 after refreshing the branch against current `main`.
 
 ## Deployment State
@@ -110,6 +113,19 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 ```
 
 ## Session History
+
+### 2026-08-13 - PTFE durable foundation and isolated page implemented
+
+- Branch: `codex/ptfe-durable-foundation` from merged production-readiness state `f2fafc2`.
+- Commit or PR: Foundation commit `b8d9ef7`; GitHub PR #11 (`codex/ptfe-durable-foundation`) contains the continuing isolated-page work.
+- Phase/work package: Phase 5 PTFE migration, durable model, runtime feature, isolated page, and server-workspace capture foundation.
+- Work completed: Added the independent PTFE database-submission flag and dependency guard, exposed its non-secret feature state, implemented the PTFE model and isolated `/ptfe/` page, guarded login and submission routing, preserved configured calculations and validation, moved Master Log-to-shift append to an idempotent server transition, and implemented partial-safe per-row End Shift capture.
+- Files or schema changed: Runtime and login/submission routing, shared browser API, PTFE model/page/controller/styles, workspace repository/service, browser test harness, automated tests, and production-readiness documentation. No production environment, database schema, Smartsheet sheet, or enabled production route changed.
+- Decisions made: Keep the feature disabled by default; explicitly map PTFE work date to the Master Log `Date` title; preserve one logical durable submission per Master Log or Job x Job row; append job/event shift rows on the server after database acceptance; persist each End Shift row ID before capture and reload authoritative state after acceptance.
+- Validation performed: The full local suite passed 100 tests with three expected database-only skips. JavaScript syntax checked 62 files; inline scripts in nine HTML files, 36 Markdown files, PowerShell syntax, the production dependency audit, and `git diff --check` passed. The rendered page loaded configured standards, calculated Pull values, captured a job, appended the server-owned shift row, retained it across refresh, captured an event, and reported no browser-console errors.
+- Deployment status: Local implementation only. PL remains live and unchanged; PTFE remains on the compatibility/direct-Smartsheet path.
+- Risks/blockers: Destination validators, guarded production-column expansion, isolated test destinations, named UAT representatives, rollback rehearsal, TLS/alerts, and supervised cutover remain.
+- Exact next action: Implement PTFE Master Log and Job Log contract validators plus guarded `Submission ID` expansion without changing production sheets.
 
 ### 2026-08-13 - PL post-cutover health passed and legacy portal stopped
 

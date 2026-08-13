@@ -33,8 +33,8 @@ function createWorkspaceService(repository) {
         save(session, input) {
             return repository.save(session, normalizeWorkspace(input));
         },
-        markSubmitted(session, submissionId) {
-            return repository.markSubmitted(session, submissionId);
+        markSubmitted(session, submission) {
+            return repository.markSubmitted(session, submission);
         }
     };
 }

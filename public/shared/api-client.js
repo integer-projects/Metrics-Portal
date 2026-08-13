@@ -51,6 +51,8 @@
             body: JSON.stringify(submission)
         }),
         getSubmission: (id) => request(`/api/v2/submissions/${encodeURIComponent(id)}`),
-        getPlConfig: () => request('/api/config?dept=PL')
+        getConfig: (department) => request(`/api/config?dept=${encodeURIComponent(department)}`),
+        getPlConfig: () => request('/api/config?dept=PL'),
+        getPtfeConfig: () => request('/api/config?dept=PTFE')
     };
 }));
