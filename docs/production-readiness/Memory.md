@@ -894,3 +894,15 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Not deployed. PTFE routing remains disabled and production Smartsheets are unchanged.
 - Risks/blockers: Production expansion requires an approved window. Dedicated non-production PTFE destinations, exact-ID delivery proof, isolated UAT, rollback rehearsal, and named approvals remain open.
 - Exact next action: Commit the validator slice, then build dedicated PTFE integration-destination creation, proof, and cleanup tooling without touching production data.
+### 2026-08-13 - PTFE isolated integration destinations proven
+
+- Branch: `codex/ptfe-integration-destinations`.
+- Commit or PR: Not committed yet.
+- Phase/work package: Phase 5 PTFE non-production delivery proof.
+- Work completed: Added creation, empty-state/cleanup guard, controlled exact-ID delivery, and isolated PostgreSQL/outbox proof tooling for separate PTFE Master Log and Job x Job test sheets. Created both dedicated non-production sheets and completed the live controlled proof.
+- Files or schema changed: Added PTFE integration-sheet definitions, scripts, package commands, and focused tests; updated the PTFE migration work package and program memory. No production schema or sheet was changed.
+- Decisions made: PTFE integration uses two distinct process-scoped sheet IDs and refuses either production destination. Test sheets reproduce exact writable contracts and date types without copying production rows or formulas.
+- Validation performed: Both live test sheets began empty; each accepted one representative row; exact-ID replay inserted no duplicate; 13 Master Log and 16 Job Log fields were verified; both synthetic rows were deleted; both sheets were reverified empty. Search indexing required 30 and 57 attempts respectively.
+- Deployment status: Not deployed. PTFE routing remains disabled. The two empty non-production Smartsheet objects are retained for UAT.
+- Risks/blockers: The database/outbox command requires an isolated migrated PostgreSQL database. Windows PTFE UAT and rollback orchestration, named approvals, and production `Submission ID` expansion remain open.
+- Exact next action: Validate the two-destination outbox proof inside the isolated PTFE UAT database, then run browser parity and rollback rehearsals.

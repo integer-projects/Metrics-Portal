@@ -26,7 +26,30 @@ The first two Phase 5 implementation slices are complete on the PTFE migration b
 - The guarded production expansion utility preflights both sheets before changing either one, defaults to dry-run, requires an exact confirmation phrase to apply, and adds only a missing text/number `Submission ID` column.
 - The live read-only audit confirmed both production destinations match their preserved writable contracts and are missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes.
 
-These slices do not route any production PTFE traffic. Applying the guarded `Submission ID` expansion in an approved window, non-production destination proof, PTFE UAT/rollback tooling, named approvals, and the cutover gates below remain required.
+These slices do not route any production PTFE traffic. Applying the guarded `Submission ID` expansion in an approved window, isolated database/outbox and browser UAT, rollback tooling, named approvals, and the cutover gates below remain required.
+
+## Dedicated Integration Destinations
+
+Two empty, clearly named non-production sheets now isolate PTFE delivery testing from both production logs:
+
+- `Metrics Portal - PTFE Master Log Integration Test`
+- `Metrics Portal - PTFE Job Log Integration Test`
+
+Their IDs are supplied only as process-scoped `PTFE_INTEGRATION_MASTER_LOG_SHEET_ID` and `PTFE_INTEGRATION_JOB_LOG_SHEET_ID` values; they are not substituted for production IDs in `.env`. The creation command defaults to a no-change dry run and requires `CREATE EMPTY PTFE INTEGRATION SHEETS` to create both sheets. The sheet guard refuses either production ID, requires two distinct sheets, verifies both exact contracts, and either requires them to be empty or clears only their rows with `CLEAR PTFE UAT TEST SHEETS`.
+
+The controlled delivery proof passed on both sheets: it inserted one representative row, waited for exact-ID search indexing, replayed the same permanent ID without a second insert, verified mapped values, deleted the synthetic row, and confirmed both sheets empty afterward. The companion database/outbox proof is intended for an isolated migrated PostgreSQL database and cleans its two synthetic Smartsheet rows and database records after verification.
+
+```powershell
+npm run create:ptfe-integration-sheets
+npm run create:ptfe-integration-sheets -- --apply --confirmation="CREATE EMPTY PTFE INTEGRATION SHEETS"
+
+$env:PTFE_INTEGRATION_MASTER_LOG_SHEET_ID = '<dedicated-master-test-sheet-id>'
+$env:PTFE_INTEGRATION_JOB_LOG_SHEET_ID = '<dedicated-job-test-sheet-id>'
+npm run validate:ptfe-uat-sheets
+npm run validate:ptfe-integration-delivery -- --confirmation="WRITE AND DELETE PTFE INTEGRATION ROWS"
+npm run validate:ptfe-outbox-integration -- --confirmation="VALIDATE PTFE DATABASE OUTBOX"
+npm run cleanup:ptfe-uat-sheets -- --confirmation="CLEAR PTFE UAT TEST SHEETS"
+```
 
 ## Verified Compatibility Baseline
 
@@ -165,7 +188,7 @@ Before PTFE database routing can be enabled:
 - Add a writable text/number `Submission ID` column to the PTFE master log.
 - Add a writable text/number `Submission ID` column to the PTFE Job Log.
 - Validate all exact writable titles, duplicate titles, formula restrictions, and column types on both destinations.
-- Prove exact-ID lookup, uncertain-delivery replay, mapped values, and synthetic cleanup against dedicated non-production PTFE destinations.
+- Preserve the completed exact-ID lookup, uncertain-delivery replay, mapped-value, and synthetic-cleanup evidence against the dedicated non-production PTFE destinations.
 - Do not use the production destinations for ordinary automated or browser tests.
 
 ## Required Automated Coverage
