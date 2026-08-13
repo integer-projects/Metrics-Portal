@@ -48,7 +48,7 @@ Add-Check 'PostgreSQL service' ($postgres.Status -eq 'Running') $(if ($postgres)
 
 try {
     $liveness = Invoke-RestMethod -Uri "$BaseUrl/api/v2/health" -TimeoutSec 10
-    Add-Check 'Portal liveness' ($liveness.status -eq 'alive') "Status $($liveness.status); version $($liveness.version)" $liveness
+    Add-Check 'Portal liveness' ($liveness.status -eq 'alive') "Status $($liveness.status); version $($liveness.version); commit $($liveness.commit)" $liveness
 } catch { Add-Check 'Portal liveness' $false $_.Exception.Message }
 
 try {

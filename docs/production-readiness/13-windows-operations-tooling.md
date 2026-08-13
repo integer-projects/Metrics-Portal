@@ -55,6 +55,8 @@ Run after migrations and PM2 restart. The script first proves the root page titl
 
 The HTTP address above is the current internal production endpoint. Replace it with the approved HTTPS DNS name when the TLS/DNS hardening gate is completed.
 
+The health response includes the application version and deployed Git commit. Record both during deployment verification and compare the commit with the approved release. `unknown` is acceptable only in an explicitly packaged environment without Git metadata and must be replaced by an `APP_COMMIT` value during its deployment process.
+
 ## Intentionally Manual Gates
 
 - PostgreSQL installation and Windows service identity.

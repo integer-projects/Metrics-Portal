@@ -48,6 +48,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Implemented a five-minute local operations monitor, guarded tiered backup-retention tooling, and safe compatibility administrative audit events. The monitor and audit update are not yet deployed to the target server; retention apply remains prohibited pending policy confirmation.
 - Added the completion audit that maps every program requirement to authoritative evidence, remaining proof, execution order, and current stop conditions.
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
+- Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 
 ## Active Work
 
@@ -85,7 +86,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 ## Latest Validation
 
 - Syntax checked across application, migration, script, and test JavaScript files.
-- The current local suite passes with 122 tests and three expected database-dependent skips outside the CI database job.
+- The current local suite passes 125 tests with 122 passes and three expected database-dependent skips outside the CI database job.
 - On August 13, production `GET /api/v2/health` returned HTTP 200 and `/api/v2/features` confirmed PL durable submissions, sessions, workspaces, and database routing enabled while PTFE and PI remained disabled.
 - PM2 showed `metrics-portal` and `metrics-portal-worker` online. The latest ten PL job/event rows were `submitted` in both submission and outbox state with Smartsheet remote row IDs; the stuck-item query returned zero rows.
 - The scheduled backup task last ran August 13 at 1:00 AM with result `0` and the next run scheduled for August 14 at 1:00 AM.
@@ -990,3 +991,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Documentation-only local branch. Production PL behavior is unchanged.
 - Risks/blockers: Final PL observation and named handoff acceptance remain; routed alerting and TLS/DNS are separate external gates.
 - Exact next action: Validate and merge the SOP package, then obtain named support acceptance while PTFE isolated server UAT proceeds.
+
+### 2026-08-13 - Runtime release identity added to operations evidence
+
+- Branch: `codex/runtime-release-identity` from merged SOP state `ebd1935`.
+- Commit or PR: Pending in this work package.
+- Phase/work package: Phase 7 logging, deployment traceability, and local monitoring.
+- Work completed: Added a safe deployed-commit resolver using explicit `APP_COMMIT`/`GIT_COMMIT` or checkout Git metadata, including normal and linked worktrees. Added the commit to web and worker logger base fields, structured startup events, all health endpoints, and the local operations monitor's liveness evidence.
+- Files or schema changed: Release-identity/runtime/logger modules, web and worker startup, health router, Windows operations monitor, focused tests, operations/tooling/completion documentation, and program memory. No database schema, production configuration, Smartsheet object, PM2 process, backup, or feature flag changed.
+- Decisions made: Expose only a validated hexadecimal commit identity. A deployment lacking explicit or Git metadata reports `unknown`; it never logs arbitrary environment content or invents a release identity.
+- Validation performed: Twenty-two focused release/health/config/monitor tests passed. The full suite passed 125 tests with 122 passes and three expected database-only skips. JavaScript syntax checked 83 files, PowerShell syntax passed, inline application scripts parsed, local links passed across 37 Markdown files, the production dependency audit reported zero vulnerabilities, and `git diff --check` passed.
+- Deployment status: Local source only. The running target is unchanged until a controlled pull/restart.
+- Risks/blockers: The target operations monitor remains uninstalled. Packaged deployments without `.git` must set `APP_COMMIT`. Log retention duration and rotation policy still require an approved period.
+- Exact next action: Validate and merge the release-identity slice, then include it in the next target pull and compare health commit with the approved merge.

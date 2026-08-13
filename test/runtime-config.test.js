@@ -12,6 +12,7 @@ test('database stays optional during the compatibility period', () => {
     assert.equal(config.database.enabled, false);
     assert.equal(config.database.required, false);
     assert.equal(config.port, 3000);
+    assert.match(config.deploymentCommit, /^(unknown|[0-9a-f]{7,64})$/);
 });
 
 test('database URL is required when database support is enabled', () => {
