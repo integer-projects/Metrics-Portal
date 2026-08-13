@@ -92,6 +92,14 @@ Alert messages should identify the affected component, department, first failure
 - Monitor backup completion and age.
 - Keep database migration files and application releases in Git; backups protect production data, not source code.
 
+## Backup Retention Guard
+
+`npm run manage:backup-retention -- --backup-root="<approved-share>"` plans the approved union of 14 daily, 8 weekly, and 12 monthly recovery points. Before it produces a plan, it verifies the SHA-256 sidecar of every filename-managed Metrics Portal archive. An absent or mismatched sidecar blocks the entire operation.
+
+The command is dry-run by default. Apply mode requires the exact `APPLY METRICS PORTAL BACKUP RETENTION` confirmation and deletes only eligible `metrics-portal-YYYYMMDD-HHMMSS.dump` files plus their matching `.json` sidecars. It ignores unrelated files and never changes database records.
+
+The August 13 read-only plan inspected 28 verified backups, retained 17 recovery points across the currently available dates, and identified 11 older duplicate/non-tier points totaling 313,231 bytes. No file was changed. Do not run apply mode or schedule deletion until the off-machine share's snapshot/copy behavior and company retention approval are explicitly confirmed.
+
 ## Current Backup Implementation Status
 
 The repository includes Windows backup tooling, and the target server has already produced verified off-machine backups during readiness work. The backup script creates a PostgreSQL custom-format dump, verifies it with `pg_restore --list`, writes a SHA-256 metadata sidecar, and removes partial artifacts if backup or verification fails.
@@ -104,6 +112,7 @@ Current state as of August 13, 2026:
 - The Windows scheduled task `Metrics Portal PostgreSQL Backup` is registered for daily 1:00 AM execution and has completed a manual scheduled-task run with result `0`.
 - The scheduled task continued to run daily after PL cutover. The August 13 run completed at 1:00 AM with result `0`, and the next run was scheduled for August 14 at 1:00 AM.
 - PL production submissions are database-backed, and the August 13 review found the latest ten jobs/events delivered with remote row IDs and no stuck outbox records.
+- Guarded 14-daily/8-weekly/12-monthly retention tooling is implemented and has passed a real-share dry run; deletion remains disabled pending storage-policy confirmation.
 
 Daily and after every deployment, confirm:
 
