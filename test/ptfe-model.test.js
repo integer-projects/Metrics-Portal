@@ -84,3 +84,15 @@ test('PTFE shift remains dirty until every Job x Job row is captured', () => {
     shift.tabs.Pull[0].captureStatus = 'captured';
     assert.equal(PtfeModel.shiftHasUncapturedRows(shift), false);
 });
+
+test('PTFE warnings preserve long-time, zero-output, and repeated low-OE checks', () => {
+    const form = { ...validPull(), timeWorked: 721, endQuantity: 0 };
+    const result = PtfeModel.calculations(form, { goodPphStd: 100 }, 1);
+    const warnings = PtfeModel.qualityWarnings(form, result, PtfeModel.emptyShift());
+    assert.equal(warnings.length, 2);
+
+    const low = { ...validPull(), endQuantity: 50 };
+    const lowResult = PtfeModel.calculations(low, { goodPphStd: 100 }, 1);
+    const shift = PtfeModel.appendJobToShift(PtfeModel.emptyShift(), low, lowResult);
+    assert.match(PtfeModel.qualityWarnings(low, lowResult, shift).join(' '), /low-OE/);
+});

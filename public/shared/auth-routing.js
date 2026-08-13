@@ -14,6 +14,7 @@
         const user = response.user || {};
         const department = user.departmentKey || 'PL';
         if (department === 'PL' && response.serverSession) return '/pl/';
+        if (department === 'PTFE' && response.serverSession && response.databaseSubmissions) return '/ptfe/';
         if (user.role === 'Supervisor' && response.adminToken) return adminDestination(department);
         return '/';
     }

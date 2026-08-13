@@ -32,6 +32,7 @@
         return {
             item: '', lot: '', sequence: '', timeWorked: 0,
             footage: 0, processingLength: 0, partUnit: 'in', startQuantity: 0, endQuantity: 0,
+            startQuantityManual: false, startMultiplier: 1,
             recuts: 0, inspectionParetos: [], pullingParetos: [], pullingWraps: '', pullingMethods: [],
             comments: '', event: '', eventStart: '', eventEnd: '', pendingSubmission: null, lastSubmission: null
         };
@@ -42,6 +43,14 @@
             workDate,
             activeTab: 'Pull',
             tabs: Object.fromEntries(JXJ_TABS.map((name) => [name, []]))
+        };
+    }
+
+    function emptyWorkspace() {
+        const workDate = today();
+        return {
+            id: null, version: 0, mode: 'job', workDate, hasUnsavedWork: false,
+            formData: { form: emptyForm(), shift: emptyShift(workDate), countermeasures: '', lastSubmission: null }
         };
     }
 
@@ -148,7 +157,7 @@
         };
     }
 
-    function appendJobToShift(shift, form, result = calculations(form), submittedAt = '') {
+    function appendJobToShift(shift, form, result = calculations(form), submittedAt = '', sourceSubmissionId = null) {
         const mapping = JXJ_CELL_MAP[form.sequence];
         if (!mapping) return shift;
         const next = JSON.parse(JSON.stringify(shift || emptyShift()));
@@ -158,20 +167,20 @@
             rowType: 'Job', slot, item: String(form.item || ''), lot: String(form.lot || ''),
             stdPph: result.adjustedStandard || 0, actualPph: result.pph || 0, oe: result.sequenceOe || 0,
             timeMins: result.timeMins || 0, startQty: result.startQuantity || 0, endQty: result.endQuantity || 0,
-            lossReason: '', submittedAt, submissionId: null, captureStatus: 'draft'
+            lossReason: '', submittedAt, sourceSubmissionId, submissionId: null, captureStatus: 'draft'
         });
         next.activeTab = mapping.cell;
         return next;
     }
 
-    function appendEventToShift(shift, form, submittedAt = '') {
+    function appendEventToShift(shift, form, submittedAt = '', sourceSubmissionId = null) {
         const next = JSON.parse(JSON.stringify(shift || emptyShift()));
         const rows = next.tabs.Events || (next.tabs.Events = []);
         rows.push({
             rowType: 'Event', slot: `Event ${rows.length + 1}`, item: form.event || '', lot: '',
             stdPph: '', actualPph: '', oe: '', timeMins: eventMinutes(form.eventStart, form.eventEnd),
             startQty: '', endQty: '', lossReason: String(form.comments || '').trim(), submittedAt,
-            submissionId: null, captureStatus: 'draft'
+            sourceSubmissionId, submissionId: null, captureStatus: 'draft'
         });
         next.activeTab = 'Events';
         return next;
@@ -215,6 +224,17 @@
         return JXJ_TABS.some((cell) => (shift?.tabs?.[cell] || []).some((row) => row.captureStatus !== 'captured'));
     }
 
+    function qualityWarnings(form, result, shift) {
+        const warnings = [];
+        if (result.timeMins > 720) warnings.push('Time worked is greater than 12 hours. Verify the entry.');
+        if (result.startQuantity > 0 && result.endQuantity === 0) warnings.push('Start quantity is positive while end quantity is zero. Verify the output.');
+        const matchingLowOe = JXJ_TABS.flatMap((cell) => shift?.tabs?.[cell] || [])
+            .filter((row) => row.rowType !== 'Event' && row.item === String(form.item || '') && number(row.oe) > 0 && number(row.oe) < 75);
+        if (form.item && result.sequenceOe > 0 && result.sequenceOe < 75) matchingLowOe.push({ oe: result.sequenceOe });
+        if (matchingLowOe.length >= 2) warnings.push(`Item ${form.item} has ${matchingLowOe.length} low-OE entries below 75% this shift.`);
+        return warnings;
+    }
+
     function hasUnsavedWork(form, shift, mode = 'job') {
         if (form?.pendingSubmission || shiftHasUncapturedRows(shift)) return true;
         if (mode === 'event') return Boolean(form?.event || form?.eventStart || form?.eventEnd || String(form?.comments || '').trim());
@@ -223,7 +243,7 @@
 
     return {
         JXJ_CELL_MAP, JXJ_TABS, appendEventToShift, appendJobToShift, buildEventPayload, buildJobPayload,
-        calculations, emptyForm, emptyShift, eventMinutes, hasUnsavedWork, jobLogRows,
-        shiftHasUncapturedRows, today, validateEvent, validateJob
+        calculations, emptyForm, emptyShift, emptyWorkspace, eventMinutes, hasUnsavedWork, jobLogRows,
+        qualityWarnings, shiftHasUncapturedRows, today, validateEvent, validateJob
     };
 }));

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PTFE Production Portal</title>
+    <link rel="stylesheet" href="/pl/styles.css">
+    <link rel="stylesheet" href="/ptfe/styles.css">
+</head>
+<body class="theme-precision">
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Metrics Portal</p>
+            <h1>PTFE</h1>
+            <p id="identity" class="muted">Loading authenticated workspace…</p>
+        </div>
+        <div class="top-actions">
+            <label class="theme-control">Theme
+                <select id="themeSelect" class="theme-select">
+                    <option value="precision">Precision</option><option value="light">Light</option>
+                    <option value="dark">Dark</option><option value="high-contrast">High contrast</option>
+                </select>
+            </label>
+            <span id="saveState" class="status neutral">Loading…</span>
+            <a class="button secondary" href="/changelog.html">Changelog</a>
+            <a id="adminLink" class="button secondary" href="/admin-ptfe.html" hidden>Admin</a>
+            <button id="signOutButton" class="button danger" type="button">Sign out</button>
+        </div>
+    </header>
+
+    <main class="shell" hidden>
+        <section id="conflictPanel" class="notice warning" hidden>
+            <div><strong>This workspace changed in another tab.</strong><br>Load the server copy before entering more data.</div>
+            <button id="reloadWorkspaceButton" class="button warning-button" type="button">Load server copy</button>
+        </section>
+        <section id="submissionPanel" class="notice info" hidden>
+            <div><strong id="submissionTitle">Saved to database</strong><span id="submissionDetail"></span></div>
+            <button id="refreshSubmissionButton" class="button secondary" type="button">Refresh status</button>
+        </section>
+        <section id="warningPanel" class="notice warning" hidden><div id="warningMessages"></div></section>
+
+        <section class="workspace-heading card">
+            <div><p class="eyebrow">Authenticated workspace</p><h2 id="associateName">Associate</h2></div>
+            <label>Work date<input id="workDate" type="date"></label>
+        </section>
+
+        <nav class="mode-tabs" aria-label="Entry type">
+            <button class="mode-tab active" data-mode="job" type="button">Job entry</button>
+            <button class="mode-tab" data-mode="event" type="button">Event entry</button>
+        </nav>
+
+        <form id="jobForm" novalidate>
+            <div class="layout">
+                <div class="stack">
+                    <section class="card">
+                        <h2>Job details</h2>
+                        <div class="field-grid">
+                            <label>Item number<input id="item" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+                            <label>Lot number<input id="lot" autocomplete="off"></label>
+                            <label>Sequence<select id="sequence"><option value="">Select sequence…</option></select></label>
+                            <label>Time worked (minutes)<input id="timeWorked" class="operator-number" type="number" min="0" step="1" data-replace-zero></label>
+                        </div>
+                        <div id="pullSpoolFields" class="subsection" hidden>
+                            <h3>Pull spool details</h3>
+                            <div class="field-grid">
+                                <label>Full spool footage<input id="footage" type="number" min="0" step="any"></label>
+                                <label>Processing / part length
+                                    <span class="inline-fields"><input id="processingLength" type="number" min="0" step="any"><select id="partUnit"><option value="in">in</option><option value="cm">cm</option><option value="mm">mm</option></select></span>
+                                </label>
+                                <label>Start quantity multiplier<input id="startMultiplier" type="number" min="0" step="any" value="1"></label>
+                                <div class="calculated"><span>Parts from spool</span><strong id="partsFromSpool">—</strong></div>
+                            </div>
+                            <button id="applyMultiplier" class="button secondary" type="button">Apply multiplier</button>
+                            <button id="resetAutoStart" class="button secondary" type="button">Reset start quantity to auto</button>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h2>Production quantities</h2>
+                        <div class="field-grid">
+                            <label>Start quantity<input id="startQuantity" type="number" min="0" step="1"></label>
+                            <label>End quantity<input id="endQuantity" type="number" min="0" step="1"></label>
+                        </div>
+                        <div class="metrics six-metrics">
+                            <div><span>Scrap parts</span><strong id="scrapParts">0</strong></div>
+                            <div><span>Yield</span><strong id="yieldPercent">—</strong></div>
+                            <div><span>Scrap rate</span><strong id="scrapPercent">—</strong></div>
+                            <div><span>Actual PPH</span><strong id="actualPph">—</strong></div>
+                            <div><span>Target quantity</span><strong id="targetQuantity">—</strong></div>
+                            <div><span>Sequence OE</span><strong id="sequenceOe">—</strong></div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h2>Sequence details</h2>
+                        <label id="recutsField" hidden>Re-Cuts<input id="recuts" type="number" min="0" step="1"></label>
+                        <div id="inspectionParetoSection" hidden><h3>Inspection Pareto</h3><div id="inspectionParetos" class="choice-grid"></div></div>
+                        <div id="pullingParetoSection" hidden><h3>Pulling Pareto</h3><div id="pullingParetos" class="choice-grid"></div></div>
+                        <div id="pullDetails" hidden>
+                            <div class="field-grid"><label>Pulling Wraps<input id="pullingWraps" inputmode="numeric"></label></div>
+                            <h3>Pulling Method</h3><div id="pullingMethods" class="choice-grid"></div>
+                        </div>
+                        <label>Comments<textarea id="comments" rows="4"></textarea></label>
+                    </section>
+                </div>
+
+                <section class="card standards-card">
+                    <h2>Standard</h2>
+                    <div class="metric-list">
+                        <div><span>Base Good PPH</span><strong id="baseStandard">—</strong></div>
+                        <div><span>Rate-adjusted PPH</span><strong id="adjustedStandard">—</strong></div>
+                    </div>
+                    <p id="standardNote" class="muted">Choose an item and sequence.</p>
+                </section>
+            </div>
+            <div id="jobErrors" class="errors" role="alert" hidden></div>
+            <div class="sticky-submit"><button id="submitJobButton" class="button primary submit" type="submit">Save job to database</button></div>
+        </form>
+
+        <form id="eventForm" class="card" novalidate hidden>
+            <h2>Event entry</h2>
+            <div class="field-grid">
+                <label>Event<select id="event"><option value="">Select event…</option></select></label>
+                <label>Start time<input id="eventStart" type="time"></label>
+                <label>End time<input id="eventEnd" type="time"></label>
+                <div class="calculated"><span>Duration</span><strong id="eventDuration">0 minutes</strong></div>
+            </div>
+            <label>Comments<textarea id="eventComments" rows="3"></textarea></label>
+            <div id="eventErrors" class="errors" role="alert" hidden></div>
+            <div class="sticky-submit"><button id="submitEventButton" class="button primary submit" type="submit">Save event to database</button></div>
+        </form>
+
+        <section class="card shift-card">
+            <div class="shift-heading">
+                <div><h2>Job x Job shift tracker</h2><p class="muted">Every row remains in this server workspace until End Shift captures it in PostgreSQL.</p></div>
+                <button id="endShiftButton" class="button danger" type="button">End Shift</button>
+            </div>
+            <div id="shiftTabs" class="shift-tabs"></div>
+            <div id="shiftTable"></div>
+            <label>Shift countermeasures<textarea id="countermeasures" rows="3"></textarea></label>
+        </section>
+    </main>
+
+    <div id="alertOverlay" class="alert-overlay" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" hidden>
+        <section class="alert-dialog"><h2 id="alertTitle">Action required</h2><div id="alertMessages"></div><button id="alertCloseButton" class="button primary" type="button">OK</button></section>
+    </div>
+    <div id="toast" class="toast" role="status" hidden></div>
+    <script src="/shared/api-client.js"></script>
+    <script src="/ptfe/ptfe-model.js"></script>
+    <script src="/ptfe/app.js"></script>
+</body>
+</html>

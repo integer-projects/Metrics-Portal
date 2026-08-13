@@ -12,7 +12,8 @@ function app(options = {}) {
         databaseEnabled: options.databaseEnabled ?? true,
         service: options.service || {},
         getSupervisorActor: (req) => req.get('x-admin-token') === 'valid' ? { name: 'Supervisor', role: 'Supervisor', department: 'PL', kioskId: 'test' } : null,
-        getSessionActor: async () => ({ name: 'Associate', role: 'Associate', department: 'PL', kioskId: 'test-kiosk' })
+        getSessionActor: async () => ({ name: 'Associate', role: 'Associate', department: options.department || 'PL', kioskId: 'test-kiosk' }),
+        isDepartmentEnabled: options.isDepartmentEnabled
     }));
     return instance;
 }
@@ -56,4 +57,12 @@ test('supervisors cannot manage another department', async () => {
 test('disabled database returns a clear service unavailable response', async () => {
     const response = await request(app({ databaseEnabled: false })).post('/api/v2/submissions').send({}).expect(503);
     assert.match(response.body.error, /not enabled/);
+});
+
+test('department capture is blocked until its independent database flag is enabled', async () => {
+    const service = { async create() { throw new Error('must not execute'); } };
+    const disabled = (department) => department === 'PL';
+    const response = await request(app({ service, department: 'PTFE', isDepartmentEnabled: disabled }))
+        .post('/api/v2/submissions').send({}).expect(503);
+    assert.match(response.body.error, /PTFE durable submissions are not enabled/);
 });

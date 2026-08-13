@@ -8,7 +8,7 @@ PL production behavior is not changed by this work package. PTFE remains on the 
 
 ## Implementation Status
 
-The first Phase 5 implementation slice is complete on the PTFE foundation branch:
+The first two Phase 5 implementation slices are complete on the PTFE migration branch:
 
 - `PTFE_DATABASE_SUBMISSIONS_ENABLED` is an independent, disabled-by-default runtime flag.
 - Runtime validation prevents PTFE database routing unless durable submissions, server workspaces, and PTFE server sessions are all enabled.
@@ -16,8 +16,14 @@ The first Phase 5 implementation slice is complete on the PTFE foundation branch
 - The browser-compatible PTFE model implements the preserved calculations, validation thresholds, exact Master Log and Job x Job payload titles, sequence-to-cell mapping, event timing, dirty-state detection, and one-row Job x Job generation.
 - PTFE Master Log job and event payloads explicitly map the workspace work date to the destination's `Date` column.
 - Focused automated tests cover the model and feature dependency chain.
+- Login routing enters `/ptfe/` only when a PTFE server session and the independent PTFE database feature are both active.
+- The isolated page uses the shared themes, centered validation feedback, server autosave/conflict handling, durable status banner, configured sequences/events/paretos/methods/standards, compatibility calculations, and Job x Job tracker.
+- After a durable Master Log capture, the server atomically and idempotently appends the job/event to the versioned PTFE shift workspace and clears the entry form; a lost browser response cannot omit or duplicate the shift row.
+- End Shift assigns and persists one permanent ID per Job x Job row, captures rows individually, reloads authoritative state after each acceptance, skips already captured rows on retry, and clears the shift only after every row is database-accepted.
+- The submission API blocks PTFE capture while the PTFE database feature is disabled, even if another department's durable workflow is enabled.
+- Focused browser rehearsal passed for rendered job calculations, database capture, server-owned shift append, refresh persistence, and event capture with no console errors.
 
-This slice does not route any production PTFE traffic. The isolated page/controller, server-workspace integration, End Shift capture orchestration, destination validators, UAT tooling, and cutover gates below remain required.
+These slices do not route any production PTFE traffic. Destination validators and guarded `Submission ID` expansion, non-production destination proof, PTFE UAT/rollback tooling, named approvals, and the cutover gates below remain required.
 
 ## Verified Compatibility Baseline
 

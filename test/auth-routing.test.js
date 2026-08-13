@@ -13,6 +13,12 @@ test('other departments retain compatibility routing during their deferred phase
     assert.equal(loginDestination({ user: { role: 'Associate', departmentKey: 'PI' }, serverSession: true }), '/');
 });
 
+test('PTFE enters its isolated page only when the database feature chain is enabled', () => {
+    const user = { role: 'Associate', departmentKey: 'PTFE' };
+    assert.equal(loginDestination({ user, serverSession: true, databaseSubmissions: false }), '/');
+    assert.equal(loginDestination({ user, serverSession: true, databaseSubmissions: true }), '/ptfe/');
+});
+
 test('PL supervisors enter the database page while deferred departments retain admin routing', () => {
     assert.equal(loginDestination({ user: { role: 'Supervisor', departmentKey: 'PL' }, adminToken: 'token', serverSession: true }), '/pl/');
     assert.equal(loginDestination({ user: { role: 'Supervisor', departmentKey: 'PTFE' }, adminToken: 'token' }), '/admin-ptfe.html');

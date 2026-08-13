@@ -590,6 +590,13 @@ async function attachDurableSession(res, user, kioskId, passwordHash = null) {
     }
 }
 
+function databaseSubmissionsEnabledFor(department) {
+    const key = normalizeDept(department);
+    if (key === 'PL') return runtimeConfig.features.plDatabaseSubmissions;
+    if (key === 'PTFE') return runtimeConfig.features.ptfeDatabaseSubmissions;
+    return false;
+}
+
 // Config sheet cache — avoids hitting Smartsheet on every login request.
 // Populated on first login, expires after 5 minutes, invalidated on password changes.
 let _configCache = null;
@@ -723,8 +730,9 @@ app.use('/api/v2/submissions', createSubmissionRouter({
     service: submissionService,
     getSupervisorActor,
     getSessionActor: async (req) => req.portalSession || null,
+    isDepartmentEnabled: databaseSubmissionsEnabledFor,
     onCaptured: runtimeConfig.features.serverWorkspaces
-        ? (session, submission) => workspaceService.markSubmitted(session, submission.id)
+        ? (session, submission) => workspaceService.markSubmitted(session, submission)
         : null
 }));
 app.use('/api/v2/sessions', createSessionRouter({
@@ -1094,6 +1102,7 @@ app.post('/api/login', async (req, res) => {
                 return res.status(409).json({ success: false, error: 'Associate is active at another workstation.', lock: durableSession.lock });
             }
             testResponse.serverSession = durableSession.enabled;
+            testResponse.databaseSubmissions = durableSession.enabled && databaseSubmissionsEnabledFor(testResponse.user.departmentKey);
             return res.json(testResponse);
         }
 
@@ -1158,6 +1167,7 @@ app.post('/api/login', async (req, res) => {
                 return res.status(409).json({ success: false, error: 'Associate is active at another workstation.', lock: durableSession.lock });
             }
             response.serverSession = durableSession.enabled;
+            response.databaseSubmissions = durableSession.enabled && databaseSubmissionsEnabledFor(response.user.departmentKey);
             res.json(response);
         } else {
             res.json({ success: false, error: 'Incorrect password' });
@@ -1228,6 +1238,7 @@ app.post('/api/setup-password', async (req, res) => {
             return res.status(409).json({ success: false, error: 'Associate is active at another workstation.', lock: durableSession.lock });
         }
         setupResponse.serverSession = durableSession.enabled;
+        setupResponse.databaseSubmissions = durableSession.enabled && databaseSubmissionsEnabledFor(setupResponse.user.departmentKey);
         res.json(setupResponse);
     } catch (error) {
         console.error("Error setting password:", error);
