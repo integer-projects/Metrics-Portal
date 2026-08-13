@@ -31,6 +31,8 @@ const { createWorkspaceService } = require('./services/workspaces/workspace-serv
 const { createSessionRouter } = require('./routes/sessions');
 const { createWorkspaceRouter } = require('./routes/workspaces');
 const { createFeatureRouter } = require('./routes/features');
+const { createAuditRepository } = require('./repositories/audit-repository');
+const { createAdminAuditMiddleware } = require('./services/audit/admin-audit');
 
 const app = express();
 validateApplicationEnvironment();
@@ -46,6 +48,7 @@ const submissionRepository = createSubmissionRepository(database);
 const submissionService = createSubmissionService(submissionRepository);
 const identityRepository = createIdentityRepository(database);
 const workspaceRepository = createWorkspaceRepository(database);
+const auditRepository = createAuditRepository(database);
 const sessionService = createSessionService({
     repository: identityRepository,
     ttlMs: runtimeConfig.sessions.ttlMs,
@@ -707,6 +710,7 @@ function requireAdmin(req, res, next) {
     if ((session.deptKey || 'PL') !== requestedDept) {
         return res.status(403).json({ success: false, error: 'Admin session is not valid for this department.' });
     }
+    req.adminSession = session;
     next();
 }
 
@@ -756,6 +760,7 @@ app.use('/api/v2/workspaces', createWorkspaceRouter({
 }));
 
 app.use('/api/admin', requireAdmin);
+app.use('/api/admin', createAdminAuditMiddleware({ repository: auditRepository }));
 
 // 1. Fetch Unified Config for Dropdowns and Admin Portal
 app.get('/api/config', async (req, res) => {

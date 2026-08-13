@@ -128,6 +128,8 @@ The Metrics Portal records manufacturing job and event activity for Precision Li
 - Audit records shall identify the user, department, workstation, action, and affected record.
 - Production records shall not be hard-deleted through normal application workflows.
 
+Current implementation records durable submission creation/delivery/failure, retry/resolution, workspace discard, kiosk-lock release, and server-authorized compatibility admin outcomes. Configuration save/delete, password reset, and admin kiosk-lock release audit events contain actor, department, workstation, action, affected row/user/type identifier, HTTP outcome, and safe item count only; configuration values, passwords, and tokens are excluded.
+
 ## Success Measures
 
 - Zero duplicate rows caused by normal retries during a 30-day observation period.

@@ -87,6 +87,8 @@ Stores each synchronization attempt, response classification, remote row ID when
 
 Stores security, workspace, submission, retry, resolution, configuration, and administrative actions.
 
+Compatibility admin routes use a server-side completion middleware after authorization. It records the action outcome in `audit_events` when PostgreSQL is enabled and logs a structured persistence error without returning a misleading mutation failure if Smartsheet already accepted the administrative change. Audit metadata never includes configuration values, passwords, or tokens.
+
 ## Database Rules
 
 - Use PostgreSQL with versioned migrations committed to Git.
