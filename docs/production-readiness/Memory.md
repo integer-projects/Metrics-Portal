@@ -50,20 +50,20 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 - The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
-- The corrected PTFE target environment is running on isolated port 3103 from `C:\serverdata\staging\metrics-portal-ptfe-uat`. Browser UAT confirmed PL-compatible quantity entry, a synced persistent Break event, stale-tab protection, low-yield Pull validation/capture, successful End Shift, numeric/status regressions, and worker restart recovery. Read-only reconciliation found four submitted Master Log rows and three submitted Job x Job rows before recovery testing; all seven outboxes submitted on attempt one with remote row IDs, exactly matching test-sheet counts 4 and 3. Deterministic partial End Shift, rollback, named approval, and final cleanup remain.
+- The complete PTFE target rehearsal passed on isolated port 3103. Browser UAT confirmed PL-compatible quantity entry, a synced persistent event, stale-tab protection, low-yield Pull validation/capture, numeric/status regressions, worker restart recovery, and partial End Shift retry without duplicates. Final reconciliation found two jobs, four events, and five Job x Job submissions, all submitted, with zero unfinished outboxes and zero duplicate IDs; the dedicated sheets matched at six Master Log rows and five Job x Job rows. Rollback restored compatibility routing, and guarded Stop removed all 11 sheet rows, the disposable database, state, and isolated processes while production remained unchanged. Named PTFE associate/supervisor acceptance remains before production prerequisites and cutover.
 
 ## Active Work
 
-- Continue the 30-day PL stabilization observation through September 2, 2026, finish PL SOP/support handoff, and execute the isolated PTFE UAT/rollback work package without changing production PTFE routing.
+- Continue the 30-day PL stabilization observation through September 2, 2026, finish PL SOP/support handoff, and close the named PTFE acceptance and production prerequisites without changing PTFE routing before approval.
 
 ## Next Actions
 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
 2. Obtain named acceptance of the updated PL associate and supervisor/support SOPs and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
-4. Complete browser acceptance in the running isolated PTFE environment, rehearse rollback, obtain named PTFE associate/supervisor approval, and clean the isolated environment.
+4. Obtain written PTFE acceptance from a named associate representative and supervisor/lead using the completed technical evidence or a supervised workflow repeat.
 5. Install and prove the five-minute local operations monitor on the target before PTFE production cutover.
-6. After UAT approval, add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
+6. After named UAT approval, add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
 7. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
 
 ## Open Decisions
@@ -1154,3 +1154,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Source-only until merge and isolated checkout refresh. Production PTFE remains unchanged and disabled.
 - Risks/blockers: Partial End Shift execution, rollback, named approval, and final cleanup remain.
 - Exact next action: Validate and merge the isolated failure switch, refresh the PTFE UAT checkout, create two tracker rows, interrupt after one capture, retry without the switch, and reconcile no duplicate rows before rollback.
+
+### 2026-08-13 - PTFE target UAT, recovery, rollback, and cleanup passed
+
+- Branch: `codex/ptfe-uat-evidence` from merge `a5a4686`.
+- Commit or PR: Pending documentation evidence update.
+- Phase/work package: Phase 5 PTFE target acceptance and rollback.
+- Work completed: Refreshed the state-recorded PTFE checkout to merge `a5a4686`, added a second controlled tracker event, interrupted End Shift after its first durable row, removed the switch, retried, skipped the captured row, captured only the remainder, and returned to login. Reconciled the disposable database and both dedicated sheets, rehearsed compatibility rollback, then ran guarded Stop cleanup.
+- Files or schema changed: Production-readiness documentation and program memory only. Guarded cleanup removed six dedicated Master Log test rows, five dedicated Job x Job test rows, the disposable `metrics_portal_ptfe_uat` database, isolated state, and isolated processes. No production Smartsheet row, database, feature flag, PM2 process, or portal was changed.
+- Decisions made: Technical PTFE UAT and rollback are accepted as passed. Production PTFE remains disabled until named department acceptance, local monitor proof, both production `Submission ID` expansions, fresh backup, and a supervised cutover.
+- Validation performed: Final database totals were two jobs, four events, and five Job x Job submissions, all `submitted`. No unfinished/failed outbox row and no duplicate submission ID existed. Dedicated-sheet totals matched exactly at six Master Log and five Job x Job rows. Rollback reported READY, and Stop reported both sheets empty, the isolated database removed, and live portals unchanged.
+- Deployment status: Isolated PTFE UAT is fully removed. Production PL remains live; production PTFE and PI remain on compatibility/direct-Smartsheet routing with their database/session flags disabled.
+- Risks/blockers: A named PTFE associate representative and supervisor/lead have not yet provided written acceptance. The five-minute production monitor is not yet installed, and the two production PTFE destinations still lack `Submission ID`.
+- Exact next action: Obtain the two named PTFE approvals, install and prove the local monitor, then schedule the guarded production destination expansion before a supervised PTFE cutover.

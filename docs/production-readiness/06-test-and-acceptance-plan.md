@@ -93,6 +93,10 @@ Each department uses a written script covering its normal daily workflow and kno
 
 PL completed associate and supervisor UAT with Ashley West and Joey Cox, technical observation by Johnny Bercegeay, isolated rollback rehearsal, production cutover verification, and post-cutover review. Production evidence includes normal jobs and events stored in PostgreSQL, outbox state `submitted`, permanent Smartsheet remote row IDs, and zero stuck PL items during the August 13 health check. PTFE and PI must repeat the department-specific acceptance and failure scenarios before their respective cutovers.
 
+## PTFE Acceptance Status
+
+Johnny Bercegeay completed the isolated technical PTFE rehearsal on August 13, 2026. The target evidence covers normal and low-yield job rules, events, refresh persistence, stale-tab protection, automatic synchronization status, worker recovery, partial End Shift retry without duplicates, database/outbox and two-sheet reconciliation, compatibility rollback, and complete guarded cleanup. No technical blocker remains from the isolated rehearsal. A named PTFE associate representative and supervisor/lead must still repeat the approved business workflow or review the evidence and provide written acceptance before production cutover.
+
 ## Severity
 
 - **Critical:** data loss, duplicate production records, security exposure, or unusable department workflow.
