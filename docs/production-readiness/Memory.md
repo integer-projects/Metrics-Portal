@@ -882,3 +882,15 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Not deployed.
 - Risks/blockers: Phase 0 ownership and infrastructure decisions remain open.
 - Exact next action: Review and approve the Phase 0 requirements and decision list.
+### 2026-08-13 - PTFE destination contract and guarded expansion
+
+- Branch: `codex/ptfe-destination-tooling`.
+- Commit or PR: Not committed yet.
+- Phase/work package: Phase 5 PTFE destination readiness.
+- Work completed: Added read-only two-destination contract validation and a guarded, dry-run-by-default `Submission ID` expansion for the PTFE Master Log and Job x Job Log. Corrected the durable Job x Job payload to the live physical `OE Pct` and `Time Min` titles.
+- Files or schema changed: Added PTFE destination-contract, migration-planning, validation, expansion, and focused test files; updated the PTFE model, package commands, migration work package, and tests. No production Smartsheet change was applied.
+- Decisions made: The generic worker must send exact physical Smartsheet titles. `Submitted At` remains outside the writable Job x Job contract because Smartsheet manages it.
+- Validation performed: Fourteen focused tests passed. Live read-only validation found only `Submission ID` missing from each production destination. The guarded dry run planned exactly one added text/number column per sheet and zero existing-row changes.
+- Deployment status: Not deployed. PTFE routing remains disabled and production Smartsheets are unchanged.
+- Risks/blockers: Production expansion requires an approved window. Dedicated non-production PTFE destinations, exact-ID delivery proof, isolated UAT, rollback rehearsal, and named approvals remain open.
+- Exact next action: Commit the validator slice, then build dedicated PTFE integration-destination creation, proof, and cleanup tooling without touching production data.

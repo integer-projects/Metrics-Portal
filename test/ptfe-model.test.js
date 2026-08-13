@@ -74,7 +74,7 @@ test('PTFE Job x Job mapping preserves cell, slot, and one-row payloads', () => 
     assert.equal(rows[0].payload.Countermeasures, 'Adjusted setup');
     assert.equal(rows[1].payload['Row Type'], 'Event');
     assert.equal(rows[1].payload.Event, 'Break');
-    assert.equal(rows[1].payload['Time (Min)'], 15);
+    assert.equal(rows[1].payload['Time Min'], 15);
 });
 
 test('PTFE shift remains dirty until every Job x Job row is captured', () => {
