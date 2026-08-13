@@ -131,10 +131,6 @@
         return model.calculations(form, standardFor(form), associateRate);
     }
 
-    function operatorNumberValue(value) {
-        return Number(value) === 0 ? '' : String(value);
-    }
-
     function captureForm() {
         const form = workspace.formData.form;
         workspace.workDate = elements.workDate.value || model.today();
@@ -170,13 +166,13 @@
         elements.item.value = form.item;
         elements.lot.value = form.lot;
         elements.sequence.value = form.sequence;
-        elements.timeWorked.value = operatorNumberValue(form.timeWorked);
+        elements.timeWorked.value = form.timeWorked;
         elements.footage.value = form.footage;
         elements.processingLength.value = form.processingLength;
         elements.partUnit.value = form.partUnit;
         elements.startMultiplier.value = form.startMultiplier || 1;
-        elements.startQuantity.value = operatorNumberValue(form.startQuantity);
-        elements.endQuantity.value = operatorNumberValue(form.endQuantity);
+        elements.startQuantity.value = form.startQuantity;
+        elements.endQuantity.value = form.endQuantity;
         elements.recuts.value = form.recuts;
         elements.pullingWraps.value = form.pullingWraps;
         elements.comments.value = workspace.mode === 'job' ? form.comments : '';
@@ -266,6 +262,10 @@
     }
 
     function captureAndQueueSave() { captureForm(); queueSave(); }
+
+    function selectZeroValue(input) {
+        if (input.value === '0') setTimeout(() => input.select(), 0);
+    }
 
     function saveWorkspace() {
         clearTimeout(saveTimer);
@@ -443,6 +443,14 @@
         elements.resetAutoStart.addEventListener('click', () => {
             workspace.formData.form.startMultiplier = 1; workspace.formData.form.startQuantityManual = false;
             elements.startMultiplier.value = '1'; captureAndQueueSave();
+        });
+        document.querySelectorAll('[data-replace-zero]').forEach((input) => {
+            input.addEventListener('focus', () => selectZeroValue(input));
+            input.addEventListener('mouseup', (event) => {
+                if (input.value !== '0') return;
+                event.preventDefault();
+                selectZeroValue(input);
+            });
         });
         elements.jobForm.addEventListener('submit', (event) => { event.preventDefault(); submit('job'); });
         elements.eventForm.addEventListener('submit', (event) => { event.preventDefault(); submit('event'); });
