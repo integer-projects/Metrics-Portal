@@ -263,6 +263,10 @@
 
     function captureAndQueueSave() { captureForm(); queueSave(); }
 
+    function selectZeroValue(input) {
+        if (input.value === '0') setTimeout(() => input.select(), 0);
+    }
+
     function saveWorkspace() {
         clearTimeout(saveTimer);
         if (conflicted) return Promise.resolve(false);
@@ -440,7 +444,14 @@
             workspace.formData.form.startMultiplier = 1; workspace.formData.form.startQuantityManual = false;
             elements.startMultiplier.value = '1'; captureAndQueueSave();
         });
-        document.querySelectorAll('[data-replace-zero]').forEach((input) => input.addEventListener('focus', () => { if (input.value === '0') input.select(); }));
+        document.querySelectorAll('[data-replace-zero]').forEach((input) => {
+            input.addEventListener('focus', () => selectZeroValue(input));
+            input.addEventListener('mouseup', (event) => {
+                if (input.value !== '0') return;
+                event.preventDefault();
+                selectZeroValue(input);
+            });
+        });
         elements.jobForm.addEventListener('submit', (event) => { event.preventDefault(); submit('job'); });
         elements.eventForm.addEventListener('submit', (event) => { event.preventDefault(); submit('event'); });
         elements.endShiftButton.addEventListener('click', endShift);
