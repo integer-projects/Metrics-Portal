@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)][ValidateSet('Start','Rollback','Stop')][string]$Action,
+    [Parameter(Mandatory = $true)][ValidateSet('Start','PauseWorker','ResumeWorker','Rollback','Stop')][string]$Action,
     [string]$RepositoryPath = 'C:\serverdata\staging\metrics-portal-ptfe-uat',
     [string]$EnvironmentFile = 'C:\serverdata\repos\metrics-portal\.env',
     [string]$StateDirectory = 'C:\serverdata\staging\metrics-portal-ptfe-uat-runtime',
@@ -100,6 +100,20 @@ function Stop-StateProcesses($State) {
             Stop-Process -Id $processId
             $process.WaitForExit(10000) | Out-Null
         }
+    }
+}
+
+function Stop-RecordedWorker($State) {
+    $processId = $State.workerPid
+    if (-not $processId) { throw 'The isolated PTFE worker is not recorded as running.' }
+    $details = Get-CimInstance Win32_Process -Filter "ProcessId = $processId" -ErrorAction SilentlyContinue
+    if ($details -and ($details.Name -ne 'node.exe' -or $details.CommandLine -notmatch 'smartsheet-worker\.js')) {
+        throw "Refusing to stop PID $processId because it is not the recorded isolated worker."
+    }
+    $process = Get-Process -Id $processId -ErrorAction SilentlyContinue
+    if ($process) {
+        Stop-Process -Id $processId
+        $process.WaitForExit(10000) | Out-Null
     }
 }
 
@@ -219,6 +233,55 @@ GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO $ApplicationRol
     Assert-LivePortalsUnchanged $liveBefore
     Write-Output "PTFE UAT environment READY at http://127.0.0.1:$Port/login.html"
     Write-Output 'Use the test-ptfe training account. Live ports 3000 and 3002 are unchanged.'
+}
+
+if ($Action -eq 'PauseWorker') {
+    if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) { throw 'No UAT state exists to pause.' }
+    $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+    if ($state.mode -ne 'full') { throw 'Worker recovery requires the full-feature PTFE UAT environment.' }
+    Stop-RecordedWorker $state
+    $state.workerPid = $null
+    $state | Add-Member -NotePropertyName workerPaused -NotePropertyValue $true -Force
+    $state | Add-Member -NotePropertyName workerPausedAt -NotePropertyValue (Get-Date).ToString('o') -Force
+    $state | ConvertTo-Json | Set-Content -LiteralPath $statePath -Encoding UTF8
+    if (-not (Get-Process -Id $state.webPid -ErrorAction SilentlyContinue)) { throw 'The isolated web process is not running after worker pause.' }
+    Assert-LivePortalsUnchanged $liveBefore
+    Write-Output 'PTFE UAT worker PAUSED. The isolated web/database remain available; production is unchanged.'
+}
+
+if ($Action -eq 'ResumeWorker') {
+    if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) { throw 'No UAT state exists to resume.' }
+    $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+    if ($state.mode -ne 'full' -or -not $state.workerPaused) { throw 'The isolated PTFE worker is not in the guarded paused state.' }
+    if ($state.workerPid -and (Get-Process -Id $state.workerPid -ErrorAction SilentlyContinue)) { throw 'A recorded isolated worker is already running.' }
+    Import-DotEnv $EnvironmentFile
+    $productionMasterId = $env:DEPT_PTFE_MASTER_LOG_SHEET_ID
+    $productionJobId = $env:DEPT_PTFE_JOB_LOG_SHEET_ID
+    if (-not $productionMasterId -or -not $productionJobId) { throw 'Production PTFE destination settings are missing.' }
+    if ($MasterIntegrationSheetId -eq $productionMasterId -or $MasterIntegrationSheetId -eq $productionJobId -or
+        $JobIntegrationSheetId -eq $productionMasterId -or $JobIntegrationSheetId -eq $productionJobId) {
+        throw 'PTFE integration sheets must not equal either production destination.'
+    }
+    $applicationPassword = Convert-Secret (Read-Host 'PostgreSQL application-role password' -AsSecureString)
+    $encodedApplication = [Uri]::EscapeDataString($applicationPassword)
+    $env:DATABASE_URL = "postgresql://${ApplicationRole}:$encodedApplication@127.0.0.1:5432/$($state.database)"
+    $applicationPassword = $null
+    $env:DEPT_PTFE_MASTER_LOG_SHEET_ID=$MasterIntegrationSheetId
+    $env:DEPT_PTFE_JOB_LOG_SHEET_ID=$JobIntegrationSheetId
+    $env:PORTAL_USAGE_LOG_SHEET_ID=''; $env:NODE_ENV='development'
+    $env:DATABASE_ENABLED='true'; $env:DATABASE_REQUIRED='true'; $env:DURABLE_SUBMISSIONS_ENABLED='true'
+    $env:SERVER_SESSIONS_ENABLED='true'; $env:SERVER_WORKSPACES_ENABLED='true'; $env:PL_SERVER_SESSIONS_ENABLED='false'
+    $env:PL_DATABASE_SUBMISSIONS_ENABLED='false'; $env:PTFE_SERVER_SESSIONS_ENABLED='true'; $env:PTFE_DATABASE_SUBMISSIONS_ENABLED='true'; $env:PI_SERVER_SESSIONS_ENABLED='false'
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $worker = Start-UatProcess 'workers/smartsheet-worker.js' (Join-Path $StateDirectory "worker-resume-$stamp.out.log") (Join-Path $StateDirectory "worker-resume-$stamp.error.log")
+    Start-Sleep -Seconds 2
+    if (-not (Get-Process -Id $worker.Id -ErrorAction SilentlyContinue)) { throw 'The isolated PTFE worker exited during recovery startup.' }
+    $state.workerPid = $worker.Id
+    $state.workerPaused = $false
+    $state | Add-Member -NotePropertyName workerResumedAt -NotePropertyValue (Get-Date).ToString('o') -Force
+    $state | ConvertTo-Json | Set-Content -LiteralPath $statePath -Encoding UTF8
+    Assert-LivePortalsUnchanged $liveBefore
+    Write-Output 'PTFE UAT worker RESUMED. Pending isolated deliveries can continue; production is unchanged.'
 }
 
 if ($Action -eq 'Rollback') {

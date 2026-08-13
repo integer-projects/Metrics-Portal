@@ -67,6 +67,8 @@ The database/outbox proof retains the original production destination IDs in ded
 
 The corrected target Start passed on August 13, 2026 at merge `8239cbb`: the prior failed state was removed, both test sheets were confirmed empty, all migrations applied to the disposable database, one Master Log and one Job x Job submission each converged through the outbox in one attempt, both synthetic Smartsheet rows and database rows were removed, the isolated portal and worker became ready on port 3103, and live production ports remained unchanged. Browser acceptance, rollback, and final Stop cleanup remain.
 
+For the required worker-restart recovery scenario, use the guarded `PauseWorker` and `ResumeWorker` actions against the same state-recorded PTFE checkout. `PauseWorker` verifies and stops only the recorded isolated `smartsheet-worker.js` process while leaving the isolated web/database and production processes unchanged. After a controlled browser submission is safely stored as pending, `ResumeWorker` prompts for the isolated database application-role password, reconstructs only the isolated worker environment, starts a new recorded worker, and preserves separate recovery logs. Neither action changes production feature flags, processes, destinations, or data.
+
 Rollback stops the isolated full-mode processes and relaunches port `3103` with database/session/workspace flags disabled so new `test-ptfe` logins use the compatibility page. Stop clears both test sheets, drops only the isolated database, removes the UAT state, and rechecks the live portal process.
 
 ```powershell

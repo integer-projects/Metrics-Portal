@@ -35,10 +35,21 @@ test('PTFE UAT orchestration isolates port, database, flags, and both destinatio
 });
 
 test('PTFE UAT orchestration preserves rollback and guarded cleanup', () => {
-    assert.match(script, /ValidateSet\('Start','Rollback','Stop'\)/);
+    assert.match(script, /ValidateSet\('Start','PauseWorker','ResumeWorker','Rollback','Stop'\)/);
     assert.match(script, /features\.ptfeDatabaseSubmissions/);
     assert.match(script, /cleanup:ptfe-uat-sheets/);
     assert.match(script, /CLEAR PTFE UAT TEST SHEETS/);
     assert.match(script, /DROP DATABASE IF EXISTS \$DatabaseName WITH \(FORCE\)/);
     assert.match(script, /Required Metrics Portal listener 3002 is missing/);
+});
+
+test('PTFE UAT orchestration can pause and resume only its recorded worker', () => {
+    assert.match(script, /if \(\$Action -eq 'PauseWorker'\)/);
+    assert.match(script, /function Stop-RecordedWorker\(\$State\)/);
+    assert.match(script, /not the recorded isolated worker/);
+    assert.match(script, /workerPaused -NotePropertyValue \$true/);
+    assert.match(script, /if \(\$Action -eq 'ResumeWorker'\)/);
+    assert.match(script, /PostgreSQL application-role password/);
+    assert.match(script, /worker-resume-\$stamp\.error\.log/);
+    assert.match(script, /Pending isolated deliveries can continue; production is unchanged/);
 });
