@@ -44,7 +44,8 @@ Read and maintain these documents in order:
 15. [Target Server Bootstrap](14-target-server-bootstrap.md) - verified host baseline, PostgreSQL installation, roles, first migration, and stop conditions.
 16. [Precision Liner UAT and Rollback](15-pl-uat-and-rollback.md) - isolated browser acceptance, rollback rehearsal, cleanup, and sign-off record.
 17. [PTFE Migration Work Package](16-ptfe-migration.md) - verified compatibility contract, durable two-destination design, validation, UAT, and cutover gates.
-18. [Program Memory](Memory.md) - current state, completed work, open decisions, deployment status, and session-to-session handoff.
+18. [Production-Readiness Completion Audit](17-completion-audit.md) - authoritative evidence matrix, remaining gates, execution order, and stop conditions.
+19. [Program Memory](Memory.md) - current state, completed work, open decisions, deployment status, and session-to-session handoff.
 
 `AGENTS.md` contains the scoped enforcement instructions for coding agents working from this playbook.
 
@@ -100,8 +101,8 @@ A department is production ready only when all of the following are true:
 | Durable submissions | Complete | CI, target database/outbox proof, exact-ID delivery validation, and restart/retry tests passed |
 | PL migration | Complete | PL UAT and sign-off, rollback rehearsal, database cutover, production job/event delivery, post-cutover health checks, and legacy process stop passed |
 | PL stabilization | In progress | No stuck production submissions or reported issues through the August 13 review; 30-day observation and final SOP/support handoff remain |
-| PTFE migration | In progress | Durable model/page/workspace flow and two-destination integration proof complete; target-server UAT, rollback rehearsal, production column expansion, and cutover approval remain |
+| PTFE migration | In progress | Source implementation and two-destination integration proof complete; target-server UAT/rollback, named approval, monitor installation, production column expansion, and cutover remain |
 | PI migration | Not started | PI user acceptance and cutover approval |
-| Operations handoff | In progress | PostgreSQL bootstrap, daily verified backups, restore drill, production health checks, and PM2 worker operation passed; alert routing, TLS/DNS, quarterly drill ownership, and support handoff remain |
+| Operations handoff | In progress | PostgreSQL bootstrap, daily verified backups, restore drill, production health checks, PM2 worker operation, local monitor tooling, retention tooling, and admin-audit source passed; target installation plus alert routing, TLS/DNS, policy/ownership, and support handoff remain |
 
 Update this table when a phase changes state. Allowed states are `Draft`, `Approved`, `In progress`, `Blocked`, and `Complete`.
