@@ -50,7 +50,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 - The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
-- The corrected PTFE target environment is running on isolated port 3103 from `C:\serverdata\staging\metrics-portal-ptfe-uat`. Empty-sheet guards, disposable migrations, one-attempt Master Log and Job x Job outbox delivery, full synthetic cleanup, web/worker readiness, and production-port preservation passed. The apparent failure of three quantity-entry revisions was a deployment-path error: refresh commands updated the old PL UAT checkout at `metrics-portal-uat`, while port 3103 continued serving the unchanged PTFE checkout. After the correct PTFE checkout was updated to `5d8d191`, browser UAT confirmed Time worked, Start quantity, and End quantity match the proven PL behavior and the spinner arrows are removed. Remaining browser UAT, rollback, and final Stop cleanup remain.
+- The corrected PTFE target environment is running on isolated port 3103 from `C:\serverdata\staging\metrics-portal-ptfe-uat`. Empty-sheet guards, disposable migrations, one-attempt Master Log and Job x Job outbox delivery, full synthetic cleanup, web/worker readiness, and production-port preservation passed. After the correct PTFE checkout was updated to `5d8d191`, browser UAT confirmed PL-compatible numeric entry, hidden spinner arrows, a five-minute Break event progressing to Smartsheet synced, Events tracker persistence after refresh, and stale-tab protection that restored Tab A's authoritative value over Tab B. Low-yield, End Shift/recovery, rollback, named approval, and final cleanup remain.
 
 ## Active Work
 
@@ -98,6 +98,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - The full administrative-audit branch validation passed 122 tests with three expected database-only skips, JavaScript and inline-HTML checks, PowerShell parsing, Markdown links, zero production dependency vulnerabilities, and GitHub Actions before merge as `471f55e`.
 - The corrected PTFE target Start passed two-destination database/outbox proof and launched the isolated portal/worker at port 3103 without changing live production ports. Its proof rows were removed from both Smartsheets and PostgreSQL before browser UAT.
 - Target Edge browser acceptance confirmed the PTFE quantity-entry controls replace the default zero correctly when clicked or reached by keyboard, and their increment/decrement arrows are absent after loading commit `5d8d191` from the actual PTFE UAT worktree.
+- Target browser acceptance captured a five-minute Break event, confirmed database-to-test-Smartsheet synchronization, retained the Events tracker row across refresh, and blocked a stale duplicate tab from overwriting the server workspace; Load server copy restored Tab A's `UAT-TAB-A` value.
 - Release PR #9 GitHub Actions run 29741738237 passed against PostgreSQL 18 on July 20, 2026 after refreshing the branch against current `main`.
 
 ## Deployment State
@@ -1099,3 +1100,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Isolated PTFE UAT only. Production PTFE remains unchanged and disabled.
 - Risks/blockers: Event capture, refresh persistence, duplicate-tab conflict, low-yield Pull behavior, End Shift/restart recovery, rollback, named approval, and final cleanup remain.
 - Exact next action: Capture a controlled PTFE event, confirm pending-to-synced delivery and Events tracker persistence, then continue conflict and recovery scenarios.
+
+### 2026-08-13 - PTFE event, refresh, and tab-conflict UAT passed
+
+- Branch: `codex/ptfe-browser-uat-evidence` from merge `3e55545`.
+- Commit or PR: Pending documentation evidence commit.
+- Phase/work package: Phase 5 PTFE isolated browser UAT.
+- Work completed: Captured a five-minute Break event with the controlled UAT comment, observed Database saved and Smartsheet synced, confirmed Events (1) and the row persisted after refresh, and completed a duplicate-tab conflict rehearsal. Tab B was blocked after Tab A saved, and Load server copy restored Tab A's authoritative lot value.
+- Files or schema changed: Program memory only. No application code, database schema, production Smartsheet, production configuration, feature flag, PM2 process, or live production portal changed in this evidence update. The event exists only in the dedicated UAT destination and disposable database pending final cleanup.
+- Decisions made: Treat event capture, refresh persistence, and stale-tab protection as passed. Keep the event row in the shift tracker until the controlled End Shift/recovery test so it can prove Job x Job capture.
+- Validation performed: Target Edge browser evidence on isolated port 3103 showed Database saved / Smartsheet synced, Events (1), the retained Break row after refresh, and authoritative server-copy recovery from a stale tab.
+- Deployment status: Isolated PTFE UAT only. Production PTFE remains unchanged and disabled.
+- Risks/blockers: Low-yield Pull validation, End Shift/restart recovery, rollback, named approval, and final cleanup remain.
+- Exact next action: Clear the temporary tab-conflict lot value, close the stale tab, then run a controlled low-yield Pull validation and capture before the End Shift recovery rehearsal.
