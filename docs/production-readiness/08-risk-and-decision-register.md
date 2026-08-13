@@ -4,7 +4,7 @@
 
 | ID | Risk | Impact | Mitigation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| R-001 | Application and database share one physical server | Portal and data can be lost in one hardware failure | Off-machine backups, restore drills, future secondary host evaluation | Johnny Bercegeay | Open |
+| R-001 | Application and database share one physical server | Portal and data can be lost in one hardware failure | Off-machine backups, restore drills, guarded tiered retention, future secondary host evaluation | Johnny Bercegeay | Partially mitigated; retention apply and secondary-host decision remain open |
 | R-002 | Smartsheet accepts a row but response is lost | Duplicate remote rows after retry | Permanent submission ID, outbox, remote ID lookup, idempotent API | Technical owner | Mitigated; controlled exact-ID replay passed 2026-06-19 |
 | R-003 | Browser state mixes associates | Incorrect attribution and blocked sign-out | Server-owned versioned workspaces and session isolation | Technical owner | Mitigated for PL; open for PTFE and PI |
 | R-004 | Combined frontend causes cross-department regression | One department change breaks another | Separate department pages/modules and department test suites | Technical owner | Mitigated for PL; open for PTFE and PI |

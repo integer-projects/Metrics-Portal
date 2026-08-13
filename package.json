@@ -17,6 +17,7 @@
     "create:ptfe-integration-sheets": "node scripts/create-ptfe-integration-sheets.js",
     "validate:ptfe-integration-delivery": "node scripts/validate-ptfe-integration-delivery.js",
     "validate:ptfe-outbox-integration": "node scripts/validate-ptfe-outbox-integration.js",
+    "manage:backup-retention": "node scripts/manage-backup-retention.js",
     "validate:ptfe-uat-sheets": "node scripts/manage-ptfe-uat-sheets.js",
     "cleanup:ptfe-uat-sheets": "node scripts/manage-ptfe-uat-sheets.js --clear",
     "migrate:pl-operators": "node scripts/add-pl-operators-config-column.js",

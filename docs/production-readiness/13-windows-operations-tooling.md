@@ -20,7 +20,7 @@ The production service is currently bound to its server address rather than loop
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows/Backup-Postgres.ps1 -BackupRoot 'X:\MetricsPortalBackups'
 ```
 
-The backup command uses PostgreSQL custom format, verifies the archive with `pg_restore --list`, and writes a SHA-256 sidecar. It intentionally does not delete backups. Daily, weekly, and monthly retention must be configured on the approved off-machine destination only after its snapshot or copy behavior is known.
+The backup command uses PostgreSQL custom format, verifies the archive with `pg_restore --list`, and writes a SHA-256 sidecar. It does not delete backups. `manage:backup-retention` now provides a separate dry-run-first, hash-verifying 14-daily/8-weekly/12-monthly plan and exact-confirmation apply mode. Apply or scheduled deletion remains prohibited until the approved off-machine destination's snapshot/copy behavior is known.
 
 For a scheduled task, provide `-EnvironmentFile 'C:\path\to\.env'`; the script reads only `DATABASE_URL` and never prints it. The task identity must have read access to that file and write access to the backup destination.
 

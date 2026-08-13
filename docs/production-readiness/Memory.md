@@ -930,3 +930,15 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Not deployed or scheduled on the target server.
 - Risks/blockers: Task installation requires target-server execution. Routed email/Teams/enterprise alerts, TLS/DNS, and permanent service ownership remain external operations gates.
 - Exact next action: Complete full validation and merge, then install and run the target scheduled monitor after the server pulls the approved commit.
+### 2026-08-13 - Guarded backup retention tooling implemented
+
+- Branch: `codex/backup-retention-tooling`.
+- Commit or PR: Not committed yet.
+- Phase/work package: Phase 7 backup lifecycle hardening.
+- Work completed: Added a deterministic 14-daily/8-weekly/12-monthly recovery-point planner and a dry-run-first retention command that SHA-256 verifies every managed archive, blocks on missing/mismatched sidecars, requires an exact apply confirmation, and removes only an eligible dump/sidecar pair.
+- Files or schema changed: Backup retention library, command, package script, tests, operations/tooling/risk documentation, and program memory. No backup file or production system changed.
+- Decisions made: Retention is the union of the newest recovery point in each selected day, ISO week, and calendar month. Creation and retention remain separate jobs. Apply/scheduling stays prohibited until the share snapshot/copy behavior is confirmed.
+- Validation performed: Unit tests cover tier unions, newest-within-group selection, ISO year boundaries, hash sidecars, dry-run, confirmation refusal, and paired deletion in a disposable directory. A real-share dry run verified 28 archives, retained 17 points, and identified 11 eligible pairs totaling 313,231 bytes; no file changed.
+- Deployment status: Tooling only; production backup task and share contents are unchanged.
+- Risks/blockers: Company storage/retention approval and the share's snapshot/copy behavior are required before apply mode or scheduling.
+- Exact next action: Merge the retention tooling, keep apply disabled, and obtain infrastructure confirmation before any deletion is authorized.
