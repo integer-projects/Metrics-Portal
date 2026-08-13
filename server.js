@@ -41,6 +41,7 @@ const PORT = runtimeConfig.port;
 const logger = createLogger({
     level: runtimeConfig.logLevel,
     version: runtimeConfig.serviceVersion,
+    commit: runtimeConfig.deploymentCommit,
     environment: runtimeConfig.nodeEnv
 });
 const database = createDatabase(runtimeConfig.database, logger);
@@ -435,6 +436,7 @@ app.use(express.urlencoded({ limit: '1mb', extended: true }));
 app.use('/api/v2', createHealthRouter({
     database,
     version: runtimeConfig.serviceVersion,
+    commit: runtimeConfig.deploymentCommit,
     integrationHealth: database.enabled ? () => submissionRepository.integrationHealth() : null
 }));
 app.use('/api/v2', createFeatureRouter(runtimeConfig.features));
@@ -1889,6 +1891,8 @@ function startServer() {
         logger.info({
             host: runtimeConfig.host,
             port: PORT,
+            version: runtimeConfig.serviceVersion,
+            commit: runtimeConfig.deploymentCommit,
             databaseEnabled: database.enabled
         }, 'metrics portal started');
     });

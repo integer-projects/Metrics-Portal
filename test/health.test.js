@@ -9,7 +9,7 @@ function buildApp(database) {
     const app = express();
     const logger = createLogger({ level: 'silent', version: 'test', environment: 'test' });
     app.use(requestContext(logger));
-    app.use('/api/v2', createHealthRouter({ database, version: 'test', startedAt: Date.now() }));
+    app.use('/api/v2', createHealthRouter({ database, version: 'test', commit: 'abcdef1', startedAt: Date.now() }));
     return app;
 }
 
@@ -17,6 +17,7 @@ test('liveness does not depend on database readiness', async () => {
     const app = buildApp({ checkReadiness: async () => ({ ok: false, status: 'unavailable' }) });
     const response = await request(app).get('/api/v2/health').expect(200);
     assert.equal(response.body.status, 'alive');
+    assert.equal(response.body.commit, 'abcdef1');
     assert.equal(response.body.requestId, response.headers['x-request-id']);
 });
 

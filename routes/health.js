@@ -8,6 +8,7 @@ function createHealthRouter(options) {
         res.json({
             status: 'alive',
             version: options.version,
+            commit: options.commit || 'unknown',
             uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
             requestId: req.requestId
         });
@@ -19,6 +20,7 @@ function createHealthRouter(options) {
         res.status(ready ? 200 : 503).json({
             status: ready ? 'ready' : 'not_ready',
             version: options.version,
+            commit: options.commit || 'unknown',
             checks: { database },
             requestId: req.requestId
         });
@@ -29,6 +31,7 @@ function createHealthRouter(options) {
             return res.json({
                 status: 'disabled',
                 version: options.version,
+                commit: options.commit || 'unknown',
                 requestId: req.requestId
             });
         }
@@ -42,6 +45,7 @@ function createHealthRouter(options) {
             res.json({
                 status: degraded ? 'degraded' : 'ok',
                 version: options.version,
+                commit: options.commit || 'unknown',
                 queue: {
                     activeCount: Number(queue.active_count || 0),
                     pendingCount: Number(queue.pending_count || 0),
@@ -57,7 +61,7 @@ function createHealthRouter(options) {
             });
         } catch (error) {
             req.log?.error({ err: error }, 'integration health check failed');
-            res.status(503).json({ status: 'unavailable', version: options.version, requestId: req.requestId });
+            res.status(503).json({ status: 'unavailable', version: options.version, commit: options.commit || 'unknown', requestId: req.requestId });
         }
     });
 

@@ -13,7 +13,12 @@ const config = getRuntimeConfig();
 if (!config.database.enabled) throw new Error('DATABASE_ENABLED must be true for the Smartsheet worker.');
 if (!config.features.durableSubmissions) throw new Error('DURABLE_SUBMISSIONS_ENABLED must be true for the Smartsheet worker.');
 
-const logger = createLogger({ level: config.logLevel, version: config.serviceVersion, environment: config.nodeEnv });
+const logger = createLogger({
+    level: config.logLevel,
+    version: config.serviceVersion,
+    commit: config.deploymentCommit,
+    environment: config.nodeEnv
+});
 const database = createDatabase(config.database, logger);
 const repository = createSubmissionRepository(database);
 const workerId = `${os.hostname()}:${process.pid}:${crypto.randomUUID().slice(0, 8)}`;
@@ -30,7 +35,11 @@ const worker = createOutboxWorker({
 
 let stopping = false;
 async function run() {
-    logger.info({ workerId }, 'Smartsheet worker started');
+    logger.info({
+        workerId,
+        version: config.serviceVersion,
+        commit: config.deploymentCommit
+    }, 'Smartsheet worker started');
     while (!stopping) {
         const result = await worker.processOnce();
         if (!result.processed) {

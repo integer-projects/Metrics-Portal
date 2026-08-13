@@ -83,6 +83,8 @@ Alert messages should identify the affected component, department, first failure
 - Retain logs for an approved period and rotate them before disk growth threatens the server.
 - Record deployment commit and application version at startup.
 
+The web process and worker resolve a safe deployment commit from `APP_COMMIT`/`GIT_COMMIT` when explicitly supplied or from the checkout's `.git` metadata. Both include the version and commit in structured startup logs. Liveness, readiness, and integration-health responses expose the same non-secret commit, and the local operations monitor persists it with the liveness evidence. A packaged deployment without environment or Git metadata reports `unknown` rather than inventing an identity.
+
 ## Backup Policy
 
 - Run an automated PostgreSQL backup at least daily.

@@ -9,6 +9,7 @@ function appWithQueue(queue) {
     app.use('/api/v2', createHealthRouter({
         database: { checkReadiness: async () => ({ ok: true }) },
         version: 'test',
+        commit: 'abcdef1',
         integrationHealth: async () => queue,
         startedAt: Date.now()
     }));
@@ -27,6 +28,7 @@ test('integration health reports complete healthy queue evidence', async () => {
         recent_error_count: 0
     })).get('/api/v2/health/integrations').expect(200);
     assert.equal(response.body.status, 'ok');
+    assert.equal(response.body.commit, 'abcdef1');
     assert.deepEqual(response.body.queue, {
         activeCount: 0,
         pendingCount: 0,
