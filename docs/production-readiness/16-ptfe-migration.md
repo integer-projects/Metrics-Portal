@@ -252,7 +252,7 @@ Before PTFE database routing can be enabled:
 
 ## UAT And Cutover Gates
 
-1. Name a PTFE associate representative and supervisor/lead.
+1. Obtain written acceptance from designated associate representative Keisha Black and lead Cody Atchley.
 2. Run the compatibility parity script across every active PTFE sequence plus an event and End Shift.
 3. Run the port `3103` isolated-browser refresh, duplicate-tab, retry, sign-out, partial End Shift, and worker-restart scenarios.
 4. Confirm both test destinations contain the expected rows and permanent IDs, then clean all synthetic rows.
