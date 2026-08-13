@@ -55,6 +55,16 @@ test('PTFE operator quantity fields match the proven PL zero replacement and hid
     assert.match(app, /function selectZeroValue\(input\)/);
     assert.match(app, /input\.addEventListener\('focus', \(\) => selectZeroValue\(input\)\)/);
     assert.match(app, /input\.addEventListener\('mouseup'/);
-    assert.match(styles, /input\.operator-number::\-webkit-outer-spin-button,input\.operator-number::\-webkit-inner-spin-button/);
-    assert.match(styles, /input\.operator-number \{ appearance:textfield; -moz-appearance:textfield; \}/);
+    assert.match(styles, /input\[type="number"\]::\-webkit-outer-spin-button,input\[type="number"\]::\-webkit-inner-spin-button/);
+    assert.match(styles, /input\[type="number"\] \{ appearance:textfield; -moz-appearance:textfield; \}/);
+});
+
+test('PTFE multiplier replaces its current value and mouse wheel cannot change focused numbers', () => {
+    assert.match(html, /id="startMultiplier"[^>]*data-select-on-entry/);
+    assert.match(app, /function selectCurrentValue\(input\)/);
+    assert.match(app, /input\.addEventListener\('focus', \(\) => selectCurrentValue\(input\)\)/);
+    assert.match(app, /document\.querySelectorAll\('input\[type="number"\]'\)/);
+    assert.match(app, /input\.addEventListener\('wheel'/);
+    assert.match(app, /event\.preventDefault\(\);\s+input\.blur\(\)/);
+    assert.match(app, /\{ passive: false \}/);
 });

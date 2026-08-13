@@ -267,6 +267,10 @@
         if (input.value === '0') setTimeout(() => input.select(), 0);
     }
 
+    function selectCurrentValue(input) {
+        setTimeout(() => input.select(), 0);
+    }
+
     function saveWorkspace() {
         clearTimeout(saveTimer);
         if (conflicted) return Promise.resolve(false);
@@ -451,6 +455,20 @@
                 event.preventDefault();
                 selectZeroValue(input);
             });
+        });
+        document.querySelectorAll('[data-select-on-entry]').forEach((input) => {
+            input.addEventListener('focus', () => selectCurrentValue(input));
+            input.addEventListener('mouseup', (event) => {
+                event.preventDefault();
+                selectCurrentValue(input);
+            });
+        });
+        document.querySelectorAll('input[type="number"]').forEach((input) => {
+            input.addEventListener('wheel', (event) => {
+                if (document.activeElement !== input) return;
+                event.preventDefault();
+                input.blur();
+            }, { passive: false });
         });
         elements.jobForm.addEventListener('submit', (event) => { event.preventDefault(); submit('job'); });
         elements.eventForm.addEventListener('submit', (event) => { event.preventDefault(); submit('event'); });
