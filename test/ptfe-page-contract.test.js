@@ -51,7 +51,9 @@ test('PTFE operator quantity fields replace their default zero on focus or click
     ['timeWorked', 'startQuantity', 'endQuantity'].forEach((id) => {
         assert.match(html, new RegExp(`id="${id}"[^>]*data-replace-zero`));
     });
-    assert.match(app, /function selectZeroValue\(input\)/);
-    assert.match(app, /input\.addEventListener\('focus', \(\) => selectZeroValue\(input\)\)/);
-    assert.match(app, /input\.addEventListener\('mouseup'/);
+    assert.match(app, /function clearZeroForEntry\(input\)/);
+    assert.match(app, /if \(input\.value === '0'\) input\.value = ''/);
+    assert.match(app, /input\.addEventListener\('pointerdown', \(\) => clearZeroForEntry\(input\)\)/);
+    assert.match(app, /input\.addEventListener\('focus', \(\) => clearZeroForEntry\(input\)\)/);
+    assert.match(app, /input\.addEventListener\('blur', \(\) => restoreEmptyZero\(input\)\)/);
 });

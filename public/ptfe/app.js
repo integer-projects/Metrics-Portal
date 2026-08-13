@@ -263,8 +263,12 @@
 
     function captureAndQueueSave() { captureForm(); queueSave(); }
 
-    function selectZeroValue(input) {
-        if (input.value === '0') setTimeout(() => input.select(), 0);
+    function clearZeroForEntry(input) {
+        if (input.value === '0') input.value = '';
+    }
+
+    function restoreEmptyZero(input) {
+        if (input.value === '') input.value = '0';
     }
 
     function saveWorkspace() {
@@ -445,12 +449,9 @@
             elements.startMultiplier.value = '1'; captureAndQueueSave();
         });
         document.querySelectorAll('[data-replace-zero]').forEach((input) => {
-            input.addEventListener('focus', () => selectZeroValue(input));
-            input.addEventListener('mouseup', (event) => {
-                if (input.value !== '0') return;
-                event.preventDefault();
-                selectZeroValue(input);
-            });
+            input.addEventListener('pointerdown', () => clearZeroForEntry(input));
+            input.addEventListener('focus', () => clearZeroForEntry(input));
+            input.addEventListener('blur', () => restoreEmptyZero(input));
         });
         elements.jobForm.addEventListener('submit', (event) => { event.preventDefault(); submit('job'); });
         elements.eventForm.addEventListener('submit', (event) => { event.preventDefault(); submit('event'); });
