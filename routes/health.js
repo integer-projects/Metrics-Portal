@@ -34,20 +34,24 @@ function createHealthRouter(options) {
         }
         try {
             const queue = await options.integrationHealth();
-            const oldestPendingAt = queue.oldest_pending_at;
-            const oldestPendingAgeSeconds = oldestPendingAt
-                ? Math.max(0, Math.floor((Date.now() - new Date(oldestPendingAt).getTime()) / 1000))
+            const oldestActiveAt = queue.oldest_active_at;
+            const oldestActiveAgeSeconds = oldestActiveAt
+                ? Math.max(0, Math.floor((Date.now() - new Date(oldestActiveAt).getTime()) / 1000))
                 : 0;
-            const degraded = Number(queue.needs_review_count) > 0 || oldestPendingAgeSeconds >= 300;
+            const degraded = Number(queue.failed_count) > 0 || Number(queue.needs_review_count) > 0 || oldestActiveAgeSeconds >= 300;
             res.json({
                 status: degraded ? 'degraded' : 'ok',
                 version: options.version,
                 queue: {
+                    activeCount: Number(queue.active_count || 0),
                     pendingCount: Number(queue.pending_count || 0),
+                    processingCount: Number(queue.processing_count || 0),
+                    failedCount: Number(queue.failed_count || 0),
                     needsReviewCount: Number(queue.needs_review_count || 0),
-                    oldestPendingAt,
-                    oldestPendingAgeSeconds,
-                    lastDeliveryAt: queue.last_delivery_at
+                    oldestActiveAt,
+                    oldestActiveAgeSeconds,
+                    lastDeliveryAt: queue.last_delivery_at,
+                    recentErrorCount: Number(queue.recent_error_count || 0)
                 },
                 requestId: req.requestId
             });
