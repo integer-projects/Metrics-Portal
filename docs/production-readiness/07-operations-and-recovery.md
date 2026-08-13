@@ -21,7 +21,43 @@ Confirms the application can safely accept production work. It should verify dat
 
 ### Integration Health
 
-Reports Smartsheet worker status, oldest pending item, recent failure count, and last successful delivery. Smartsheet degradation should not automatically make the database-backed portal unavailable.
+Reports active, pending, processing, failed, and `needs_review` queue counts; the oldest active item and its age; the recent error count; and the last successful delivery. Health becomes degraded when active work reaches five minutes or terminal work exists. Smartsheet degradation does not make database-backed capture unavailable.
+
+## Automated Local Health Monitor
+
+`Test-MetricsPortalOperations.ps1` combines the production checks that previously required several manual commands. It verifies:
+
+- PM2 `metrics-portal` and `metrics-portal-worker` are online.
+- The PostgreSQL 18 Windows service is running.
+- Portal liveness and database readiness are healthy.
+- The integration queue has no five-minute active item, failed item, or `needs_review` item.
+- The backup scheduled task is enabled and its previous result is `0`.
+- The latest backup is within the age limit and its SHA-256 sidecar still matches.
+- The application drive retains the configured minimum free space.
+
+Each run atomically replaces `C:\serverdata\monitoring\metrics-portal-health.json` with a timestamped, structured result and exits nonzero when any check fails. This result is suitable for local review and for a future company-approved alert collector. The monitor never reads or writes production payloads and does not expose secrets.
+
+The confirmation-gated installer registers `Metrics Portal Operations Health` every five minutes under the current server identity:
+
+```powershell
+& 'C:\serverdata\repos\metrics-portal\scripts\windows\Install-MetricsPortalHealthMonitor.ps1' `
+    -BaseUrl 'http://10.15.3.47:3002' `
+    -BackupRoot '\\TRN-FIL-02\Sys\Johnny Bercegeay\PortalDataBackup' `
+    -Confirmation 'INSTALL METRICS PORTAL HEALTH MONITOR'
+```
+
+After installation, start it once, wait for completion, and inspect the persisted result:
+
+```powershell
+Start-ScheduledTask -TaskName 'Metrics Portal Operations Health'
+Start-Sleep -Seconds 30
+Get-ScheduledTaskInfo -TaskName 'Metrics Portal Operations Health' |
+    Select-Object LastRunTime,LastTaskResult,NextRunTime
+Get-Content 'C:\serverdata\monitoring\metrics-portal-health.json' -Raw |
+    ConvertFrom-Json | Format-List CheckedAt,Hostname,OverallStatus
+```
+
+The current interactive-logon task identity is an interim local monitor, like the backup task. Company-approved email, Teams, or enterprise monitoring transport remains an operations/IT decision; installation of the local task does not claim that routed alerting is complete.
 
 ## Monitoring And Alerts
 

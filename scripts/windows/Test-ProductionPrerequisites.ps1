@@ -54,7 +54,7 @@ try {
 
 try {
     $live = Invoke-RestMethod -Uri "$BaseUrl/api/v2/health" -TimeoutSec 5
-    Add-Check 'Application liveness' ($live.status -eq 'ok') "$BaseUrl/api/v2/health"
+    Add-Check 'Application liveness' ($live.status -eq 'alive') "$BaseUrl/api/v2/health"
 } catch { Add-Check 'Application liveness' $false 'Not reachable (acceptable before first deployment)' }
 
 $results | Format-Table -AutoSize

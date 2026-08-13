@@ -303,10 +303,17 @@ function createSubmissionRepository(database) {
         async integrationHealth() {
             const result = await database.query(`
                 SELECT
+                    count(*) FILTER (WHERE state IN ('pending', 'processing'))::integer AS active_count,
                     count(*) FILTER (WHERE state = 'pending')::integer AS pending_count,
+                    count(*) FILTER (WHERE state = 'processing')::integer AS processing_count,
+                    count(*) FILTER (WHERE state = 'failed')::integer AS failed_count,
                     count(*) FILTER (WHERE state = 'needs_review')::integer AS needs_review_count,
-                    min(created_at) FILTER (WHERE state = 'pending') AS oldest_pending_at,
-                    max(delivered_at) AS last_delivery_at
+                    min(created_at) FILTER (WHERE state IN ('pending', 'processing')) AS oldest_active_at,
+                    max(delivered_at) AS last_delivery_at,
+                    count(*) FILTER (
+                        WHERE last_error_code IS NOT NULL
+                          AND updated_at >= current_timestamp - interval '24 hours'
+                    )::integer AS recent_error_count
                 FROM submission_outbox
             `);
             return result.rows[0];

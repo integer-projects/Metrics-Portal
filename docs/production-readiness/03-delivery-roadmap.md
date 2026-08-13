@@ -21,9 +21,9 @@ Each phase requires:
 | 2 - Durable submissions | Complete | Idempotent capture, worker, exact-ID delivery, restart recovery, and supervisor status implemented and proven |
 | 3 - PL migration | Complete | Floor approval, production cutover, database/Smartsheet verification, and rollback path proven |
 | 4 - PL stabilization | In progress | Healthy production observation through August 13; complete the 30-day observation and SOP/support handoff |
-| 5 - PTFE migration | Not started | Inventory current PTFE behavior and build the next isolated department slice |
+| 5 - PTFE migration | In progress | Isolated page, two-destination proof, and target UAT tooling complete; run supervised server UAT and rollback next |
 | 6 - PI migration | Not started | Begins only after the reusable PTFE pattern is accepted |
-| 7 - Operations handoff | In progress | Daily backup and restore proof complete; TLS/DNS, alerts, service ownership, and quarterly drill cadence remain |
+| 7 - Operations handoff | In progress | Daily backup/restore and five-minute local health monitor implemented; install the monitor, route alerts, then close TLS/DNS, ownership, and drill cadence |
 
 ## Phase 0: Discovery And Approval
 

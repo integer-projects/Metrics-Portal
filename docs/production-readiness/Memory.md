@@ -918,3 +918,15 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Not deployed. PTFE routing remains disabled.
 - Risks/blockers: Target-server execution requires physical password entry for PostgreSQL superuser, migration, and application roles. Named PTFE associate and supervisor approval are still required after browser UAT.
 - Exact next action: Merge the UAT tooling, prepare the server worktree at the approved commit, then have Johnny enter the three database passwords while Start creates and validates the isolated port 3103 environment.
+### 2026-08-13 - Automated local operations health monitor implemented
+
+- Branch: `codex/operations-health-monitor`.
+- Commit or PR: Not committed yet.
+- Phase/work package: Phase 7 monitoring and operations handoff.
+- Work completed: Expanded integration health evidence and added a five-minute Windows monitor plus confirmation-gated Task Scheduler installer. The monitor covers PM2 web/worker state, PostgreSQL service, liveness/readiness, queue age and terminal work, backup task/result, verified backup freshness, and disk space; it atomically persists structured status and exits nonzero on failure.
+- Files or schema changed: Submission health query/router, two Windows scripts, focused tests, corrected production preflight liveness expectation, operations/roadmap/risk/durable-submission documentation, and program memory. No database schema or external system changed.
+- Decisions made: `pending` and `processing` are both active queue work for five-minute alerting. The local scheduled result is implemented independently of the still-unapproved company alert transport.
+- Validation performed: Focused API and script-contract tests passed; JavaScript and PowerShell syntax and diff checks passed. Full validation and clean CI are pending before merge.
+- Deployment status: Not deployed or scheduled on the target server.
+- Risks/blockers: Task installation requires target-server execution. Routed email/Teams/enterprise alerts, TLS/DNS, and permanent service ownership remain external operations gates.
+- Exact next action: Complete full validation and merge, then install and run the target scheduled monitor after the server pulls the approved commit.

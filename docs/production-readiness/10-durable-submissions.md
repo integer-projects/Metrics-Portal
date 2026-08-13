@@ -88,7 +88,7 @@ The public submission-detail endpoint returns status metadata but not the stored
 
 ## Health
 
-`GET /api/v2/health/integrations` reports pending count, `needs_review` count, oldest pending age, and last successful delivery. Health becomes degraded when a record needs review or the oldest pending item reaches five minutes.
+`GET /api/v2/health/integrations` reports active, pending, processing, failed, and `needs_review` counts; oldest active age; recent error count; and last successful delivery. Health becomes degraded when a record is failed or needs review, or when the oldest pending/processing item reaches five minutes.
 
 ## Failure Evidence
 
