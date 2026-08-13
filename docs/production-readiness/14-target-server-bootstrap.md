@@ -2,16 +2,17 @@
 
 ## Verified Baseline
 
-The target is a 64-bit Windows 11 Enterprise host with adequate free space on the system and application-data volumes. Node.js, npm, Git, and PM2 are installed. The three-department compatibility Metrics Portal is listening on port 3002 from its production `main` checkout. PostgreSQL was initially absent; PostgreSQL 13.23 was accidentally installed during bootstrap and was removed before PostgreSQL 18 was installed. The approved off-server backup destination has verified write, hash, and restore behavior.
+The target is a 64-bit Windows 11 Enterprise host with adequate free space on the system and application-data volumes. Node.js, npm, Git, and PM2 are installed. The three-department Metrics Portal is listening on port 3002 from its production `main` checkout, and `metrics-portal-worker` delivers PL database submissions to Smartsheet. PostgreSQL was initially absent; PostgreSQL 13.23 was accidentally installed during bootstrap and was removed before PostgreSQL 18.4 was installed. The approved off-server backup destination has verified write, hash, scheduled-run, freshness, and restore behavior.
 
 The host runs two distinct portals. They must never be treated as interchangeable:
 
 | PM2 process | Port | Repository | Scope |
 | --- | --- | --- | --- |
-| `PL-Portal` | 3000 | `C:\ServerData\Repos\Precision-Liner-Portal` | Legacy PL-only portal; out of scope for this program |
-| `metrics-portal` | 3002 | `C:\ServerData\Repos\Metrics-Portal` | Three-department Metrics Portal; production-readiness target |
+| `PL-Portal` | 3000 when running | `C:\ServerData\Repos\Precision-Liner-Portal` | Legacy PL-only rollback artifact; stopped August 13, 2026 and retained temporarily |
+| `metrics-portal` | 3002 | `C:\ServerData\Repos\Metrics-Portal` | Three-department Metrics Portal; production web target |
+| `metrics-portal-worker` | no HTTP port | `C:\ServerData\Repos\Metrics-Portal` | PL database-to-Smartsheet worker; required while PL durable submissions are enabled |
 
-All Metrics Portal health, deployment, restart, and rollback commands must name `metrics-portal` and use port 3002. Never restart, delete, or deploy into `PL-Portal` as part of this program.
+All Metrics Portal health, deployment, restart, and rollback commands must name `metrics-portal` and use port 3002. Worker operations must name `metrics-portal-worker`. Do not delete or deploy into `PL-Portal`; it stays stopped through the PL rollback-retention window and may be restarted only as part of an approved rollback.
 
 ## PostgreSQL Installation Gate
 
@@ -78,7 +79,7 @@ Store three connection strings separately:
 
 ## First Migration
 
-Keep the production portal flags disabled. In the release checkout, temporarily set the current PowerShell process's `DATABASE_URL` to the migration connection and run:
+During initial bootstrap, keep the production portal flags disabled. In the release checkout, temporarily set the current PowerShell process's `DATABASE_URL` to the migration connection and run:
 
 ```powershell
 npm ci
@@ -88,6 +89,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows/Grant-Postgr
 ```
 
 Then remove the temporary process variable and configure the application connection in the ACL-protected server `.env`. Do not restart or enable database features until the backup and restore drill passes.
+
+This initial gate passed before the August 3 PL cutover. PTFE and PI must reuse the migration, backup, destination-contract, worker, and rollback checks before their feature chains are enabled.
 
 ## Stop Conditions
 

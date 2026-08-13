@@ -60,23 +60,33 @@ Alert messages should identify the affected component, department, first failure
 
 The repository includes Windows backup tooling, and the target server has already produced verified off-machine backups during readiness work. The backup script creates a PostgreSQL custom-format dump, verifies it with `pg_restore --list`, writes a SHA-256 metadata sidecar, and removes partial artifacts if backup or verification fails.
 
-Current state as of July 23, 2026:
+Current state as of August 13, 2026:
 
 - Manual verified backups have been proven against the approved off-server backup share.
 - Backup freshness/hash verification tooling exists.
 - An isolated restore drill has been proven against a disposable PostgreSQL database.
 - The Windows scheduled task `Metrics Portal PostgreSQL Backup` is registered for daily 1:00 AM execution and has completed a manual scheduled-task run with result `0`.
-- The scheduled-task-created backup `metrics-portal-20260723-083005.dump` passed hash/freshness verification.
+- The scheduled task continued to run daily after PL cutover. The August 13 run completed at 1:00 AM with result `0`, and the next run was scheduled for August 14 at 1:00 AM.
+- PL production submissions are database-backed, and the August 13 review found the latest ten jobs/events delivered with remote row IDs and no stuck outbox records.
 
-Before enabling production PL database submissions, confirm:
+Daily and after every deployment, confirm:
 
 1. The scheduled backup task's latest run is successful.
 2. `Test-BackupFreshness.ps1` passes with the agreed maximum age.
 3. The scheduled task identity remains valid and can read the protected backup environment file.
 4. The task identity can still write to the approved off-server backup share.
 5. At least one recent backup has either passed a restore drill or is covered by the documented restore-drill cadence.
+6. PM2 shows both `metrics-portal` and `metrics-portal-worker` online.
+7. PL database and outbox rows converge to `submitted`; investigate any pending item older than five minutes or any `failed`/`needs_review` row.
 
 The initial scheduled task uses the current server account with interactive logon. This is acceptable for the current workstation/server operating model, but an IT-owned service account or password-backed scheduled task is preferred for fully unattended operation.
+
+## Current Process Ownership
+
+- Keep `metrics-portal` online; it is the production web application.
+- Keep `metrics-portal-worker` online; it is required for PL Smartsheet synchronization.
+- The legacy `PL-Portal` PM2 process was stopped and saved on August 13. Do not delete its PM2 entry or files until the 30-day PL observation and rollback-retention review closes.
+- `capacity-report` and the capacity-monitor process are separate applications and are not changed by this playbook.
 
 ## Restore Testing
 

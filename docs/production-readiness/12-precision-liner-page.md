@@ -8,7 +8,7 @@ The isolated module intentionally does not contain the legacy hour-by-hour track
 
 ## Entry And Rollback
 
-PL associates are redirected to `/pl/` only when login created a PL server session. All rollout features remain disabled by default. The compatibility route remains available when the feature chain is disabled.
+PL associates and supervisors are redirected to `/pl/` when login creates a PL server session. Supervisors receive an Admin link back to the PL configuration page. The PL production feature chain is enabled as of August 3, 2026; PTFE and PI remain on compatibility behavior. The compatibility route remains the flag-controlled PL rollback path.
 
 Required enablement order:
 
@@ -57,12 +57,16 @@ Job payloads preserve the existing master-log titles for entry type, sequence, l
 - Target database/outbox delivery was validated against the controlled test destination with no unexpected pending work.
 - Supervised PL floor UAT, associate/supervisor sign-off, rollback rehearsal, guarded cleanup, fresh backup, and production destination expansion are complete.
 
-## Remaining Cutover Gates
+## Production Cutover And Stabilization Status
 
-- Merge the approved stacked pull requests into `main` and create the release commit or tag.
-- Deploy the release to the Metrics Portal process on port 3002 with PL database/session flags still disabled.
-- Run post-deployment health checks and compatibility smoke tests.
-- Enable PL only during the approved PL window after TLS/DNS, alert routing, backup freshness, monitoring, and worker process prerequisites are verified.
+- The approved release and subsequent PL fixes are on production `main`.
+- PL database/session/workspace flags were enabled on August 3 after a fresh backup and destination-contract verification.
+- `metrics-portal` and `metrics-portal-worker` are online and saved in PM2.
+- Real PL jobs and events have reached PostgreSQL, converged through the outbox, and produced production Smartsheet remote row IDs.
+- The August 13 review returned HTTP 200 health, the expected PL-only feature state, successful scheduled backup result `0`, and zero stuck PL items.
+- The legacy `PL-Portal` process is stopped but retained through the observation window.
+
+Remaining PL stabilization gates are the 30-day observation through September 2, 2026, final PL SOP/support handoff, TLS/DNS and routed-alert hardening, and a decision after the observation window on removing the legacy rollback artifact.
 
 Run the read-only destination audit from an environment configured for the intended PL sheet:
 

@@ -60,7 +60,7 @@ Use visibly synthetic values and never enter employee or production data.
 | PL-UAT-05 | Attempt sign-out with an unsent draft | Sign-out is blocked until the work is submitted or intentionally discarded with a reason. |
 | PL-UAT-06 | Submit one valid synthetic job and click Submit repeatedly | One logical database submission is accepted; the page distinguishes database saved from Smartsheet pending/synced. |
 | PL-UAT-07 | Refresh and use Refresh status | The accepted submission remains queryable and reaches synced status without a duplicate. |
-| PL-UAT-08 | Submit one synthetic event with valid start/end times | One event is accepted and reaches synced status. |
+| PL-UAT-08 | Submit one synthetic event with a valid duration in minutes | One event is accepted and reaches synced status. |
 | PL-UAT-09 | Sign out after all work is clear | Sign-out succeeds and returns to login. |
 | PL-UAT-10 | At 768 by 1024 browser viewport, repeat basic navigation | No horizontal overflow blocks entry or submission. |
 | PL-UAT-11 | Create exactly 50% yield, enter the required low-yield note, and attempt submission without root-cause details; then complete one root-cause field | Root-cause details open automatically; the first submission is blocked; one completed root-cause field permits submission. |
@@ -107,7 +107,7 @@ Cleanup stops the isolated process, clears every row from the dedicated UAT shee
 | Associate representative | Ashley West; approved |
 | Department lead or supervisor | Joey Cox; approved |
 | Technical observer | Johnny Bercegeay |
-| PL-UAT-01 through PL-UAT-12 | Passed |
+| PL-UAT-01 through PL-UAT-14 | Passed; extended Spool Check, direct-duration event, operator-dropdown, and theme checks completed |
 | Rollback returned new login to compatibility page | Passed; compatibility portal confirmed after final approval |
 | Test sheet empty after cleanup | Passed; three synthetic rows removed and zero remain |
 | Isolated database removed | Passed |
@@ -121,3 +121,7 @@ Cleanup stops the isolated process, clears every row from the dedicated UAT shee
 The isolated technical rehearsal passed on 2026-06-22 at release commit `9928f7f`. Required-field validation, refresh persistence, stale-tab protection, unsent-work sign-out blocking, job and event capture, background synchronization, rollback routing, and cleanup all passed. One display mismatch was found: the browser initially treated only an unsupported `delivered` value as synced while the database correctly reported `submitted`. Commit `9928f7f` corrected the label, passed CI, and was retested against the already-delivered synthetic job.
 
 The dedicated test sheet was returned to zero rows, the isolated UAT database was dropped, and live portal process identities on ports 3000 and 3002 were unchanged. Final department acceptance was subsequently completed by Ashley West and Joey Cox at release commit `599007c`. The final rollback returned new PL logins to the compatibility portal, then guarded cleanup removed three synthetic rows, emptied the dedicated test sheet, removed the isolated database, and confirmed both live portals were unchanged.
+
+## Production Follow-Through
+
+The production PL cutover completed August 3, 2026 after the staged release, verified backup, destination contract, and worker checks. Production jobs and events subsequently converged to `submitted` with Smartsheet row IDs. The August 13 health review found no stuck PL records, and the legacy `PL-Portal` process was then stopped and saved in PM2 without uninstalling or deleting it. This closes the PL cutover rehearsal-to-production chain; the legacy artifact remains available only through the observation/rollback-retention window.

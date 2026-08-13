@@ -13,7 +13,7 @@ test('other departments retain compatibility routing during their deferred phase
     assert.equal(loginDestination({ user: { role: 'Associate', departmentKey: 'PI' }, serverSession: true }), '/');
 });
 
-test('supervisors retain department admin routing', () => {
-    assert.equal(loginDestination({ user: { role: 'Supervisor', departmentKey: 'PL' }, adminToken: 'token', serverSession: true }), '/admin-pl.html');
+test('PL supervisors enter the database page while deferred departments retain admin routing', () => {
+    assert.equal(loginDestination({ user: { role: 'Supervisor', departmentKey: 'PL' }, adminToken: 'token', serverSession: true }), '/pl/');
     assert.equal(loginDestination({ user: { role: 'Supervisor', departmentKey: 'PTFE' }, adminToken: 'token' }), '/admin-ptfe.html');
 });

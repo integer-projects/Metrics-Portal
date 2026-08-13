@@ -36,7 +36,7 @@ The application rejects invalid feature combinations at startup.
 - An unexpired lock at another kiosk blocks login.
 - Session, lock release, workspace discard, and submission actions create audit records.
 
-HTTPS is required before production secure cookies are enabled.
+HTTPS remains the approved target. The initial PL cutover is operating on the approved internal network over HTTP, so TLS/DNS and secure-cookie enforcement remain an open Phase 7 security hardening item recorded as R-011. Do not expose the portal beyond the approved internal network before that work is complete.
 
 ## Session API
 
@@ -74,3 +74,5 @@ The application permits only one open workspace per user and department. A succe
 ## Validation
 
 Automated coverage includes token hashing, cookie parsing, feature dependencies, kiosk conflict, same-kiosk replacement, inactivity resolution, stale-tab rejection, sign-out blocking, intentional discard, supervisor lock authorization, and audit-safe database cleanup.
+
+PL server sessions and workspaces are enabled in production. PTFE and PI session issuance remains disabled until each department migration is implemented and accepted.

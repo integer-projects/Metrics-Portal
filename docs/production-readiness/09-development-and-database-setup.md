@@ -43,7 +43,7 @@ DATABASE_SSL=false
 
 Use a migration-role connection string when applying migrations. Do not place connection strings in Git, logs, screenshots, or program memory.
 
-During compatibility deployment, `DATABASE_ENABLED=false` preserves the existing Smartsheet-backed portal. Set `DATABASE_REQUIRED=true` only after PostgreSQL is installed, migrated, and verified. Production database-backed submissions will require both flags to be true.
+During compatibility deployment, `DATABASE_ENABLED=false` preserves the existing Smartsheet-backed portal. Set `DATABASE_REQUIRED=true` only after PostgreSQL is installed, migrated, and verified. In production, the database feature chain is enabled for PL while PTFE and PI remain on compatibility behavior. Do not copy production `.env` values into development or documentation.
 
 ## Commands
 
@@ -93,3 +93,5 @@ Before enabling PostgreSQL on the production server:
 6. Verify readiness with the runtime role.
 7. Produce and restore the first backup in an isolated database.
 8. Record the release commit and validation result.
+
+These prerequisites passed for PL before the August 3, 2026 cutover. They remain reusable gates for PTFE and PI, along with department-specific destination contracts and UAT.

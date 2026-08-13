@@ -12,6 +12,19 @@ Each phase requires:
 - A demonstrated rollback path.
 - Exit approval before the next production cutover.
 
+## Current Phase Status
+
+| Phase | Status | Current evidence or next gate |
+| --- | --- | --- |
+| 0 - Discovery and approval | Complete | Requirements, architecture, owners, server, and backup destination established |
+| 1 - Engineering foundation | Complete | PostgreSQL migrations, health endpoints, tests, and CI operational |
+| 2 - Durable submissions | Complete | Idempotent capture, worker, exact-ID delivery, restart recovery, and supervisor status implemented and proven |
+| 3 - PL migration | Complete | Floor approval, production cutover, database/Smartsheet verification, and rollback path proven |
+| 4 - PL stabilization | In progress | Healthy production observation through August 13; complete the 30-day observation and SOP/support handoff |
+| 5 - PTFE migration | Not started | Inventory current PTFE behavior and build the next isolated department slice |
+| 6 - PI migration | Not started | Begins only after the reusable PTFE pattern is accepted |
+| 7 - Operations handoff | In progress | Daily backup and restore proof complete; TLS/DNS, alerts, service ownership, and quarterly drill cadence remain |
+
 ## Phase 0: Discovery And Approval
 
 ### Work

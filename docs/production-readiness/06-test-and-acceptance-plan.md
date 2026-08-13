@@ -89,6 +89,10 @@ Each department uses a written script covering its normal daily workflow and kno
 - Screenshots or record IDs for failures.
 - Written approval or a list of blocking defects.
 
+## PL Acceptance Status
+
+PL completed associate and supervisor UAT with Ashley West and Joey Cox, technical observation by Johnny Bercegeay, isolated rollback rehearsal, production cutover verification, and post-cutover review. Production evidence includes normal jobs and events stored in PostgreSQL, outbox state `submitted`, permanent Smartsheet remote row IDs, and zero stuck PL items during the August 13 health check. PTFE and PI must repeat the department-specific acceptance and failure scenarios before their respective cutovers.
+
 ## Severity
 
 - **Critical:** data loss, duplicate production records, security exposure, or unusable department workflow.
