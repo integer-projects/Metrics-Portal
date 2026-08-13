@@ -109,7 +109,7 @@ function Start-UatProcess([string]$Script, [string]$OutLog, [string]$ErrorLog) {
 }
 
 @(
-    'PTFE_INTEGRATION_MASTER_LOG_SHEET_ID','PTFE_INTEGRATION_JOB_LOG_SHEET_ID','PORTAL_USAGE_LOG_SHEET_ID','NODE_ENV','PORT','SERVER_HOST','CORS_ORIGIN',
+    'PTFE_INTEGRATION_MASTER_LOG_SHEET_ID','PTFE_INTEGRATION_JOB_LOG_SHEET_ID','PTFE_PRODUCTION_MASTER_LOG_SHEET_ID','PTFE_PRODUCTION_JOB_LOG_SHEET_ID','PORTAL_USAGE_LOG_SHEET_ID','NODE_ENV','PORT','SERVER_HOST','CORS_ORIGIN',
     'DATABASE_ENABLED','DATABASE_REQUIRED','DATABASE_URL','DURABLE_SUBMISSIONS_ENABLED','SERVER_SESSIONS_ENABLED',
     'SERVER_WORKSPACES_ENABLED','PL_SERVER_SESSIONS_ENABLED','PTFE_SERVER_SESSIONS_ENABLED','PI_SERVER_SESSIONS_ENABLED',
     'PL_DATABASE_SUBMISSIONS_ENABLED','PTFE_DATABASE_SUBMISSIONS_ENABLED','SESSION_COOKIE_NAME','SESSION_COOKIE_SECURE','DEPT_PTFE_MASTER_LOG_SHEET_ID','DEPT_PTFE_JOB_LOG_SHEET_ID',
@@ -137,6 +137,8 @@ if ($Action -eq 'Start') {
 
     $env:PTFE_INTEGRATION_MASTER_LOG_SHEET_ID = $MasterIntegrationSheetId
     $env:PTFE_INTEGRATION_JOB_LOG_SHEET_ID = $JobIntegrationSheetId
+    $env:PTFE_PRODUCTION_MASTER_LOG_SHEET_ID = $productionMasterId
+    $env:PTFE_PRODUCTION_JOB_LOG_SHEET_ID = $productionJobId
     Push-Location $RepositoryPath
     try { & npm.cmd run validate:ptfe-uat-sheets; if ($LASTEXITCODE -ne 0) { throw 'The PTFE UAT sheet guard failed.' } }
     finally { Pop-Location }
@@ -183,6 +185,8 @@ GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO $ApplicationRol
     $encodedApplication = [Uri]::EscapeDataString($applicationPassword)
     $env:DATABASE_URL = "postgresql://${ApplicationRole}:$encodedApplication@127.0.0.1:5432/$DatabaseName"
     $applicationPassword=$null
+    # Keep the original production IDs in the dedicated safety variables above before
+    # replacing the runtime destinations with the isolated test sheets.
     $env:DEPT_PTFE_MASTER_LOG_SHEET_ID=$MasterIntegrationSheetId
     $env:DEPT_PTFE_JOB_LOG_SHEET_ID=$JobIntegrationSheetId
     $env:PORTAL_USAGE_LOG_SHEET_ID=''

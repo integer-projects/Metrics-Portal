@@ -7,6 +7,10 @@ const script = fs.readFileSync(
     path.join(__dirname, '..', 'scripts', 'windows', 'Manage-PtfeUatEnvironment.ps1'),
     'utf8'
 );
+const outboxScript = fs.readFileSync(
+    path.join(__dirname, '..', 'scripts', 'validate-ptfe-outbox-integration.js'),
+    'utf8'
+);
 
 test('PTFE UAT orchestration isolates port, database, flags, and both destinations', () => {
     assert.match(script, /Port = 3103/);
@@ -19,6 +23,15 @@ test('PTFE UAT orchestration isolates port, database, flags, and both destinatio
     assert.match(script, /PTFE_DATABASE_SUBMISSIONS_ENABLED='true'/);
     assert.match(script, /PL_DATABASE_SUBMISSIONS_ENABLED='false'/);
     assert.match(script, /validate:ptfe-outbox-integration/);
+    assert.match(script, /PTFE_PRODUCTION_MASTER_LOG_SHEET_ID = \$productionMasterId/);
+    assert.match(script, /PTFE_PRODUCTION_JOB_LOG_SHEET_ID = \$productionJobId/);
+    assert.match(outboxScript, /PTFE_PRODUCTION_MASTER_LOG_SHEET_ID \|\| getRequiredEnv\('DEPT_PTFE_MASTER_LOG_SHEET_ID'\)/);
+    assert.match(outboxScript, /PTFE_PRODUCTION_JOB_LOG_SHEET_ID \|\| getRequiredEnv\('DEPT_PTFE_JOB_LOG_SHEET_ID'\)/);
+    assert.ok(
+        script.indexOf('$env:PTFE_PRODUCTION_MASTER_LOG_SHEET_ID = $productionMasterId') <
+        script.indexOf('$env:DEPT_PTFE_MASTER_LOG_SHEET_ID=$MasterIntegrationSheetId'),
+        'production destination identity must be retained before the runtime destination is replaced'
+    );
 });
 
 test('PTFE UAT orchestration preserves rollback and guarded cleanup', () => {
