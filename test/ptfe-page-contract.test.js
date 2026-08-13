@@ -48,15 +48,13 @@ test('PTFE page exposes compatibility themes, centered alerts, shift status, and
     assert.match(app, /Database saved · Smartsheet synced/);
 });
 
-test('PTFE operator quantity fields use empty values with zero placeholders and no spinner arrows', () => {
+test('PTFE operator quantity fields match the proven PL zero replacement and hidden-arrow behavior', () => {
     ['timeWorked', 'startQuantity', 'endQuantity'].forEach((id) => {
-        assert.match(html, new RegExp(`id="${id}"[^>]*class="operator-number"[^>]*placeholder="0"`));
+        assert.match(html, new RegExp(`id="${id}"[^>]*class="operator-number"[^>]*data-replace-zero`));
     });
-    assert.match(app, /function operatorNumberValue\(value\)/);
-    assert.match(app, /return Number\(value\) === 0 \? '' : String\(value\)/);
-    assert.match(app, /elements\.timeWorked\.value = operatorNumberValue\(form\.timeWorked\)/);
-    assert.match(app, /elements\.startQuantity\.value = operatorNumberValue\(form\.startQuantity\)/);
-    assert.match(app, /elements\.endQuantity\.value = operatorNumberValue\(form\.endQuantity\)/);
-    assert.match(styles, /\.operator-number::\-webkit-inner-spin-button/);
-    assert.match(styles, /\.operator-number \{ appearance:textfield; -moz-appearance:textfield; \}/);
+    assert.match(app, /function selectZeroValue\(input\)/);
+    assert.match(app, /input\.addEventListener\('focus', \(\) => selectZeroValue\(input\)\)/);
+    assert.match(app, /input\.addEventListener\('mouseup'/);
+    assert.match(styles, /input\.operator-number::\-webkit-outer-spin-button,input\.operator-number::\-webkit-inner-spin-button/);
+    assert.match(styles, /input\.operator-number \{ appearance:textfield; -moz-appearance:textfield; \}/);
 });

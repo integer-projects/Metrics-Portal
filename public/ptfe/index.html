@@ -58,7 +58,7 @@
                             <label>Item number<input id="item" inputmode="numeric" maxlength="6" autocomplete="off"></label>
                             <label>Lot number<input id="lot" autocomplete="off"></label>
                             <label>Sequence<select id="sequence"><option value="">Select sequence…</option></select></label>
-                            <label>Time worked (minutes)<input id="timeWorked" class="operator-number" type="number" min="0" step="1" placeholder="0"></label>
+                            <label>Time worked (minutes)<input id="timeWorked" class="operator-number" type="number" min="0" step="1" data-replace-zero></label>
                         </div>
                         <div id="pullSpoolFields" class="subsection" hidden>
                             <h3>Pull spool details</h3>
@@ -78,8 +78,8 @@
                     <section class="card">
                         <h2>Production quantities</h2>
                         <div class="field-grid">
-                            <label>Start quantity<input id="startQuantity" class="operator-number" type="number" min="0" step="1" placeholder="0"></label>
-                            <label>End quantity<input id="endQuantity" class="operator-number" type="number" min="0" step="1" placeholder="0"></label>
+                            <label>Start quantity<input id="startQuantity" class="operator-number" type="number" min="0" step="1" data-replace-zero></label>
+                            <label>End quantity<input id="endQuantity" class="operator-number" type="number" min="0" step="1" data-replace-zero></label>
                         </div>
                         <div class="metrics six-metrics">
                             <div><span>Scrap parts</span><strong id="scrapParts">0</strong></div>
