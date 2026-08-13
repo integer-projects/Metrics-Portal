@@ -43,7 +43,8 @@ Read and maintain these documents in order:
 14. [Windows Operations Tooling](13-windows-operations-tooling.md) - preflight, verified backup, health smoke tests, and manual server gates.
 15. [Target Server Bootstrap](14-target-server-bootstrap.md) - verified host baseline, PostgreSQL installation, roles, first migration, and stop conditions.
 16. [Precision Liner UAT and Rollback](15-pl-uat-and-rollback.md) - isolated browser acceptance, rollback rehearsal, cleanup, and sign-off record.
-17. [Program Memory](Memory.md) - current state, completed work, open decisions, deployment status, and session-to-session handoff.
+17. [PTFE Migration Work Package](16-ptfe-migration.md) - verified compatibility contract, durable two-destination design, validation, UAT, and cutover gates.
+18. [Program Memory](Memory.md) - current state, completed work, open decisions, deployment status, and session-to-session handoff.
 
 `AGENTS.md` contains the scoped enforcement instructions for coding agents working from this playbook.
 
