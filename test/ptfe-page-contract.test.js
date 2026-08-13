@@ -5,6 +5,7 @@ const test = require('node:test');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'ptfe', 'index.html'), 'utf8');
 const app = fs.readFileSync(path.join(__dirname, '..', 'public', 'ptfe', 'app.js'), 'utf8');
+const styles = fs.readFileSync(path.join(__dirname, '..', 'public', 'ptfe', 'styles.css'), 'utf8');
 const repository = fs.readFileSync(path.join(__dirname, '..', 'repositories', 'workspace-repository.js'), 'utf8');
 
 test('isolated PTFE page requires its complete feature and session boundary', () => {
@@ -47,13 +48,15 @@ test('PTFE page exposes compatibility themes, centered alerts, shift status, and
     assert.match(app, /Database saved · Smartsheet synced/);
 });
 
-test('PTFE operator quantity fields replace their default zero on focus or click', () => {
+test('PTFE operator quantity fields use empty values with zero placeholders and no spinner arrows', () => {
     ['timeWorked', 'startQuantity', 'endQuantity'].forEach((id) => {
-        assert.match(html, new RegExp(`id="${id}"[^>]*data-replace-zero`));
+        assert.match(html, new RegExp(`id="${id}"[^>]*class="operator-number"[^>]*placeholder="0"`));
     });
-    assert.match(app, /function clearZeroForEntry\(input\)/);
-    assert.match(app, /if \(input\.value === '0'\) input\.value = ''/);
-    assert.match(app, /input\.addEventListener\('pointerdown', \(\) => clearZeroForEntry\(input\)\)/);
-    assert.match(app, /input\.addEventListener\('focus', \(\) => clearZeroForEntry\(input\)\)/);
-    assert.match(app, /input\.addEventListener\('blur', \(\) => restoreEmptyZero\(input\)\)/);
+    assert.match(app, /function operatorNumberValue\(value\)/);
+    assert.match(app, /return Number\(value\) === 0 \? '' : String\(value\)/);
+    assert.match(app, /elements\.timeWorked\.value = operatorNumberValue\(form\.timeWorked\)/);
+    assert.match(app, /elements\.startQuantity\.value = operatorNumberValue\(form\.startQuantity\)/);
+    assert.match(app, /elements\.endQuantity\.value = operatorNumberValue\(form\.endQuantity\)/);
+    assert.match(styles, /\.operator-number::\-webkit-inner-spin-button/);
+    assert.match(styles, /\.operator-number \{ appearance:textfield; -moz-appearance:textfield; \}/);
 });
