@@ -10,6 +10,7 @@
     let associateRate = 0;
     let saveTimer = null;
     let savePromise = Promise.resolve();
+    let submissionPollTimer = null;
     let conflicted = false;
     let submitting = false;
     let alertReturnFocus = null;
@@ -190,6 +191,7 @@
         renderCalculations();
         renderShift();
         renderSubmission(workspace.formData.lastSubmission);
+        scheduleSubmissionRefresh();
     }
 
     function renderCalculations() {
@@ -265,6 +267,10 @@
 
     function selectZeroValue(input) {
         if (input.value === '0') setTimeout(() => input.select(), 0);
+    }
+
+    function selectCurrentValue(input) {
+        setTimeout(() => input.select(), 0);
     }
 
     function saveWorkspace() {
@@ -366,14 +372,29 @@
         elements.submissionDetail.textContent = synced ? 'The background worker confirmed the destination row.' : `Current sync status: ${submission.syncStatus || 'pending'}. The entry is safely stored.`;
     }
 
-    async function refreshSubmission() {
+    function submissionNeedsPolling(submission) {
+        return Boolean(submission?.id) && !['submitted', 'needs_review'].includes(submission.syncStatus);
+    }
+
+    function scheduleSubmissionRefresh() {
+        clearTimeout(submissionPollTimer);
+        submissionPollTimer = null;
+        if (conflicted || document.visibilityState === 'hidden' || !submissionNeedsPolling(workspace?.formData?.lastSubmission)) return;
+        submissionPollTimer = setTimeout(() => refreshSubmission({ silent: true }), 2000);
+    }
+
+    async function refreshSubmission({ silent = false } = {}) {
         const id = workspace.formData.lastSubmission?.id;
         if (!id) return;
         try {
             workspace.formData.lastSubmission = (await api.getSubmission(id)).submission;
             renderSubmission(workspace.formData.lastSubmission);
             await saveWorkspace();
-        } catch (error) { showAlert('Status refresh failed', error.message); }
+        } catch (error) {
+            if (!silent) showAlert('Status refresh failed', error.message);
+        } finally {
+            scheduleSubmissionRefresh();
+        }
     }
 
     function formHasOpenEntry() {
@@ -452,16 +473,34 @@
                 selectZeroValue(input);
             });
         });
+        document.querySelectorAll('[data-select-on-entry]').forEach((input) => {
+            input.addEventListener('focus', () => selectCurrentValue(input));
+            input.addEventListener('mouseup', (event) => {
+                event.preventDefault();
+                selectCurrentValue(input);
+            });
+        });
+        document.querySelectorAll('input[type="number"]').forEach((input) => {
+            input.addEventListener('wheel', (event) => {
+                if (document.activeElement !== input) return;
+                event.preventDefault();
+                input.blur();
+            }, { passive: false });
+        });
         elements.jobForm.addEventListener('submit', (event) => { event.preventDefault(); submit('job'); });
         elements.eventForm.addEventListener('submit', (event) => { event.preventDefault(); submit('event'); });
         elements.endShiftButton.addEventListener('click', endShift);
         elements.signOutButton.addEventListener('click', signOut);
-        elements.refreshSubmissionButton.addEventListener('click', refreshSubmission);
+        elements.refreshSubmissionButton.addEventListener('click', () => refreshSubmission());
         elements.themeSelect.addEventListener('change', () => setTheme(elements.themeSelect.value));
         elements.alertCloseButton.addEventListener('click', closeAlert);
         elements.reloadWorkspaceButton.addEventListener('click', async () => {
             workspace = normalizeWorkspace((await api.getWorkspace()).workspace);
             conflicted = false; elements.conflictPanel.hidden = true; renderWorkspace(); setSaveState('Server copy loaded', 'saved');
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') scheduleSubmissionRefresh();
+            else clearTimeout(submissionPollTimer);
         });
         window.addEventListener('beforeunload', (event) => { if (workspace?.hasUnsavedWork && elements.saveState.textContent !== 'Saved to server') event.preventDefault(); });
     }

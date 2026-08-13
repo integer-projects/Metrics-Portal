@@ -55,6 +55,26 @@ test('PTFE operator quantity fields match the proven PL zero replacement and hid
     assert.match(app, /function selectZeroValue\(input\)/);
     assert.match(app, /input\.addEventListener\('focus', \(\) => selectZeroValue\(input\)\)/);
     assert.match(app, /input\.addEventListener\('mouseup'/);
-    assert.match(styles, /input\.operator-number::\-webkit-outer-spin-button,input\.operator-number::\-webkit-inner-spin-button/);
-    assert.match(styles, /input\.operator-number \{ appearance:textfield; -moz-appearance:textfield; \}/);
+    assert.match(styles, /input\[type="number"\]::\-webkit-outer-spin-button,input\[type="number"\]::\-webkit-inner-spin-button/);
+    assert.match(styles, /input\[type="number"\] \{ appearance:textfield; -moz-appearance:textfield; \}/);
+});
+
+test('PTFE multiplier replaces its current value and mouse wheel cannot change focused numbers', () => {
+    assert.match(html, /id="startMultiplier"[^>]*data-select-on-entry/);
+    assert.match(app, /function selectCurrentValue\(input\)/);
+    assert.match(app, /input\.addEventListener\('focus', \(\) => selectCurrentValue\(input\)\)/);
+    assert.match(app, /document\.querySelectorAll\('input\[type="number"\]'\)/);
+    assert.match(app, /input\.addEventListener\('wheel'/);
+    assert.match(app, /event\.preventDefault\(\);\s+input\.blur\(\)/);
+    assert.match(app, /\{ passive: false \}/);
+});
+
+test('PTFE submission status updates automatically while Smartsheet delivery is pending', () => {
+    assert.match(app, /let submissionPollTimer = null/);
+    assert.match(app, /function submissionNeedsPolling\(submission\)/);
+    assert.match(app, /!\['submitted', 'needs_review'\]\.includes\(submission\.syncStatus\)/);
+    assert.match(app, /setTimeout\(\(\) => refreshSubmission\(\{ silent: true \}\), 2000\)/);
+    assert.match(app, /renderSubmission\(workspace\.formData\.lastSubmission\);\s+scheduleSubmissionRefresh\(\)/);
+    assert.match(app, /document\.addEventListener\('visibilitychange'/);
+    assert.match(app, /if \(!silent\) showAlert\('Status refresh failed'/);
 });
