@@ -66,7 +66,7 @@ Job payloads preserve the existing master-log titles for entry type, sequence, l
 - The August 13 review returned HTTP 200 health, the expected PL-only feature state, successful scheduled backup result `0`, and zero stuck PL items.
 - The legacy `PL-Portal` process is stopped but retained through the observation window.
 
-Remaining PL stabilization gates are the 30-day observation through September 2, 2026, final PL SOP/support handoff, TLS/DNS and routed-alert hardening, and a decision after the observation window on removing the legacy rollback artifact.
+The associate and supervisor/support SOPs now describe the production database-backed page, automatic Smartsheet synchronization, status meanings, tab conflicts, root-cause and Spool Check rules, supervisor retries/resolution, daily health review, and safe escalation. Remaining PL stabilization gates are the 30-day observation through September 2, 2026, named support-handoff acceptance, TLS/DNS and routed-alert hardening, and a decision after the observation window on removing the legacy rollback artifact.
 
 Run the read-only destination audit from an environment configured for the intended PL sheet:
 

@@ -1,100 +1,139 @@
-# Precision Liner PCD Portal — Supervisor/Admin SOP
+# Precision Liner Metrics Portal - Supervisor and Support SOP
 
-**Document Version:** 1.0  
-**Effective Date:** March 13, 2026  
-**Application Version:** V2.5.0  
-
----
+**Document version:** 2.0<br>
+**Effective date:** August 13, 2026<br>
+**Applies to:** Production Precision Liner page, PL Admin, and Submission Status
 
 ## Purpose
 
-This SOP covers the Master Configuration Admin panel. As a supervisor, you will use this interface to manage employee access, edit downtime/defect categories, and configure production goals. All changes made in the Admin panel sync directly to the master Smartsheet backend using background API calls.
+This procedure covers PL configuration support, submission monitoring, safe retry and resolution, associate support, and incident escalation. The Metrics Portal database is the operational record; Smartsheet is the downstream reporting destination.
 
----
+## 1. Supervisor Access
 
-## Table of Contents
+1. Sign in through the normal Metrics Portal login and select **Precision Liner**.
+2. Confirm your name and **Supervisor** role on the PL page.
+3. Choose **Admin** to open the PL configuration page.
+4. From PL Admin, choose **Submission Status** to review database-to-Smartsheet delivery.
 
-1. [Accessing the Admin Panel](#1-accessing-the-admin-panel)
-2. [Managing Associates & Schedules](#2-managing-associates--schedules)
-3. [Managing Sequences & Goals](#3-managing-sequences--goals)
-4. [Managing Defects & Events](#4-managing-defects--events)
+Do not share supervisor credentials. If the Admin control is missing, verify the account role in the approved configuration source.
 
----
+## 2. Support an Associate First
 
-## 1. Accessing the Admin Panel
+When an associate reports a problem, collect:
 
-![Admin Dashboard Placeholder](sop_images/09_admin_dashboard.png)  
-*(Above: The Supervisor Admin Panel)*
+- associate name and workstation;
+- work date and approximate submission time;
+- job, event, sequence, lot, and item identifiers as applicable;
+- the exact header status, submission banner, or centered error;
+- a screenshot if available.
 
-1. Log into the Precision Liner portal normally.
-2. If your account `Role` is set to **Supervisor**, you will see an **Admin** button in the top right corner of the dashboard next to your name.
-3. Click **Admin** to open the Master Configuration page.
+Use these rules:
 
-*(Note: If you do not see the Admin button, your account does not have Supervisor privileges. Contact a system administrator to update your role in Smartsheet).*
+- **Saved to server** means only the form workspace is saved.
+- **Database saved - Smartsheet pending** means the entry is safe. The associate may continue and must not re-enter it.
+- **Database saved - Smartsheet synced** means the destination row is confirmed.
+- **Tab conflict** requires **Load server copy**; do not try to preserve the stale tab by retyping over it.
+- A pending item becomes operationally alertable after five minutes. Failed and `needs_review` items require immediate review.
 
----
+## 3. Submission Status
 
-## 2. Managing Associates & Schedules
+The Submission Status page refreshes automatically every 30 seconds and can also be refreshed manually. Filters include status, department, associate, work date, and entry type.
 
-![Manage Associates Placeholder](sop_images/10_manage_associates.png)  
-*(Above: The Associates & Schedules configuration table)*
+Statuses mean:
 
-This section allows you to onboard new associates, define their scheduled hours, and manage access.
+- `pending` - committed to PostgreSQL and waiting for the worker.
+- `processing` - leased by the worker for delivery.
+- `submitted` - the Smartsheet destination row is confirmed.
+- `failed` - delivery stopped after a classified failure.
+- `needs_review` - an uncertain/permanent condition requires a supervisor decision.
+- `resolved` - a supervisor intentionally stopped automatic delivery with a recorded reason.
 
-### Adding a New Associate
-1. Click **+ Add Associate**.
-2. A new blank row will appear at the bottom of the table.
-3. Enter their **Associate Name**.
-4. Set their scheduled hours for each day of the week (Mon-Sun).
-5. Toggle the **Training** checkbox if they are currently in training.
-6. Set their **Role** to *Associate* or *Supervisor*.
-7. Click the blue **Save Associates** button at the bottom of the table to push the new user to Smartsheet.
+### Retry
 
-### Resetting an Associate's Password
-If an associate forgets their password:
-1. Locate their name in the table.
-2. Click the yellow **Reset Pass** button.
-3. Confirm the prompt.
-4. The associate will be forced to create a new secure password on their next login attempt.
+Use **Retry** only after the cause is corrected or confirmed temporary. Enter a specific reason. The worker uses the permanent Submission ID to search for an already accepted Smartsheet row before inserting another row.
 
-### Deleting an Associate
-1. Click the red trashcan (**🗑️**) next to the associate's name.
-2. Confirm the prompt to permanently delete their record from Smartsheet.
+### Resolve
 
----
+Use **Resolve** only when automatic delivery should stop and the record has been reconciled through an approved correction. Enter the reconciliation reason. Resolve is not a delete and must not be used merely to clear the list.
 
-## 3. Managing Sequences & Goals
+Retry and resolution are department-scoped and audited.
 
-![Manage Sequences Placeholder](sop_images/11_manage_sequences.png)  
-*(Above: The Sequences configuration table)*
+## 4. Configuration Administration
 
-Sequences dictate the Takt Time (pieces per hour) expected from the operator.
+PL Admin manages associates, schedules, roles, training status, password resets, sequences, defects, events, and the approved operator roster.
 
-1. Review the list of active sequences (e.g., Inspect, Bundle, Package).
-2. To modify a goal, click the number under **Goal (Parts/Hr)** and type the new target.
-3. To add a new sequence process, click **+ Add Sequence** and fill out the name and goal.
-4. Click **Save Sequences** to apply the changes globally.
+Before saving:
 
----
+1. Confirm you are in **Master Configuration Admin** for PL.
+2. Change only the intended row or list.
+3. Verify names and numeric targets before saving.
+4. Confirm the success result.
+5. Ask an affected user to refresh only when a configuration list must reload.
 
-## 4. Managing Defects & Events
+Administrative saves, deletes, password resets, and authorized lock-release outcomes are written to the database audit history when the database is available. Password values and configuration contents are not written to audit metadata.
 
-![Manage Defects Events Placeholder](sop_images/12_manage_defects_events.png)  
-*(Above: The Defects and Events configuration tables)*
+### Password reset
 
-The portal dynamically generates its dropdowns and defect buttons from these lists.
+1. Find the associate.
+2. Choose **Reset Pass** and confirm.
+3. Tell the associate to complete password setup at the next login.
+4. Never request or record the new password.
 
-### Defect Log Items
-1. To track a new type of defect, click **+ Add Defect**.
-2. Type the name (e.g., "Core Damage").
-3. Click **Save Defects**.
-4. This new defect will instantly appear on all active operator dashboards.
+### Associate deletion
 
-### Downtime Events
-1. To add a new downtime reason (e.g., "Material Shortage"), click **+ Add Event**.
-2. Type the new event name.
-3. Click **Save Events**.
-4. The new event will populate in the Event Entry dropdown for all operators.
+Delete only after confirming the correct employee and approved removal. Deletion affects login configuration; it does not erase previously submitted production history.
 
----
-*End of Supervisor SOP.*
+## 5. Stale Workstation Locks
+
+An associate may be prevented from signing in when an earlier workstation session still owns the PL kiosk lock. First ask the associate to sign out from the original workstation. If that is impossible, use the authorized supervisor lock-release procedure with a reason. Never release an active associate's lock merely to bypass a sign-in warning.
+
+## 6. Daily Health Review
+
+Confirm at minimum:
+
+1. PM2 processes `metrics-portal` and `metrics-portal-worker` are online.
+2. Portal liveness and readiness are healthy.
+3. No PL item is pending or processing for five minutes or more.
+4. No PL item is `failed` or `needs_review`.
+5. The scheduled backup task's last result is `0` and the latest hash-verified backup is fresh.
+6. The PostgreSQL service is running and disk space remains above the approved minimum.
+
+The repository's operations monitor automates these checks and writes a structured health result once installed on the target server.
+
+## 7. Incident Response
+
+### Portal unavailable or database save failing
+
+Stop new PL entry attempts and contact technical support. Do not direct associates to repeatedly submit. Record the first failure time and affected workstations.
+
+### Smartsheet unavailable while database saves succeed
+
+Associates may continue. Monitor queue age and count. The worker retries recoverable failures. Escalate at five minutes or immediately for terminal status.
+
+### Worker offline
+
+Database capture remains authoritative, but Smartsheet becomes stale. Restore the approved PM2 worker process, confirm queue movement, and verify exact destination rows before closing the incident.
+
+### Suspected duplicate or incorrect destination row
+
+Do not delete production rows merely to make counts match. Preserve the database Submission ID and Smartsheet row ID, stop unsafe retries, and reconcile through the documented supervisor/technical process.
+
+## 8. Escalation Record
+
+Provide:
+
+- first failure time and current time;
+- affected component and department;
+- associate/workstation and submission ID when available;
+- current status and attempt count;
+- exact error message without passwords, tokens, or full sensitive payloads;
+- actions already taken and their results.
+
+## Support Boundaries
+
+- Keep `metrics-portal` and `metrics-portal-worker` online.
+- Do not restart or delete the stopped legacy `PL-Portal` except under an approved rollback.
+- Do not disable PL database flags during normal troubleshooting.
+- Do not manually edit PostgreSQL submission or outbox rows.
+- Do not expose `.env`, database passwords, or Smartsheet tokens.
+- Use the approved release, backup, rollback, and reconciliation procedures for production changes.

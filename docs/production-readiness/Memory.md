@@ -47,6 +47,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Implemented isolated PTFE target-server Start, Rollback, and Stop orchestration for port 3103, a disposable database, separate web/worker processes, and both test sheets. Target execution and named UAT approval remain pending.
 - Implemented a five-minute local operations monitor, guarded tiered backup-retention tooling, and safe compatibility administrative audit events. The monitor and audit update are not yet deployed to the target server; retention apply remains prohibited pending policy confirmation.
 - Added the completion audit that maps every program requirement to authoritative evidence, remaining proof, execution order, and current stop conditions.
+- Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 
 ## Active Work
 
@@ -55,7 +56,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 ## Next Actions
 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
-2. Finalize the PL operator and supervisor support/SOP handoff and record the observation close decision.
+2. Obtain named acceptance of the updated PL associate and supervisor/support SOPs and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
 4. Run the isolated PTFE target-server UAT and rollback rehearsal, obtain named PTFE associate/supervisor approval, and clean the isolated environment.
 5. Install and prove the five-minute local operations monitor on the target before PTFE production cutover.
@@ -976,3 +977,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Documentation-only local branch. Production PTFE and PI routing remain disabled; PL remains on the proven durable workflow.
 - Risks/blockers: Target PTFE UAT and local monitor installation require server execution and password entry. Routed alerts, TLS/DNS, storage-policy confirmation, permanent task ownership, quarterly restore ownership, and department handoff require external decisions or named owners.
 - Exact next action: Validate and merge this reconciliation, then run the documented isolated PTFE Start action on the target server.
+
+### 2026-08-13 - PL durable-workflow SOP and support handoff package updated
+
+- Branch: `codex/pl-support-handoff` from merged completion audit `98e0534`.
+- Commit or PR: Pending in this documentation work package.
+- Phase/work package: Phase 4 PL stabilization and Phase 7 operations handoff.
+- Work completed: Replaced obsolete multi-user kiosk, hour-by-hour tracker, timer, and End Shift instructions with current PL associate and supervisor/support procedures. Documented server-workspace versus database-delivery status, automatic Smartsheet synchronization, root-cause and Spool Check rules, tab conflict recovery, sign-out safety, submission retry/resolution, daily health review, incident response, and escalation evidence. Replaced both stale HTML training pages with current concise browser-readable versions linked to the complete SOPs.
+- Files or schema changed: PL associate and supervisor SOP Markdown/HTML, PL readiness page, roadmap, index, completion audit, and program memory only. No application code, production configuration, database, Smartsheet object, PM2 process, backup, or feature flag changed.
+- Decisions made: A database-saved pending item is safe and does not require associate polling or re-entry. Supervisors retry only after the cause is corrected/confirmed and resolve only after approved reconciliation; both require reasons and remain audited. The SOP source is complete, but formal named support-handoff acceptance remains a stabilization gate.
+- Validation performed: The full local suite passed 122 tests with 119 passes and three expected database-only skips. Documentation links passed across 37 Markdown files, application inline HTML scripts parsed, the four replacement SOP files contained none of the retired action phrases, and `git diff --check` passed.
+- Deployment status: Documentation-only local branch. Production PL behavior is unchanged.
+- Risks/blockers: Final PL observation and named handoff acceptance remain; routed alerting and TLS/DNS are separate external gates.
+- Exact next action: Validate and merge the SOP package, then obtain named support acceptance while PTFE isolated server UAT proceeds.
