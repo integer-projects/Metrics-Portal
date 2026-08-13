@@ -942,3 +942,15 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Tooling only; production backup task and share contents are unchanged.
 - Risks/blockers: Company storage/retention approval and the share's snapshot/copy behavior are required before apply mode or scheduling.
 - Exact next action: Merge the retention tooling, keep apply disabled, and obtain infrastructure confirmation before any deletion is authorized.
+### 2026-08-13 - Compatibility administrative actions added to durable audit history
+
+- Branch: `codex/admin-audit-events`.
+- Commit or PR: Not committed yet.
+- Phase/work package: Phase 7 auditability hardening.
+- Work completed: Added a database audit repository and post-authorization completion middleware for configuration save/delete, password reset, and admin kiosk-lock release outcomes across PL, PTFE, and PI compatibility admin routes.
+- Files or schema changed: Audit repository/service, server integration, focused tests, product/architecture documentation, and program memory. Existing `audit_events` schema is reused; no migration is required.
+- Decisions made: Audit persistence runs after the HTTP outcome so it records success/failure without putting sensitive request bodies into the database. A post-mutation audit failure is structured-logged instead of returning a false mutation failure that could provoke an unsafe retry.
+- Validation performed: Focused tests prove safe metadata, completed-outcome capture, disabled-database no-op, and exact structured database parameters. JavaScript syntax and diff checks passed; full suite and CI are pending.
+- Deployment status: Not deployed. No Smartsheet or production database record changed.
+- Risks/blockers: Compatibility audit persistence depends on database availability; structured error logs expose a missing audit record for operational follow-up. Legacy unauthenticated compatibility flows remain temporary until each department moves to v2 sessions.
+- Exact next action: Complete full validation and clean CI, merge, then include the approved commit in the next staged server update.
