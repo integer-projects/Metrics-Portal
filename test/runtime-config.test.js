@@ -53,6 +53,26 @@ test('PL database submissions require the complete feature chain', () => {
     );
 });
 
+test('PTFE database submissions require the complete PTFE feature chain', () => {
+    assert.throws(
+        () => getRuntimeConfig({
+            DATABASE_ENABLED: 'true', DATABASE_URL: 'postgresql://example',
+            SERVER_SESSIONS_ENABLED: 'true', PL_SERVER_SESSIONS_ENABLED: 'true',
+            SERVER_WORKSPACES_ENABLED: 'true', DURABLE_SUBMISSIONS_ENABLED: 'true',
+            PTFE_DATABASE_SUBMISSIONS_ENABLED: 'true'
+        }),
+        /PTFE server sessions/
+    );
+
+    const config = getRuntimeConfig({
+        DATABASE_ENABLED: 'true', DATABASE_URL: 'postgresql://example',
+        SERVER_SESSIONS_ENABLED: 'true', PTFE_SERVER_SESSIONS_ENABLED: 'true',
+        SERVER_WORKSPACES_ENABLED: 'true', DURABLE_SUBMISSIONS_ENABLED: 'true',
+        PTFE_DATABASE_SUBMISSIONS_ENABLED: 'true'
+    });
+    assert.equal(config.features.ptfeDatabaseSubmissions, true);
+});
+
 test('production TLS verification cannot be disabled', () => {
     assert.throws(
         () => getRuntimeConfig({

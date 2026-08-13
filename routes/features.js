@@ -11,6 +11,7 @@ function createFeatureRouter(features) {
                 serverSessions: features.serverSessions,
                 serverWorkspaces: features.serverWorkspaces,
                 plDatabaseSubmissions: features.plDatabaseSubmissions,
+                ptfeDatabaseSubmissions: features.ptfeDatabaseSubmissions,
                 sessionDepartments: features.sessionDepartments
             }
         });
