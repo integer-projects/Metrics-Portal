@@ -20,7 +20,7 @@ Each phase requires:
 | 1 - Engineering foundation | Complete | PostgreSQL migrations, health endpoints, tests, and CI operational |
 | 2 - Durable submissions | Complete | Idempotent capture, worker, exact-ID delivery, restart recovery, and supervisor status implemented and proven |
 | 3 - PL migration | Complete | Floor approval, production cutover, database/Smartsheet verification, and rollback path proven |
-| 4 - PL stabilization | In progress | Healthy production observation through August 13; complete the 30-day observation and SOP/support handoff |
+| 4 - PL stabilization | In progress | Healthy production observation through August 13 and current durable-workflow SOPs complete; finish the 30-day observation and obtain support-handoff acceptance |
 | 5 - PTFE migration | In progress | Source implementation, two-destination proof, and target UAT tooling complete; run supervised server UAT and rollback next |
 | 6 - PI migration | Not started | Begins only after the reusable PTFE pattern is accepted |
 | 7 - Operations handoff | In progress | Daily backup/restore, five-minute local monitor, guarded retention, and admin-audit source implemented; install/verify the monitor, route alerts, then close TLS/DNS, retention policy, ownership, and drill cadence |
