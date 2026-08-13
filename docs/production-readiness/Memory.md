@@ -50,7 +50,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 - The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
-- The corrected PTFE target Start at `8239cbb` is running on isolated port 3103. It passed empty-sheet guards, disposable migrations, one-attempt Master Log and Job x Job outbox delivery, full synthetic cleanup, web/worker readiness, and production-port preservation. Browser UAT, rollback, and final Stop cleanup remain.
+- The corrected PTFE target Start at `8239cbb` is running on isolated port 3103. It passed empty-sheet guards, disposable migrations, one-attempt Master Log and Job x Job outbox delivery, full synthetic cleanup, web/worker readiness, and production-port preservation. The first controlled browser job succeeded and exposed one bounded usability issue: Start quantity and End quantity did not select their default zero for replacement. The source fix now applies the existing operator-entry behavior to both fields. Browser regression confirmation, remaining UAT, rollback, and final Stop cleanup remain.
 
 ## Active Work
 
@@ -93,7 +93,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - PM2 showed `metrics-portal` and `metrics-portal-worker` online. The latest ten PL job/event rows were `submitted` in both submission and outbox state with Smartsheet remote row IDs; the stuck-item query returned zero rows.
 - The scheduled backup task last ran August 13 at 1:00 AM with result `0` and the next run scheduled for August 14 at 1:00 AM.
 - Local Markdown links pass validation and the production dependency audit reports zero vulnerabilities.
-- PTFE focused model, routing, submission-gate, workspace-transition, page-contract, two-destination delivery, outbox, UAT-orchestration, and browser checks pass. The rendered page completed job, server-owned shift append, refresh persistence, and event workflows without console errors.
+- PTFE focused model, routing, submission-gate, workspace-transition, page-contract, two-destination delivery, outbox, UAT-orchestration, and browser checks pass. The rendered page completed job, server-owned shift append, refresh persistence, and event workflows without console errors. Focused page-contract coverage now requires Time worked, Start quantity, and End quantity to replace a displayed default zero on keyboard focus or mouse click.
 - Both dedicated PTFE test sheets passed exact-ID insert, replay-without-duplicate, mapped-value verification, and synthetic cleanup. The target-server isolated database/browser/rollback rehearsal remains the next evidence gate.
 - The full administrative-audit branch validation passed 122 tests with three expected database-only skips, JavaScript and inline-HTML checks, PowerShell parsing, Markdown links, zero production dependency vulnerabilities, and GitHub Actions before merge as `471f55e`.
 - The corrected PTFE target Start passed two-destination database/outbox proof and launched the isolated portal/worker at port 3103 without changing live production ports. Its proof rows were removed from both Smartsheets and PostgreSQL before browser UAT.
@@ -1033,3 +1033,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: PTFE UAT is active only at `http://127.0.0.1:3103`; live production remains unchanged. The lockfile maintenance is local until merge.
 - Risks/blockers: Browser UAT, named PTFE approval, rollback rehearsal, and final Stop cleanup remain. The old UAT checkout still reports the already-understood advisory until it is later recreated from a commit containing this lockfile change.
 - Exact next action: Merge the lockfile maintenance, then sign in to port 3103 as `test-ptfe` and execute the written browser acceptance sequence.
+
+### 2026-08-13 - PTFE quantity entry zero replacement corrected
+
+- Branch: `codex/ptfe-quantity-entry` from merged source `d32542f`.
+- Commit or PR: Pending in this focused browser-usability work package.
+- Phase/work package: Phase 5 PTFE isolated browser UAT.
+- Work completed: Reviewed the first controlled PTFE job rehearsal. Confirmed the existing zero-replacement behavior was limited to Time worked, then applied it to Start quantity and End quantity. Hardened the shared behavior so both keyboard focus and mouse clicks preserve selection of the default zero before operator typing.
+- Files or schema changed: Isolated PTFE page markup, PTFE browser event handling, focused page-contract test, and program memory only. No database schema, Smartsheet object, production configuration, feature flag, PM2 process, or live portal changed.
+- Decisions made: Reuse one explicit `data-replace-zero` behavior for all operator-entered PTFE numeric fields that display a default zero. Preserve calculated Pull start quantities and all existing workspace autosave behavior.
+- Validation performed: Six focused PTFE page-contract tests passed. The full suite passed 126 tests with 123 passes and three expected database-only skips. JavaScript syntax checked 83 files, inline scripts parsed in nine HTML files, PowerShell parsing and 37 Markdown link checks passed, the production dependency audit reported zero vulnerabilities, and `git diff --check` passed.
+- Deployment status: Source-only change. The running isolated UAT checkout remains at `8239cbb` until the fix is merged and deliberately refreshed; production PTFE remains unchanged.
+- Risks/blockers: The browser regression cannot be confirmed on the target until the UAT checkout is refreshed. Remaining browser scenarios, named approval, rollback rehearsal, and final cleanup still follow.
+- Exact next action: Complete local validation, merge the focused fix, refresh the isolated UAT checkout safely, and repeat Start/End quantity entry by both tab and mouse before continuing browser UAT.

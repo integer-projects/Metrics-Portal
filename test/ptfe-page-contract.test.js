@@ -46,3 +46,12 @@ test('PTFE page exposes compatibility themes, centered alerts, shift status, and
     assert.match(html, /id="shiftTable"/);
     assert.match(app, /Database saved · Smartsheet synced/);
 });
+
+test('PTFE operator quantity fields replace their default zero on focus or click', () => {
+    ['timeWorked', 'startQuantity', 'endQuantity'].forEach((id) => {
+        assert.match(html, new RegExp(`id="${id}"[^>]*data-replace-zero`));
+    });
+    assert.match(app, /function selectZeroValue\(input\)/);
+    assert.match(app, /input\.addEventListener\('focus', \(\) => selectZeroValue\(input\)\)/);
+    assert.match(app, /input\.addEventListener\('mouseup'/);
+});
