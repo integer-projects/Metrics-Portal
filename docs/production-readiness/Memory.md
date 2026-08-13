@@ -50,7 +50,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 - The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
-- The corrected PTFE target environment is running on isolated port 3103 from `C:\serverdata\staging\metrics-portal-ptfe-uat`. Empty-sheet guards, disposable migrations, one-attempt Master Log and Job x Job outbox delivery, full synthetic cleanup, web/worker readiness, and production-port preservation passed. The apparent failure of three quantity-entry revisions was a deployment-path error: refresh commands updated the old PL UAT checkout at `metrics-portal-uat`, while port 3103 continued serving the unchanged PTFE checkout. The source now intentionally matches the proven PL Time worked behavior for PTFE Time worked, Start quantity, and End quantity, including hidden spinner arrows. Correct-checkout browser confirmation, remaining UAT, rollback, and final Stop cleanup remain.
+- The corrected PTFE target environment is running on isolated port 3103 from `C:\serverdata\staging\metrics-portal-ptfe-uat`. Empty-sheet guards, disposable migrations, one-attempt Master Log and Job x Job outbox delivery, full synthetic cleanup, web/worker readiness, and production-port preservation passed. The apparent failure of three quantity-entry revisions was a deployment-path error: refresh commands updated the old PL UAT checkout at `metrics-portal-uat`, while port 3103 continued serving the unchanged PTFE checkout. After the correct PTFE checkout was updated to `5d8d191`, browser UAT confirmed Time worked, Start quantity, and End quantity match the proven PL behavior and the spinner arrows are removed. Remaining browser UAT, rollback, and final Stop cleanup remain.
 
 ## Active Work
 
@@ -97,6 +97,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Both dedicated PTFE test sheets passed exact-ID insert, replay-without-duplicate, mapped-value verification, and synthetic cleanup. The target-server isolated database/browser/rollback rehearsal remains the next evidence gate.
 - The full administrative-audit branch validation passed 122 tests with three expected database-only skips, JavaScript and inline-HTML checks, PowerShell parsing, Markdown links, zero production dependency vulnerabilities, and GitHub Actions before merge as `471f55e`.
 - The corrected PTFE target Start passed two-destination database/outbox proof and launched the isolated portal/worker at port 3103 without changing live production ports. Its proof rows were removed from both Smartsheets and PostgreSQL before browser UAT.
+- Target Edge browser acceptance confirmed the PTFE quantity-entry controls replace the default zero correctly when clicked or reached by keyboard, and their increment/decrement arrows are absent after loading commit `5d8d191` from the actual PTFE UAT worktree.
 - Release PR #9 GitHub Actions run 29741738237 passed against PostgreSQL 18 on July 20, 2026 after refreshing the branch against current `main`.
 
 ## Deployment State
@@ -1085,3 +1086,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Source-only until merge. The live PTFE UAT process remains unchanged on port 3103, and production PTFE remains unchanged.
 - Risks/blockers: The corrected PTFE checkout must be refreshed and its served HTML, JavaScript, and CSS must return positive matches before browser confirmation. Remaining UAT scenarios, named approval, rollback rehearsal, and final cleanup still follow.
 - Exact next action: Validate and merge the standardized implementation, confirm the PTFE state repository, update that exact worktree, verify served assets, then repeat the Edge entry check.
+
+### 2026-08-13 - PTFE numeric-entry target regression passed
+
+- Branch: `codex/ptfe-quantity-uat-evidence` from merge `5d8d191`.
+- Commit or PR: Pending documentation evidence commit.
+- Phase/work package: Phase 5 PTFE isolated browser UAT.
+- Work completed: Johnny updated the state-recorded PTFE UAT checkout rather than the old PL checkout and confirmed in Edge that Time worked, Start quantity, and End quantity now replace the default zero correctly. The spinner arrows were also removed as requested.
+- Files or schema changed: Program memory only. No application code, database schema, Smartsheet object, production configuration, feature flag, PM2 process, or live production portal changed in this evidence update.
+- Decisions made: Future PTFE UAT refreshes must resolve the repository from `metrics-portal-ptfe-uat-runtime\state.json` before checkout changes. The PL-compatible numeric-entry implementation is accepted for continued PTFE UAT.
+- Validation performed: Target browser confirmation on isolated port 3103 using the PTFE UAT checkout at merge `5d8d191`; prior local and CI validation passed 126 tests with 123 passes and three expected database-only skips.
+- Deployment status: Isolated PTFE UAT only. Production PTFE remains unchanged and disabled.
+- Risks/blockers: Event capture, refresh persistence, duplicate-tab conflict, low-yield Pull behavior, End Shift/restart recovery, rollback, named approval, and final cleanup remain.
+- Exact next action: Capture a controlled PTFE event, confirm pending-to-synced delivery and Events tracker persistence, then continue conflict and recovery scenarios.
