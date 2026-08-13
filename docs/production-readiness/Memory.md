@@ -49,6 +49,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Added the completion audit that maps every program requirement to authoritative evidence, remaining proof, execution order, and current stop conditions.
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
+- The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
 
 ## Active Work
 
@@ -1004,3 +1005,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Local source only. The running target is unchanged until a controlled pull/restart.
 - Risks/blockers: The target operations monitor remains uninstalled. Packaged deployments without `.git` must set `APP_COMMIT`. Log retention duration and rotation policy still require an approved period.
 - Exact next action: Validate and merge the release-identity slice, then include it in the next target pull and compare health commit with the approved merge.
+
+### 2026-08-13 - PTFE target UAT destination-safety mismatch corrected
+
+- Branch: `codex/ptfe-uat-destination-safety-fix` from merged release-identity state `e9fc58d`.
+- Commit or PR: Pending in this hotfix work package.
+- Phase/work package: Phase 5 PTFE isolated target-server UAT.
+- Work completed: Reviewed the first target Start output. Confirmed both dedicated test sheets were empty, production destinations were untouched, the isolated PostgreSQL database was created, and all three migrations passed. Diagnosed the proof failure: the orchestrator replaced `DEPT_PTFE_*` runtime destinations with test IDs before the proof reused those names to identify production IDs, causing its safety guard to reject the intended test sheets. Added protected dedicated production-ID variables, set them before runtime substitution, and updated the outbox proof to prefer them while preserving standalone fallback behavior.
+- Files or schema changed: PTFE Windows UAT orchestration, PTFE outbox proof, focused static ordering/safety tests, PTFE work package, completion audit, and program memory. No production configuration, production database, production Smartsheet, PM2 process, or feature flag changed. The failed isolated database and state file remain intentionally recoverable on the target until guarded Stop runs.
+- Decisions made: Never weaken the production-sheet refusal. Preserve original production IDs under separate process-scoped names before substituting either UAT destination. Cleanup must use the failed checkout's Stop action before replacing its worktree.
+- Validation performed: Five focused PTFE destination/UAT safety tests passed. The full suite passed 125 tests with 122 passes and three expected database-only skips. JavaScript syntax checked 83 files, PowerShell syntax passed, inline application scripts parsed, local links passed across 37 Markdown files, the production dependency audit reported zero vulnerabilities, and `git diff --check` passed.
+- Deployment status: Fix is local only. The PTFE UAT portal never started; production remained unchanged. The target retains a disposable `metrics_portal_ptfe_uat` database and initializing state from the failed rehearsal.
+- Risks/blockers: Johnny must enter the PostgreSQL superuser password once for guarded cleanup and three database passwords for the corrected Start. Named PTFE browser UAT approval still follows successful startup.
+- Exact next action: Validate and merge the fix, run Stop from the retained `26529e8` checkout, remove that worktree through Git, recreate it at the fixed commit, and rerun Start.

@@ -63,6 +63,8 @@ The Start action:
 4. Enables only the PTFE database/session chain, starts the isolated web and worker processes, and waits for readiness.
 5. Leaves production PL/PTFE/PI processes, flags, databases, and Smartsheets unchanged.
 
+The database/outbox proof retains the original production destination IDs in dedicated safety variables before replacing the runtime PTFE destinations with the two test sheets. This lets the proof continue refusing either production sheet while delivering only to the isolated sheets. If initialization fails after the state file is written, do not delete the worktree or database manually; run the guarded Stop action from that same checkout first.
+
 Rollback stops the isolated full-mode processes and relaunches port `3103` with database/session/workspace flags disabled so new `test-ptfe` logins use the compatibility page. Stop clears both test sheets, drops only the isolated database, removes the UAT state, and rechecks the live portal process.
 
 ```powershell

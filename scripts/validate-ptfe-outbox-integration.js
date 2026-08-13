@@ -29,8 +29,8 @@ async function main() {
     const masterId = getRequiredEnv('PTFE_INTEGRATION_MASTER_LOG_SHEET_ID');
     const jobId = getRequiredEnv('PTFE_INTEGRATION_JOB_LOG_SHEET_ID');
     const productionIds = [
-        getRequiredEnv('DEPT_PTFE_MASTER_LOG_SHEET_ID'),
-        getRequiredEnv('DEPT_PTFE_JOB_LOG_SHEET_ID')
+        process.env.PTFE_PRODUCTION_MASTER_LOG_SHEET_ID || getRequiredEnv('DEPT_PTFE_MASTER_LOG_SHEET_ID'),
+        process.env.PTFE_PRODUCTION_JOB_LOG_SHEET_ID || getRequiredEnv('DEPT_PTFE_JOB_LOG_SHEET_ID')
     ];
     if (!databaseUrl) throw new Error('DATABASE_URL is required.');
     if (masterId === jobId || productionIds.includes(masterId) || productionIds.includes(jobId)) {
