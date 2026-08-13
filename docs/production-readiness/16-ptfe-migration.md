@@ -8,7 +8,7 @@ PL production behavior is not changed by this work package. PTFE remains on the 
 
 ## Implementation Status
 
-The first two Phase 5 implementation slices are complete on the PTFE migration branch:
+The repository implementation slices and non-production destination proof are complete on merged `main`:
 
 - `PTFE_DATABASE_SUBMISSIONS_ENABLED` is an independent, disabled-by-default runtime flag.
 - Runtime validation prevents PTFE database routing unless durable submissions, server workspaces, and PTFE server sessions are all enabled.
@@ -26,7 +26,7 @@ The first two Phase 5 implementation slices are complete on the PTFE migration b
 - The guarded production expansion utility preflights both sheets before changing either one, defaults to dry-run, requires an exact confirmation phrase to apply, and adds only a missing text/number `Submission ID` column.
 - The live read-only audit confirmed both production destinations match their preserved writable contracts and are missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes.
 
-These slices do not route any production PTFE traffic. Applying the guarded `Submission ID` expansion in an approved window, isolated database/outbox and browser UAT, rollback tooling, named approvals, and the cutover gates below remain required.
+These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, rollback rehearsal, named approvals, applying the guarded `Submission ID` expansion in an approved window, and the cutover gates below remain required.
 
 ## Dedicated Integration Destinations
 
