@@ -65,6 +65,8 @@ The Start action:
 
 The database/outbox proof retains the original production destination IDs in dedicated safety variables before replacing the runtime PTFE destinations with the two test sheets. This lets the proof continue refusing either production sheet while delivering only to the isolated sheets. If initialization fails after the state file is written, do not delete the worktree or database manually; run the guarded Stop action from that same checkout first.
 
+The corrected target Start passed on August 13, 2026 at merge `8239cbb`: the prior failed state was removed, both test sheets were confirmed empty, all migrations applied to the disposable database, one Master Log and one Job x Job submission each converged through the outbox in one attempt, both synthetic Smartsheet rows and database rows were removed, the isolated portal and worker became ready on port 3103, and live production ports remained unchanged. Browser acceptance, rollback, and final Stop cleanup remain.
+
 Rollback stops the isolated full-mode processes and relaunches port `3103` with database/session/workspace flags disabled so new `test-ptfe` logins use the compatibility page. Stop clears both test sheets, drops only the isolated database, removes the UAT state, and rechecks the live portal process.
 
 ```powershell

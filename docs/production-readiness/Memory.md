@@ -50,6 +50,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 - The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
+- The corrected PTFE target Start at `8239cbb` is running on isolated port 3103. It passed empty-sheet guards, disposable migrations, one-attempt Master Log and Job x Job outbox delivery, full synthetic cleanup, web/worker readiness, and production-port preservation. Browser UAT, rollback, and final Stop cleanup remain.
 
 ## Active Work
 
@@ -60,7 +61,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
 2. Obtain named acceptance of the updated PL associate and supervisor/support SOPs and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
-4. Run the isolated PTFE target-server UAT and rollback rehearsal, obtain named PTFE associate/supervisor approval, and clean the isolated environment.
+4. Complete browser acceptance in the running isolated PTFE environment, rehearse rollback, obtain named PTFE associate/supervisor approval, and clean the isolated environment.
 5. Install and prove the five-minute local operations monitor on the target before PTFE production cutover.
 6. After UAT approval, add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
 7. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
@@ -95,6 +96,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - PTFE focused model, routing, submission-gate, workspace-transition, page-contract, two-destination delivery, outbox, UAT-orchestration, and browser checks pass. The rendered page completed job, server-owned shift append, refresh persistence, and event workflows without console errors.
 - Both dedicated PTFE test sheets passed exact-ID insert, replay-without-duplicate, mapped-value verification, and synthetic cleanup. The target-server isolated database/browser/rollback rehearsal remains the next evidence gate.
 - The full administrative-audit branch validation passed 122 tests with three expected database-only skips, JavaScript and inline-HTML checks, PowerShell parsing, Markdown links, zero production dependency vulnerabilities, and GitHub Actions before merge as `471f55e`.
+- The corrected PTFE target Start passed two-destination database/outbox proof and launched the isolated portal/worker at port 3103 without changing live production ports. Its proof rows were removed from both Smartsheets and PostgreSQL before browser UAT.
 - Release PR #9 GitHub Actions run 29741738237 passed against PostgreSQL 18 on July 20, 2026 after refreshing the branch against current `main`.
 
 ## Deployment State
@@ -1018,3 +1020,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Fix is local only. The PTFE UAT portal never started; production remained unchanged. The target retains a disposable `metrics_portal_ptfe_uat` database and initializing state from the failed rehearsal.
 - Risks/blockers: Johnny must enter the PostgreSQL superuser password once for guarded cleanup and three database passwords for the corrected Start. Named PTFE browser UAT approval still follows successful startup.
 - Exact next action: Validate and merge the fix, run Stop from the retained `26529e8` checkout, remove that worktree through Git, recreate it at the fixed commit, and rerun Start.
+
+### 2026-08-13 - Corrected PTFE target environment started and development audit cleared
+
+- Branch: `codex/development-audit-fix` from corrected UAT merge `8239cbb`.
+- Commit or PR: Pending in this maintenance work package.
+- Phase/work package: Phase 5 PTFE target UAT and dependency maintenance.
+- Work completed: Verified guarded cleanup removed the failed isolated database/state with both test sheets empty and live portals unchanged. Verified the corrected checkout at `8239cbb` recreated and migrated the disposable database, committed two proof captures, delivered Master Log and Job x Job rows in one attempt each, removed two synthetic Smartsheet rows and all proof database rows, and launched the isolated web/worker at port 3103 without changing production. Updated the development-only `brace-expansion` lockfile resolution from 5.0.6 to 5.0.9 to clear the install-time advisory.
+- Files or schema changed: Package lock and current production-readiness evidence only. No production code path, database, Smartsheet, PM2 process, backup, or feature flag changed. The isolated UAT database/web/worker intentionally remain active for browser acceptance.
+- Decisions made: The advisory was development-only and did not invalidate the running UAT or production dependencies. Clear it in source before the next checkout refresh; do not run an ad hoc server-side audit fix.
+- Validation performed: Clean `npm ci` audited all 160 packages with zero vulnerabilities on Node 24.14.0. The full suite passed 125 tests with 122 passes and three expected database-only skips; JavaScript syntax, documentation links, full dependency audit, and `git diff --check` passed.
+- Deployment status: PTFE UAT is active only at `http://127.0.0.1:3103`; live production remains unchanged. The lockfile maintenance is local until merge.
+- Risks/blockers: Browser UAT, named PTFE approval, rollback rehearsal, and final Stop cleanup remain. The old UAT checkout still reports the already-understood advisory until it is later recreated from a commit containing this lockfile change.
+- Exact next action: Merge the lockfile maintenance, then sign in to port 3103 as `test-ptfe` and execute the written browser acceptance sequence.
