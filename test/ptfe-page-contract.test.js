@@ -68,3 +68,13 @@ test('PTFE multiplier replaces its current value and mouse wheel cannot change f
     assert.match(app, /event\.preventDefault\(\);\s+input\.blur\(\)/);
     assert.match(app, /\{ passive: false \}/);
 });
+
+test('PTFE submission status updates automatically while Smartsheet delivery is pending', () => {
+    assert.match(app, /let submissionPollTimer = null/);
+    assert.match(app, /function submissionNeedsPolling\(submission\)/);
+    assert.match(app, /!\['submitted', 'needs_review'\]\.includes\(submission\.syncStatus\)/);
+    assert.match(app, /setTimeout\(\(\) => refreshSubmission\(\{ silent: true \}\), 2000\)/);
+    assert.match(app, /renderSubmission\(workspace\.formData\.lastSubmission\);\s+scheduleSubmissionRefresh\(\)/);
+    assert.match(app, /document\.addEventListener\('visibilitychange'/);
+    assert.match(app, /if \(!silent\) showAlert\('Status refresh failed'/);
+});
