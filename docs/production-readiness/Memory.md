@@ -906,3 +906,15 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Not deployed. PTFE routing remains disabled. The two empty non-production Smartsheet objects are retained for UAT.
 - Risks/blockers: The database/outbox command requires an isolated migrated PostgreSQL database. Windows PTFE UAT and rollback orchestration, named approvals, and production `Submission ID` expansion remain open.
 - Exact next action: Validate the two-destination outbox proof inside the isolated PTFE UAT database, then run browser parity and rollback rehearsals.
+### 2026-08-13 - PTFE isolated Windows UAT orchestration implemented
+
+- Branch: `codex/ptfe-uat-tooling`.
+- Commit or PR: Not committed yet.
+- Phase/work package: Phase 5 PTFE target-server UAT and rollback tooling.
+- Work completed: Added PTFE-specific Start, Rollback, and Stop orchestration using a separate server checkout, port 3103, isolated database, two integration sheets, PTFE-only feature chain, hidden web/worker processes, recoverable initialization state, automatic two-destination database/outbox proof, compatibility rollback, and complete cleanup.
+- Files or schema changed: Added the Windows PTFE UAT script and focused static contract tests; updated PTFE migration instructions, playbook status, and program memory. No production configuration, database, or sheet changed.
+- Decisions made: Production port 3002 is required and must retain its process ID; legacy port 3000 is optional because its PM2 process is intentionally stopped. Initialization writes state before the outbox proof so a failed rehearsal remains safely removable with Stop.
+- Validation performed: PowerShell parsed successfully, repository PowerShell checks passed, and focused tests verify isolation, flags, both destination substitutions, outbox proof, rollback, cleanup, and live-process protection.
+- Deployment status: Not deployed. PTFE routing remains disabled.
+- Risks/blockers: Target-server execution requires physical password entry for PostgreSQL superuser, migration, and application roles. Named PTFE associate and supervisor approval are still required after browser UAT.
+- Exact next action: Merge the UAT tooling, prepare the server worktree at the approved commit, then have Johnny enter the three database passwords while Start creates and validates the isolated port 3103 environment.

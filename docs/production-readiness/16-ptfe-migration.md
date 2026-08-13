@@ -37,7 +37,7 @@ Two empty, clearly named non-production sheets now isolate PTFE delivery testing
 
 Their IDs are supplied only as process-scoped `PTFE_INTEGRATION_MASTER_LOG_SHEET_ID` and `PTFE_INTEGRATION_JOB_LOG_SHEET_ID` values; they are not substituted for production IDs in `.env`. The creation command defaults to a no-change dry run and requires `CREATE EMPTY PTFE INTEGRATION SHEETS` to create both sheets. The sheet guard refuses either production ID, requires two distinct sheets, verifies both exact contracts, and either requires them to be empty or clears only their rows with `CLEAR PTFE UAT TEST SHEETS`.
 
-The controlled delivery proof passed on both sheets: it inserted one representative row, waited for exact-ID search indexing, replayed the same permanent ID without a second insert, verified mapped values, deleted the synthetic row, and confirmed both sheets empty afterward. The companion database/outbox proof is intended for an isolated migrated PostgreSQL database and cleans its two synthetic Smartsheet rows and database records after verification.
+The controlled delivery proof passed on both sheets: it inserted one representative row, waited for exact-ID search indexing, replayed the same permanent ID without a second insert, verified mapped values, deleted the synthetic row, and confirmed both sheets empty afterward. The companion database/outbox proof runs automatically while the Windows PTFE UAT environment is initializing. It verifies separate Master Log and Job x Job captures through PostgreSQL and the outbox, then cleans its two synthetic Smartsheet rows and database records before browser UAT begins.
 
 ```powershell
 npm run create:ptfe-integration-sheets
@@ -49,6 +49,42 @@ npm run validate:ptfe-uat-sheets
 npm run validate:ptfe-integration-delivery -- --confirmation="WRITE AND DELETE PTFE INTEGRATION ROWS"
 npm run validate:ptfe-outbox-integration -- --confirmation="VALIDATE PTFE DATABASE OUTBOX"
 npm run cleanup:ptfe-uat-sheets -- --confirmation="CLEAR PTFE UAT TEST SHEETS"
+```
+
+## Windows UAT And Rollback
+
+`scripts/windows/Manage-PtfeUatEnvironment.ps1` manages the complete isolated PTFE rehearsal on the target server. It uses a separate checkout, port `3103`, database `metrics_portal_ptfe_uat`, cookie name, state directory, web process, worker process, and both dedicated test destinations. It requires the live Metrics Portal on port `3002` and verifies its process remains unchanged. The stopped legacy port `3000` is optional.
+
+The Start action:
+
+1. Refuses either production sheet ID and requires two distinct, empty, contract-ready test sheets.
+2. Creates and migrates the isolated database with separate migration/runtime credentials.
+3. Grants runtime access, records recoverable initialization state, and proves both database/outbox destinations with automatic synthetic cleanup.
+4. Enables only the PTFE database/session chain, starts the isolated web and worker processes, and waits for readiness.
+5. Leaves production PL/PTFE/PI processes, flags, databases, and Smartsheets unchanged.
+
+Rollback stops the isolated full-mode processes and relaunches port `3103` with database/session/workspace flags disabled so new `test-ptfe` logins use the compatibility page. Stop clears both test sheets, drops only the isolated database, removes the UAT state, and rechecks the live portal process.
+
+```powershell
+$uatRepo = 'C:\serverdata\staging\metrics-portal-ptfe-uat'
+
+& "$uatRepo\scripts\windows\Manage-PtfeUatEnvironment.ps1" `
+    -Action Start `
+    -MasterIntegrationSheetId '5442683404242820' `
+    -JobIntegrationSheetId '8326444705861508' `
+    -Confirmation 'MANAGE ISOLATED PTFE UAT'
+
+& "$uatRepo\scripts\windows\Manage-PtfeUatEnvironment.ps1" `
+    -Action Rollback `
+    -MasterIntegrationSheetId '5442683404242820' `
+    -JobIntegrationSheetId '8326444705861508' `
+    -Confirmation 'MANAGE ISOLATED PTFE UAT'
+
+& "$uatRepo\scripts\windows\Manage-PtfeUatEnvironment.ps1" `
+    -Action Stop `
+    -MasterIntegrationSheetId '5442683404242820' `
+    -JobIntegrationSheetId '8326444705861508' `
+    -Confirmation 'MANAGE ISOLATED PTFE UAT'
 ```
 
 ## Verified Compatibility Baseline
@@ -208,7 +244,7 @@ Before PTFE database routing can be enabled:
 
 1. Name a PTFE associate representative and supervisor/lead.
 2. Run the compatibility parity script across every active PTFE sequence plus an event and End Shift.
-3. Run isolated-browser refresh, duplicate-tab, retry, sign-out, partial End Shift, and worker-restart scenarios.
+3. Run the port `3103` isolated-browser refresh, duplicate-tab, retry, sign-out, partial End Shift, and worker-restart scenarios.
 4. Confirm both test destinations contain the expected rows and permanent IDs, then clean all synthetic rows.
 5. Rehearse flag rollback to the compatibility PTFE page without deleting captured database rows.
 6. Add `Submission ID` to both production destinations during an approved window and revalidate.
