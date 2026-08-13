@@ -43,20 +43,23 @@ Read and maintain these documents in order:
 14. [Windows Operations Tooling](13-windows-operations-tooling.md) - preflight, verified backup, health smoke tests, and manual server gates.
 15. [Target Server Bootstrap](14-target-server-bootstrap.md) - verified host baseline, PostgreSQL installation, roles, first migration, and stop conditions.
 16. [Precision Liner UAT and Rollback](15-pl-uat-and-rollback.md) - isolated browser acceptance, rollback rehearsal, cleanup, and sign-off record.
-17. [Program Memory](Memory.md) - current state, completed work, open decisions, deployment status, and session-to-session handoff.
+17. [PTFE Migration Work Package](16-ptfe-migration.md) - verified compatibility contract, durable two-destination design, validation, UAT, and cutover gates.
+18. [Program Memory](Memory.md) - current state, completed work, open decisions, deployment status, and session-to-session handoff.
 
 `AGENTS.md` contains the scoped enforcement instructions for coding agents working from this playbook.
 
-## Current Baseline
+## Current Production Baseline
 
-- One Node/Express service runs under PM2 on a Windows server computer.
-- PL, PTFE, and PI production interfaces are combined in `public/index.html`.
-- Department admin interfaces are separate HTML files.
-- Browser `localStorage` holds substantial active-work state.
-- Production submissions are sent synchronously to Smartsheet.
-- Smartsheet currently acts as both operational destination and practical system of record.
-- Automated tests and production monitoring are limited.
-- Timeout, refresh, shared-tablet, and retry behavior have caused uncertainty and duplicate submissions.
+As of August 13, 2026:
+
+- The Metrics Portal web process runs under PM2 as `metrics-portal` on port 3002.
+- The PL synchronization worker runs separately under PM2 as `metrics-portal-worker`.
+- PL uses the isolated `/pl/` page, PostgreSQL-backed sessions and workspaces, durable database capture, and asynchronous delivery to the production PL Smartsheet master log.
+- PTFE and PI continue using the combined compatibility page and synchronous direct-Smartsheet submission paths until their migration phases.
+- PostgreSQL 18.4 is local-only on the application server and uses separate migration, runtime, and backup roles.
+- A daily 1:00 AM off-server database backup task is active; backup integrity and isolated restoration have been proven.
+- The retired `PL-Portal` PM2 process is stopped but retained temporarily as a rollback artifact.
+- PL production health, real job/event delivery, outbox convergence, and backup scheduling have passed post-cutover checks.
 
 ## Target Outcome
 
@@ -95,9 +98,10 @@ A department is production ready only when all of the following are true:
 | Architecture | Approved | Decisions approved and prerequisites confirmed |
 | Foundation | Complete | Database, migrations, health checks, and CI operational |
 | Durable submissions | Complete | CI, target database/outbox proof, exact-ID delivery validation, and restart/retry tests passed |
-| PL migration | In progress | PL UAT, rollback rehearsal, cleanup, backup, production destination expansion, extended browser/database checks, and staged production code deployment passed; PL database cutover remains separate |
+| PL migration | Complete | PL UAT and sign-off, rollback rehearsal, database cutover, production job/event delivery, post-cutover health checks, and legacy process stop passed |
+| PL stabilization | In progress | No stuck production submissions or reported issues through the August 13 review; 30-day observation and final SOP/support handoff remain |
 | PTFE migration | Not started | PTFE user acceptance and cutover approval |
 | PI migration | Not started | PI user acceptance and cutover approval |
-| Operations handoff | In progress | PostgreSQL bootstrap, manual and scheduled verified backups, restore drill, and preflight baseline passed; alerting/TLS/support handoff pending |
+| Operations handoff | In progress | PostgreSQL bootstrap, daily verified backups, restore drill, production health checks, and PM2 worker operation passed; alert routing, TLS/DNS, quarterly drill ownership, and support handoff remain |
 
 Update this table when a phase changes state. Allowed states are `Draft`, `Approved`, `In progress`, `Blocked`, and `Complete`.

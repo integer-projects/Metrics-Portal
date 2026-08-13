@@ -39,7 +39,7 @@ DATABASE_ENABLED=true
 DURABLE_SUBMISSIONS_ENABLED=true
 ```
 
-This gate must remain false in production until the target database is migrated, the required Smartsheet columns exist, and a controlled account passes capture and delivery validation.
+This gate remains false until the target database is migrated, the department's required Smartsheet columns exist, and controlled capture/delivery validation passes. It is enabled in production for PL as of August 3, 2026. PTFE and PI remain outside the durable path until their migration gates pass.
 
 ## Outbox Worker
 
@@ -70,7 +70,7 @@ Every destination sheet must contain a writable text/number column titled exactl
 Submission ID
 ```
 
-Do not enable the worker until that column has been added to the PL, PTFE, and PI master logs and the PTFE and PI Job x Job logs. The worker refuses delivery and moves the record to `needs_review` when the column is missing.
+Do not enable a department's database-submission path until `Submission ID` has been added to every destination used by that department. PL's production destination passed this contract before cutover. PTFE and PI master logs and Job x Job logs remain future phase prerequisites; they do not block the already-enabled PL worker. The worker refuses delivery and moves the record to `needs_review` when the selected destination lacks the column.
 
 The worker uses Smartsheet's sheet-search operation for the exact submission ID and verifies the matching row's cell before deciding that a prior uncertain request was accepted.
 
@@ -101,3 +101,5 @@ Automated coverage includes:
 - Rate-limit, authentication, mapping, retry exhaustion, and connection classification.
 - Supervisor authorization and department isolation.
 - Database transaction rollback and migration readiness.
+
+Production PL evidence on August 13 showed the latest ten job/event submissions in `submitted` submission and outbox states, each with a Smartsheet remote row ID, and zero stuck PL items.

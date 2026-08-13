@@ -7,12 +7,12 @@ These scripts are intended to be run locally on the Windows application server f
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows/Test-ProductionPrerequisites.ps1 `
   -BackupRoot 'X:\MetricsPortalBackups' `
-  -BaseUrl 'http://127.0.0.1:3002'
+  -BaseUrl 'http://10.15.3.47:3002'
 ```
 
 The preflight checks required commands, `.env`, an existing backup destination, free disk, clean Git state, current commit, application identity, and application liveness. `BaseUrl` is mandatory so a host running multiple Node portals cannot silently validate the wrong process. It does not print environment values.
 
-When the live production checkout still predates the v2 health endpoints, the prerequisite script may report application liveness as not reachable even though the root Metrics Portal page is serving correctly. In that pre-release state, verify the listener and root-page identity with `curl http://127.0.0.1:3002/` and record the expected `/api/v2/health` 404. Full health acceptance remains a post-deployment gate after the approved release code is on the live process path.
+The production service is currently bound to its server address rather than loopback, so health checks use `http://10.15.3.47:3002`. The root title and `/api/v2/health` endpoint must both identify the Metrics Portal; a PM2 `online` label alone is insufficient.
 
 ## Verified Database Backup
 
@@ -24,7 +24,7 @@ The backup command uses PostgreSQL custom format, verifies the archive with `pg_
 
 For a scheduled task, provide `-EnvironmentFile 'C:\path\to\.env'`; the script reads only `DATABASE_URL` and never prints it. The task identity must have read access to that file and write access to the backup destination.
 
-Scheduling status: the script is production-ready, has been proven manually, and the Windows Task Scheduler job `Metrics Portal PostgreSQL Backup` was registered and verified on July 23, 2026. Before PL database cutover, rerun `Test-BackupFreshness.ps1` and confirm the latest scheduled task result is successful. Do not treat an old manual backup as proof that recurring backups are still active.
+Scheduling status: the Windows Task Scheduler job `Metrics Portal PostgreSQL Backup` was registered and verified on July 23, 2026 and continued running after PL cutover. The August 13 run returned result `0`. Continue checking both task result and `Test-BackupFreshness.ps1`; do not treat an old manual backup as proof that recurring backups are still active.
 
 Verify backup age and integrity independently:
 
@@ -48,10 +48,12 @@ The drill refuses a nonempty target, refuses a target without the `_restore_dril
 ## Health Smoke Test
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows/Test-PortalHealth.ps1 -BaseUrl 'https://metrics-portal.internal'
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows/Test-PortalHealth.ps1 -BaseUrl 'http://10.15.3.47:3002'
 ```
 
 Run after migrations and PM2 restart. The script first proves the root page title contains `Metrics Portal`, preventing the old PL portal from satisfying a health check. A deployment is not accepted until liveness, readiness, and integration health return expected states and PM2 shows both the web and worker processes stable.
+
+The HTTP address above is the current internal production endpoint. Replace it with the approved HTTPS DNS name when the TLS/DNS hardening gate is completed.
 
 ## Intentionally Manual Gates
 

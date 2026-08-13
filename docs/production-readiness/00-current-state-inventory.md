@@ -6,6 +6,20 @@ This inventory records the verified local development baseline for Phase 0. It i
 
 Inventory date: 2026-06-19.
 
+## Production-State Addendum
+
+The remainder of this document preserves the Phase 0 baseline that motivated the program. The following state supersedes that baseline for current production as of August 13, 2026:
+
+- PostgreSQL 18.4 is installed on the production server, listens only on loopback, and contains the migrated Metrics Portal schema.
+- `metrics-portal` serves the three-department application on port 3002 and `metrics-portal-worker` runs as a separate PM2 process.
+- PL has moved to `/pl/`, server sessions, durable workspaces, PostgreSQL submissions, and asynchronous Smartsheet synchronization.
+- PTFE and PI still use the combined compatibility page, browser-local active state, and direct-Smartsheet submission endpoints.
+- The legacy `PL-Portal` process on port 3000 was stopped on August 13 after successful PL observation; it remains installed for temporary rollback.
+- Automated JavaScript, HTML, documentation, PowerShell, database, API, workspace, worker, and PL model tests now exist.
+- Daily off-server backups are scheduled at 1:00 AM and have passed hash verification; an isolated restore drill has passed.
+
+This addendum is the authoritative current-state overlay. Historical statements below such as “there is no database” describe the original June 19 baseline, not the deployed system.
+
 ## Host And Runtime
 
 | Item | Verified local state |
@@ -18,7 +32,7 @@ Inventory date: 2026-06-19.
 | PostgreSQL | Not installed or available on `PATH` |
 | PM2 | Not installed or available on `PATH` |
 
-This is the development workstation baseline, not proof of the production server specification. Production installation, service ownership, backup storage, and recovery responsibilities still require confirmation.
+This is the development workstation baseline. The production server specification and deployed-state evidence are recorded in [Target Server Bootstrap](14-target-server-bootstrap.md), [Operations And Recovery](07-operations-and-recovery.md), and [Program Memory](Memory.md).
 
 ## Application Shape
 

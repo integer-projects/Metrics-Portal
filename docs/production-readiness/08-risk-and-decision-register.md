@@ -6,14 +6,16 @@
 | --- | --- | --- | --- | --- | --- |
 | R-001 | Application and database share one physical server | Portal and data can be lost in one hardware failure | Off-machine backups, restore drills, future secondary host evaluation | Johnny Bercegeay | Open |
 | R-002 | Smartsheet accepts a row but response is lost | Duplicate remote rows after retry | Permanent submission ID, outbox, remote ID lookup, idempotent API | Technical owner | Mitigated; controlled exact-ID replay passed 2026-06-19 |
-| R-003 | Browser state mixes associates | Incorrect attribution and blocked sign-out | Server-owned versioned workspaces and session isolation | Technical owner | Planned |
-| R-004 | Combined frontend causes cross-department regression | One department change breaks another | Separate department pages/modules and department test suites | Technical owner | Planned |
-| R-005 | Large rewrite delays reliability improvements | Current incidents continue during development | Incremental PL-first vertical slices and compatibility flags | Johnny Bercegeay | Open |
+| R-003 | Browser state mixes associates | Incorrect attribution and blocked sign-out | Server-owned versioned workspaces and session isolation | Technical owner | Mitigated for PL; open for PTFE and PI |
+| R-004 | Combined frontend causes cross-department regression | One department change breaks another | Separate department pages/modules and department test suites | Technical owner | Mitigated for PL; open for PTFE and PI |
+| R-005 | Large rewrite delays reliability improvements | Current incidents continue during development | Incremental PL-first vertical slices and compatibility flags | Johnny Bercegeay | Mitigated by completed PL vertical cutover |
 | R-006 | Database backups exist but cannot be restored | Extended outage or permanent data loss | Scheduled restore drills and documented evidence | Johnny Bercegeay | Mitigated; first target restore passed 2026-06-19 |
 | R-007 | Production schema change breaks old release | Rollback becomes unsafe | Expand-and-contract migrations and compatibility testing | Technical owner | Mitigated for PL application rollback; isolated feature rollback passed 2026-06-22 |
-| R-008 | Worker silently stops | Smartsheet becomes stale | Queue-age monitoring, health checks, and alerts | Operations owner | Planned |
+| R-008 | Worker silently stops | Smartsheet becomes stale | Separate PM2 worker, queue-age health, daily review, and future routed alerts | Operations owner | Partially mitigated; PM2/health proven, alert transport pending |
 | R-009 | Test environment writes to production sheets | Polluted production data | Environment validation, safe defaults, separate credentials | Technical owner | Mitigated; isolated test sheet and production-ID refusal passed 2026-06-19 |
 | R-010 | Scope expands during foundation work | Delayed delivery and incomplete controls | Approved work packages and phase gates | Johnny Bercegeay | Open |
+| R-011 | Production is served over plain internal HTTP | Credentials and session traffic lack TLS protection on the internal network | Approve internal DNS and certificate, enable HTTPS, then require secure cookies | Operations/IT owner | Open |
+| R-012 | Backup scheduled task depends on an interactive server account | Backups may stop after account or logon-policy changes | Daily result/freshness review and conversion to an IT-owned unattended identity | Operations/IT owner | Open |
 
 ## Decision Log
 
@@ -32,6 +34,7 @@
 | D-011 | Default session inactivity to 12 hours and stale kiosk locks to 15 minutes beyond session expiry | Covers long production shifts while providing a bounded stale-lock recovery path | Approved | 2026-06-19 |
 | D-012 | Alert when synchronization is pending for five minutes and immediately on terminal failure | Gives operations time to act without coupling database availability to Smartsheet health | Approved | 2026-06-19 |
 | D-013 | Start with daily encrypted off-machine backups retained as 14 daily, 8 weekly, and 12 monthly copies | Establishes a practical initial recovery baseline pending company policy | Approved | 2026-06-19 |
+| D-014 | Retain the stopped legacy PL portal through the PL observation window | Preserves a rapid application rollback without leaving the retired process serving traffic | Approved/implemented | 2026-08-13 |
 
 ## Decision Record Template
 

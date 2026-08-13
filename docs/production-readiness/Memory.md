@@ -10,12 +10,12 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 
 ## Current Program State
 
-- Status: PL migration implementation and Windows operations tooling are validated in CI; target PostgreSQL 18 is secured, migrated, manually backed up, restore-proven, and covered by a verified daily scheduled backup task. Standalone test-sheet, full-column exact-ID replay, target database/outbox delivery, isolated technical browser UAT, rollback rehearsal, PL floor-user sign-off, UAT cleanup, fresh backup, production destination expansion, live-process preflight baseline, extended event-duration testing, Spool Check mapping verification, stale-tab conflict testing, and database/Smartsheet spot checks are complete. The delayed staged production code deployment completed on July 20, 2026 at release merge commit `2638a89`; production database workflow feature flags remain disabled, so PL, PTFE, and PI continue using direct-Smartsheet compatibility behavior.
-- Current phase: Phase 7 - Post-deployment observation and PL database cutover preparation.
-- Production: The three-department Metrics Portal remains active from `C:\ServerData\Repos\Metrics-Portal` on PM2 process `metrics-portal`, port 3002, at the approved `main` deployment. The separate legacy `PL-Portal` on port 3000 is out of scope.
+- Status: The PL production migration is complete. The July 20 staged release was followed by the supervised August 3 database cutover. PL now uses PostgreSQL-backed sessions, server workspaces, durable submission capture, and the separate PM2 Smartsheet worker. Real production jobs and events have converged to `submitted` with remote row IDs, no stuck PL records were found during the August 13 review, and the daily backup task continues returning success. The legacy `PL-Portal` was stopped and saved in PM2 on August 13 without uninstalling or deleting it. PTFE and PI remain on compatibility/direct-Smartsheet behavior pending their phases.
+- Current phase: Phase 4 - PL stabilization, with Phase 7 operations hardening in parallel and Phase 5 PTFE discovery next.
+- Production: `C:\serverdata\repos\metrics-portal` runs PM2 web process `metrics-portal` on port 3002 and worker `metrics-portal-worker`. PL database/session/workspace features are enabled; PTFE and PI session/database features are disabled. The legacy `PL-Portal` PM2 entry is stopped and retained temporarily for rollback.
 - Target architecture: One platform with separate PL, PTFE, and PI applications, PostgreSQL as the operational system of record, and asynchronous Smartsheet synchronization.
 - First department migration: Precision Liner.
-- Last updated: 2026-07-20.
+- Last updated: 2026-08-13.
 
 ## Completed Work
 
@@ -34,18 +34,24 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Implemented the Phase 3 server-session and versioned-workspace foundation with hashed opaque tokens, department rollout flags, durable kiosk locks, stale-tab protection, sign-out blocking, and audited discard/release behavior.
 - Implemented the isolated PL page, durable jobs/events, browser autosave and conflict handling, validation tooling, Windows backup/restore/health scripts, and guarded target-server bootstrap tooling.
 - Installed and secured PostgreSQL 18.4 on the target, then initialized the `metrics_portal` database and separate owner, migration, application, and backup roles without exposing credentials.
+- Completed the staged production deployment on July 20 and the separate PL database cutover on August 3.
+- Corrected HTTP submission-ID generation and Smartsheet worker value normalization through production hotfixes, then verified successful database-to-Smartsheet delivery.
+- Verified PL supervisor routing to `/pl/` with an Admin return path.
+- Verified the daily scheduled backup task, production health and feature state, recent PL database/outbox convergence, and zero stuck PL records on August 13.
+- Stopped and saved the legacy `PL-Portal` process without deleting its PM2 entry or files.
+- Audited the PTFE compatibility page, server write paths, calculations, validation, master-log mapping, and Job x Job End Shift contract; recorded the bounded Phase 5 durable design.
 
 ## Active Work
 
-- Observe the staged production code deployment with database workflow feature flags disabled. Prepare for the separate supervised PL database cutover after worker readiness and final cutover checks are verified.
+- Continue the 30-day PL stabilization observation through September 2, 2026, finish PL SOP/support handoff, and prepare the bounded Phase 5 PTFE current-state inventory and migration work package.
 
 ## Next Actions
 
-1. Monitor the live `metrics-portal` process and direct-Smartsheet production workflow after the July 20 code deployment.
-2. Confirm operators can continue normal PL, PTFE, and PI submissions from the compatibility pages.
-3. Before the separate PL database cutover, confirm backup freshness, confirm the worker process, and verify the production PL destination contract.
-4. Schedule the supervised PL database cutover window and first-entry verification with Johnny, Ashley West, and/or Joey Cox.
-5. Keep certificate issuer, alert transport, cutover windows, and PTFE/PI UAT representatives on the deployment-prerequisite checklist.
+1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
+2. Finalize the PL operator and supervisor support/SOP handoff and record the observation close decision.
+3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
+4. Implement the bounded PTFE model, isolated page, server workspace, independent feature flag, two destination contracts, and automated coverage from `16-ptfe-migration.md`.
+5. Complete internal DNS/TLS, routed synchronization alerts, unattended backup-task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
 
 ## Open Decisions
 
@@ -55,27 +61,33 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Monitoring and alert transport destination.
 - Production maintenance and department cutover windows.
 - Named department representatives for PTFE and PI UAT.
+- Final owner and target date for PL SOP/support handoff.
 
 ## Known Risks And Blockers
 
 - The application and proposed database will initially share one physical server.
-- The current production page combines all three department interfaces.
-- Browser `localStorage` still owns substantial active-work state.
-- Current production submissions still depend on synchronous Smartsheet responses until the separate department database cutover is enabled.
-- TLS, alerting, maintenance-window approval, final release approval, and department cutover approval remain external release gates.
+- PTFE and PI still share the compatibility page and browser-owned active-work state.
+- PTFE and PI production submissions still depend on synchronous Smartsheet responses.
+- Production currently uses an internal HTTP endpoint; TLS/DNS and secure-cookie enforcement remain open.
+- Synchronization health is inspectable, but routed automatic alerts are not yet configured.
+- The backup task currently depends on the server account's interactive-logon model.
 
 ## Latest Validation
 
 - Syntax checked across application, migration, script, and test JavaScript files.
-- Local automated suite passes with 78 runnable tests and three expected database-dependent skips outside the CI database job.
-- Health endpoints pass against the assembled Express application, including compatibility-mode readiness. After the July 20 production code deployment, `GET /api/v2/health` returned HTTP 200 from the live `metrics-portal` process.
+- The current local suite passes with 78 tests and three expected database-dependent skips outside the CI database job.
+- On August 13, production `GET /api/v2/health` returned HTTP 200 and `/api/v2/features` confirmed PL durable submissions, sessions, workspaces, and database routing enabled while PTFE and PI remained disabled.
+- PM2 showed `metrics-portal` and `metrics-portal-worker` online. The latest ten PL job/event rows were `submitted` in both submission and outbox state with Smartsheet remote row IDs; the stuck-item query returned zero rows.
+- The scheduled backup task last ran August 13 at 1:00 AM with result `0` and the next run scheduled for August 14 at 1:00 AM.
 - Local Markdown links pass validation and the production dependency audit reports zero vulnerabilities.
 - Release PR #9 GitHub Actions run 29741738237 passed against PostgreSQL 18 on July 20, 2026 after refreshing the branch against current `main`.
 
 ## Deployment State
 
-- PostgreSQL 18.4 and the migrated application schema are installed on the target; manual off-server backups, an isolated restore drill, and a daily Windows scheduled backup task have passed. The PL production Smartsheet destination has the required empty `Submission ID` column. Release commit `2638a89` is deployed to production on port 3002 with database workflow feature flags disabled.
-- Do not enable PL database workflow flags or start the worker until the separate PL database cutover is approved.
+- PostgreSQL 18.4 and the migrated application schema are installed on the target; manual and scheduled off-server backups plus an isolated restore drill have passed. The PL production Smartsheet destination has the required `Submission ID` column.
+- Production `main` includes the staged release and PL cutover fixes through `5508c37`. PL database workflow flags are enabled, and `metrics-portal-worker` is required to remain online.
+- PTFE and PI database/session flags remain disabled until their own destination, UAT, rollback, and cutover gates pass.
+- The legacy `PL-Portal` is stopped but retained as a rollback artifact through the PL observation window.
 - Production deployments must use an approved commit or release tag and the documented release checklist.
 
 ## Session Update Template
@@ -98,6 +110,19 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 ```
 
 ## Session History
+
+### 2026-08-13 - PL post-cutover health passed and legacy portal stopped
+
+- Branch: `codex/production-readiness-current-state` from production-aligned `main`.
+- Commit or PR: Production `main` and `origin/main` were at `5508c37`; documentation commit pending in this work package.
+- Phase/work package: Phase 4 PL stabilization and Phase 7 operations-state reconciliation.
+- Work completed: Reviewed the live production health output, feature state, PM2 processes, scheduled backup result, recent PL database/outbox rows, and stuck-item query. Confirmed real PL jobs/events are successfully reaching Smartsheet. Stopped and saved the legacy `PL-Portal` without deleting it. Reconciled the production-readiness playbook from the stale pre-cutover state to the actual post-cutover state.
+- Files or schema changed: Production PM2 saved state changed only by stopping `PL-Portal`; its files and PM2 entry remain. Production-readiness documentation (including the new PTFE work package), program memory, and the stale PL supervisor routing test changed locally. No database schema, production payload, Smartsheet row, `metrics-portal`, or worker configuration changed in this work package.
+- Decisions made: Keep `metrics-portal` and `metrics-portal-worker` online. Retain the stopped legacy PL portal through the 30-day observation window ending September 2, 2026. Treat PL Phase 3 as complete and Phase 4 stabilization as active; PTFE Phase 5 is next.
+- Validation performed: Production health returned HTTP 200; feature state showed PL enabled and PTFE/PI disabled; PM2 showed the web and worker online; ten recent PL jobs/events were `submitted/submitted` with remote row IDs; zero stuck PL items were returned; the scheduled backup task returned result `0`. Local checks passed for 58 JavaScript files, inline scripts in nine HTML files, PowerShell syntax, 35 Markdown files, 78 tests with three expected database-only skips, zero production dependency vulnerabilities, and `git diff --check`. The one initially failing auth-routing assertion was stale and was updated to the approved PL supervisor `/pl/` routing behavior.
+- Deployment status: PL database workflow remains live and healthy on port 3002. The old PL-only process is stopped and recoverable. PTFE and PI remain unchanged on direct-Smartsheet compatibility behavior.
+- Risks/blockers: TLS/DNS, routed alerts, unattended backup identity, PL SOP/support handoff, quarterly restore ownership, and PTFE/PI migration work remain. No current PL production blocker is known.
+- Exact next action: Implement the PTFE model and independent runtime/routing feature foundation from `16-ptfe-migration.md` while PL observation continues; do not enable or change production PTFE behavior.
 
 ### 2026-07-23 - Daily PostgreSQL backup scheduling verified
 

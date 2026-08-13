@@ -50,28 +50,28 @@ PI_DATABASE_SUBMISSIONS_ENABLED=false
 
 Feature flags must default to the safest known behavior and be documented per environment. Removing a flag occurs only after the rollback window closes.
 
-## Delayed Staged Release Plan
+## Completed PL Staged Release And Cutover
 
-The originally planned July 4 office-closure deployment was delayed. As of July 20, 2026, the release remains staged: the first production deployment is a code deployment and migration-preparation event, not the automatic PL database cutover.
+The originally planned July 4 office-closure deployment was delayed. The staged code deployment completed on July 20, 2026 with database workflow flags disabled. The separate supervised PL database cutover completed on August 3, 2026.
 
-Planned production code-deployment action:
+Completed production code-deployment action:
 
 1. Merge or tag the approved release commit after UAT remains clean.
 2. Pull the exact approved commit onto `C:\ServerData\Repos\Metrics-Portal`.
 3. Install locked dependencies if required.
 4. Apply compatible PostgreSQL migrations.
-5. Restart the `metrics-portal` PM2 web process and worker process as documented.
+5. Restart the `metrics-portal` PM2 web process; leave the worker stopped until cutover.
 6. Run production health/preflight checks.
 7. Keep department database workflow flags disabled unless the PL cutover is separately approved.
 
-Expected behavior immediately after the code deployment with PL database flags disabled:
+Verified behavior immediately after the code deployment with PL database flags disabled:
 
 - PL, PTFE, and PI production users remain on the compatibility/direct-Smartsheet workflow.
 - Production submissions continue writing directly to the existing production Smartsheet destinations.
 - The isolated UAT test sheet is not used by production.
 - PostgreSQL schema and operational tooling are present and ready, but PL production traffic is not routed through the database-backed page yet.
 
-The PL database cutover is a separate controlled action after the code deployment is healthy. At that later cutover, enabling the PL database workflow changes new PL logins from:
+At the August 3 cutover, enabling the PL database workflow changed new PL logins from:
 
 ```text
 Portal -> production PL Smartsheet master log
@@ -116,14 +116,17 @@ The PL pilot must test:
 - Sign-out with saved, open, pending, and failed work.
 - Exact Smartsheet field mapping and submission ID.
 
-As of the PL floor acceptance record and extended UAT, the isolated browser workflow, exact-ID delivery proof, target database/outbox proof, rollback rehearsal, guarded cleanup, fresh backup, production `Submission ID` expansion, event-duration simplification, Spool Check mapping correction, and stale-tab warning have passed. The remaining PL pilot gate is controlled release deployment with production feature flags disabled, followed by the approved PL cutover window and post-cutover observation.
+The isolated browser workflow, exact-ID delivery proof, target database/outbox proof, rollback rehearsal, guarded cleanup, fresh backup, production `Submission ID` expansion, event-duration simplification, Spool Check mapping correction, stale-tab warning, staged release, and supervised PL database cutover have passed. Production verification confirmed real PL jobs and events converging to `submitted` in both PostgreSQL and the outbox with Smartsheet remote row IDs. No stuck PL records were present during the August 13 health review.
 
-Recommended post-deployment PL cutover timing:
+Completed PL cutover evidence and remaining observation:
 
-- If the delayed code deployment is healthy and UAT remains clean, PL database cutover can occur in a separate supervised window without waiting weeks.
-- Prefer a low-traffic start-of-shift or office-closure window where Johnny, Ashley West, and/or Joey Cox can verify the first real entries.
-- Before enabling PL database flags, take and verify a fresh off-machine backup, verify the production PL destination contract, confirm the worker process is running, and record the exact release commit.
-- After enabling PL database flags, verify one normal job, one Spool Check job, and one event entry in PostgreSQL and the production PL master log before broad use continues.
+- A fresh verified off-machine backup was taken immediately before cutover.
+- The production destination contract returned READY before enablement.
+- `metrics-portal-worker` was started and saved in PM2; `metrics-portal` was restarted with the PL feature chain enabled.
+- Health returned HTTP 200 and the feature endpoint confirmed PL enabled while PTFE and PI remained disabled.
+- Production jobs and events were verified in PostgreSQL, the outbox, and the production Smartsheet destination.
+- The legacy `PL-Portal` process was stopped on August 13 after the post-cutover health review; its files and PM2 entry remain available during the rollback-retention period.
+- Continue the agreed 30-day observation through September 2, 2026. Do not delete the legacy portal or remove PL rollback flags before that review closes.
 
 ## Reconciliation
 
