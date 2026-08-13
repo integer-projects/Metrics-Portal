@@ -50,7 +50,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 - The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
-- The corrected PTFE target environment is running on isolated port 3103 from `C:\serverdata\staging\metrics-portal-ptfe-uat`. Browser UAT confirmed PL-compatible quantity entry, a synced persistent Break event, stale-tab protection, low-yield Pull validation/capture, and successful End Shift. Read-only reconciliation found four submitted Master Log rows and three submitted Job x Job rows; all seven outboxes submitted on attempt one with remote row IDs, exactly matching test-sheet counts 4 and 3. Numeric/status regression confirmation, worker restart recovery, rollback, named approval, and final cleanup remain.
+- The corrected PTFE target environment is running on isolated port 3103 from `C:\serverdata\staging\metrics-portal-ptfe-uat`. Browser UAT confirmed PL-compatible quantity entry, a synced persistent Break event, stale-tab protection, low-yield Pull validation/capture, successful End Shift, numeric/status regressions, and worker restart recovery. Read-only reconciliation found four submitted Master Log rows and three submitted Job x Job rows before recovery testing; all seven outboxes submitted on attempt one with remote row IDs, exactly matching test-sheet counts 4 and 3. Deterministic partial End Shift, rollback, named approval, and final cleanup remain.
 
 ## Active Work
 
@@ -1141,3 +1141,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Recovery controls are source-only until merge and isolated checkout refresh. Production PTFE remains unchanged and disabled.
 - Risks/blockers: Worker restart execution, rollback, named approval, and final cleanup remain. The worker resume action requires Johnny to enter only the application-role password.
 - Exact next action: Validate and merge the recovery controls, refresh the state-recorded PTFE checkout, pause the isolated worker, submit one controlled event and observe pending status, resume the worker, and confirm automatic convergence without manual refresh or duplicate delivery.
+
+### 2026-08-13 - PTFE worker recovery passed and partial End Shift test added
+
+- Branch: `codex/ptfe-partial-end-shift-uat` from merge `2c8b0c9`.
+- Commit or PR: Pending in this UAT failure-scenario work package.
+- Phase/work package: Phase 5 PTFE isolated failure and retry UAT.
+- Work completed: Paused the state-recorded isolated worker, captured a controlled event into PostgreSQL, observed it remain pending without manual refresh, resumed a newly recorded worker, and confirmed the same submission automatically converged to Smartsheet synced. Added a loopback-port-3103-only partial End Shift injection that interrupts after one durable row so retry identity and no-duplicate behavior can be proven deterministically.
+- Files or schema changed: Isolated PTFE browser UAT control, focused page-contract test, PTFE work-package documentation, and program memory. No database schema, production Smartsheet, production configuration, feature flag, PM2 process, or live production portal changed.
+- Decisions made: A failure injection must require both exact loopback hostname and isolated port, remain inert on production, and occur only after authoritative server state confirms the first row. Retry must use the already persisted permanent row IDs.
+- Validation performed: Target worker recovery passed with database-safe pending state and automatic post-resume convergence. The focused PTFE page contract passed 9 of 9 tests; the full suite passed 127 tests with the same 3 database-dependent skips and no failures. JavaScript syntax, all nine HTML files, documentation links, PowerShell syntax, diff hygiene, and the production-dependency audit also passed; the audit reported zero vulnerabilities.
+- Deployment status: Source-only until merge and isolated checkout refresh. Production PTFE remains unchanged and disabled.
+- Risks/blockers: Partial End Shift execution, rollback, named approval, and final cleanup remain.
+- Exact next action: Validate and merge the isolated failure switch, refresh the PTFE UAT checkout, create two tracker rows, interrupt after one capture, retry without the switch, and reconcile no duplicate rows before rollback.

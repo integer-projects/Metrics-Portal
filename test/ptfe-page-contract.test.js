@@ -78,3 +78,12 @@ test('PTFE submission status updates automatically while Smartsheet delivery is 
     assert.match(app, /document\.addEventListener\('visibilitychange'/);
     assert.match(app, /if \(!silent\) showAlert\('Status refresh failed'/);
 });
+
+test('PTFE partial End Shift failure injection is restricted to isolated loopback UAT', () => {
+    assert.match(app, /window\.location\.hostname === '127\.0\.0\.1'/);
+    assert.match(app, /window\.location\.port === '3103'/);
+    assert.match(app, /uatFailEndShiftAfter/);
+    assert.match(app, /capturedThisAttempt \+= 1/);
+    assert.match(app, /Controlled UAT partial End Shift interruption/);
+    assert.match(app, /Already captured rows will not be duplicated when you retry/);
+});

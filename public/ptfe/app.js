@@ -3,6 +3,9 @@
     const model = window.PtfeModel;
     const elements = {};
     const themes = ['precision', 'light', 'dark', 'high-contrast'];
+    const controlledEndShiftFailureAfter = window.location.hostname === '127.0.0.1' && window.location.port === '3103'
+        ? Math.max(0, Number(new URLSearchParams(window.location.search).get('uatFailEndShiftAfter')) || 0)
+        : 0;
     let session = null;
     let workspace = null;
     let config = {};
@@ -407,6 +410,7 @@
         const rows = model.JXJ_TABS.flatMap((cell) => (workspace.formData.shift.tabs[cell] || []).map((row) => ({ cell, row })));
         if (!window.confirm(`Capture ${rows.length} Job x Job row(s) in the database and end this shift?`)) return;
         elements.endShiftButton.disabled = true;
+        let capturedThisAttempt = 0;
         try {
             while (model.shiftHasUncapturedRows(workspace.formData.shift)) {
                 const record = model.JXJ_TABS.flatMap((cell) => (workspace.formData.shift.tabs[cell] || []).map((row) => ({ cell, row })))
@@ -421,6 +425,10 @@
                 await api.createSubmission({ id: record.row.submissionId, entryType: 'jxj', workDate: workspace.workDate, payload: generated.payload });
                 workspace = normalizeWorkspace((await api.getWorkspace()).workspace);
                 renderShift();
+                capturedThisAttempt += 1;
+                if (controlledEndShiftFailureAfter && capturedThisAttempt >= controlledEndShiftFailureAfter) {
+                    throw new Error('Controlled UAT partial End Shift interruption. Remove the UAT query parameter and retry.');
+                }
             }
             workspace.formData = { form: model.emptyForm(), shift: model.emptyShift(workspace.workDate), countermeasures: '', lastSubmission: workspace.formData.lastSubmission };
             workspace.hasUnsavedWork = false;
