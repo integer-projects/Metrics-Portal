@@ -25,7 +25,7 @@ The audit does not replace the detailed requirements in the other documents. A r
 | PL stabilization | In progress | No reported issue or stuck row through the August 13 review; current durable-workflow associate and supervisor/support SOPs are complete; the legacy portal is stopped but retained. | Observe through September 2, obtain named support-handoff acceptance, record the close decision, then remove the rollback artifact only after approval. |
 | PTFE implementation | Complete | Independent feature chain, isolated page/model, server workspace, durable Master Log capture, server-owned shift state, partial-safe End Shift capture, exact two-destination adapters, focused browser tests, and automated coverage are merged. | None for the repository implementation baseline. |
 | PTFE non-production integration | Complete | Two dedicated empty test sheets accepted exact-ID Master Log and Job Log rows, rejected duplicate replay, passed mapped-value verification, and were cleaned. | Repeat through the isolated database/outbox during target UAT. |
-| PTFE target UAT and rollback | In progress | After guarded cleanup of the first failed attempt, corrected Start at `8239cbb` confirmed empty test sheets, migrated the disposable database, delivered one Master Log and one Job x Job proof through the outbox in one attempt each, removed all synthetic proof rows, launched the isolated portal/worker on port 3103, and kept production unchanged. | Complete named associate/supervisor browser UAT and failure scenarios, rehearse Rollback, then run Stop and retain the evidence. |
+| PTFE target UAT and rollback | In progress | Corrected Start, full browser parity, low-yield validation, refresh/conflict behavior, automatic status, worker recovery, partial End Shift retry, exact database/outbox and 6/5 sheet reconciliation, compatibility Rollback, and guarded Stop cleanup all passed on August 13 with production unchanged. | Obtain written acceptance from a named PTFE associate representative and supervisor/lead. |
 | PTFE production destination expansion | Ready to execute | Read-only validators found both production sheets contract-ready except for `Submission ID`; the guarded dry run plans one text/number column on each sheet and no row changes. | Apply during an approved window after PTFE UAT approval, then rerun both validators. |
 | PTFE production cutover | Not ready | Cutover and rollback procedures are documented and the feature flags default off. | Requires successful UAT/rollback, named approval, production destination expansion, fresh backup, healthy monitor/worker, supervised first job/event/End Shift, and reconciliation in both destinations. |
 | PI migration | Sequenced later | PI compatibility contract and current route are inventoried. The roadmap intentionally starts PI only after the reusable PTFE migration pattern is accepted. | Repeat PTFE implementation, destination, UAT, rollback, cutover, and observation gates for PI. |
@@ -41,15 +41,13 @@ The audit does not replace the detailed requirements in the other documents. A r
 
 The remaining work must proceed in this order:
 
-1. Run the isolated PTFE Start action on the target server and retain its database/outbox proof.
-2. Name a PTFE associate and supervisor/lead; execute every PTFE sequence, an event, End Shift, refresh, duplicate-tab, retry, sign-out, partial End Shift, and worker-restart scenario.
-3. Verify both test sheets and PostgreSQL/outbox evidence, run Rollback, confirm compatibility routing, then run Stop and confirm complete cleanup.
-4. Install and prove the local five-minute operations monitor before any PTFE production cutover.
-5. During an approved change window, add `Submission ID` to both PTFE production destinations and rerun the exact contract validators.
-6. Take a fresh verified backup, pull the approved release, enable PTFE flags in the supervised window, and reconcile the first production job, event, Pull or low-yield rule, and End Shift across PostgreSQL, both outboxes, and both Smartsheets.
-7. Observe PTFE before starting PI. Continue PL observation and close its support handoff in parallel.
-8. Close the external TLS/DNS, routed-alert, retention-policy, permanent-owner, and quarterly-drill gates before declaring the overall program production ready.
+1. Obtain written acceptance from a named PTFE associate representative and supervisor/lead using the completed technical UAT evidence or a supervised workflow repeat.
+2. Install and prove the local five-minute operations monitor before any PTFE production cutover.
+3. During an approved change window, add `Submission ID` to both PTFE production destinations and rerun the exact contract validators.
+4. Take a fresh verified backup, pull the approved release, enable PTFE flags in the supervised window, and reconcile the first production job, event, Pull or low-yield rule, and End Shift across PostgreSQL, both outboxes, and both Smartsheets.
+5. Observe PTFE before starting PI. Continue PL observation and close its support handoff in parallel.
+6. Close the external TLS/DNS, routed-alert, retention-policy, permanent-owner, and quarterly-drill gates before declaring the overall program production ready.
 
 ## Current Stop Conditions
 
-Do not enable PTFE production flags yet. Target-server UAT, named approval, rollback evidence, production `Submission ID` columns, and monitor installation are not yet proven. Do not start PI implementation until PTFE acceptance establishes the reusable department pattern. Do not schedule backup deletion until the storage-policy gate is closed.
+Do not enable PTFE production flags yet. Technical target-server UAT and rollback are proven, but named department approval, production `Submission ID` columns, and monitor installation remain. Do not start PI implementation until PTFE production acceptance establishes the reusable department pattern. Do not schedule backup deletion until the storage-policy gate is closed.
