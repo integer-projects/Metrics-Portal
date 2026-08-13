@@ -73,7 +73,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Internal DNS name and certificate issuer.
 - Monitoring and alert transport destination.
 - Production maintenance and department cutover windows.
-- Named department representatives for PTFE and PI UAT.
+- Named department representatives for PI UAT. PTFE reviewers are designated as associate Keisha Black and lead Cody Atchley; their acceptance is pending.
 - Final owner and target date for PL SOP/support handoff.
 
 ## Known Risks And Blockers
@@ -1167,3 +1167,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Isolated PTFE UAT is fully removed. Production PL remains live; production PTFE and PI remain on compatibility/direct-Smartsheet routing with their database/session flags disabled.
 - Risks/blockers: A named PTFE associate representative and supervisor/lead have not yet provided written acceptance. The five-minute production monitor is not yet installed, and the two production PTFE destinations still lack `Submission ID`.
 - Exact next action: Obtain the two named PTFE approvals, install and prove the local monitor, then schedule the guarded production destination expansion before a supervised PTFE cutover.
+
+### 2026-08-13 - PTFE department reviewers designated
+
+- Branch: `codex/ptfe-approver-designation` from merge `8468df4`.
+- Commit or PR: Pending documentation update.
+- Phase/work package: Phase 5 PTFE user acceptance.
+- Work completed: Recorded Keisha Black as the PTFE associate representative and Cody Atchley as the PTFE lead approver.
+- Files or schema changed: Acceptance plan, PTFE work package, completion audit, and program memory only. No application, database, Smartsheet, configuration, process, or production behavior changed.
+- Decisions made: Designation is not approval. Each reviewer must provide written acceptance after reviewing the completed evidence or repeating the supervised business workflow.
+- Validation performed: All local links in 37 Markdown files passed validation, and diff hygiene passed.
+- Deployment status: Documentation only. Production PTFE remains on compatibility/direct-Smartsheet routing.
+- Risks/blockers: Keisha Black and Cody Atchley have not yet supplied their acceptance statements.
+- Exact next action: Obtain both reviewers' written acceptance, record it, then install and prove the local five-minute operations monitor.
