@@ -22,8 +22,11 @@ The first two Phase 5 implementation slices are complete on the PTFE migration b
 - End Shift assigns and persists one permanent ID per Job x Job row, captures rows individually, reloads authoritative state after each acceptance, skips already captured rows on retry, and clears the shift only after every row is database-accepted.
 - The submission API blocks PTFE capture while the PTFE database feature is disabled, even if another department's durable workflow is enabled.
 - Focused browser rehearsal passed for rendered job calculations, database capture, server-owned shift append, refresh persistence, and event capture with no console errors.
+- Read-only two-destination validation now verifies exact writable titles, duplicate titles, formulas, and `Submission ID` type for both PTFE production sheets.
+- The guarded production expansion utility preflights both sheets before changing either one, defaults to dry-run, requires an exact confirmation phrase to apply, and adds only a missing text/number `Submission ID` column.
+- The live read-only audit confirmed both production destinations match their preserved writable contracts and are missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes.
 
-These slices do not route any production PTFE traffic. Destination validators and guarded `Submission ID` expansion, non-production destination proof, PTFE UAT/rollback tooling, named approvals, and the cutover gates below remain required.
+These slices do not route any production PTFE traffic. Applying the guarded `Submission ID` expansion in an approved window, non-production destination proof, PTFE UAT/rollback tooling, named approvals, and the cutover gates below remain required.
 
 ## Verified Compatibility Baseline
 
@@ -75,8 +78,8 @@ Item Number
 Lot Number
 Std PPH
 Actual PPH
-OE %
-Time (Min)
+OE Pct
+Time Min
 Start Qty
 End Qty
 Loss Reason
@@ -84,6 +87,8 @@ Countermeasures
 ```
 
 The current tracker groups rows under Pull, Cut to Length, Inspection, Roll Cut, Packaging, and Events. Sequence-to-cell mapping and Job/HR slot prefixes must remain unchanged unless PTFE approves a business-rule change.
+
+The physical Job x Job sheet titles are `OE Pct` and `Time Min`. The legacy compatibility endpoint accepts `OE %` and `Time (Min)` aliases, but durable background delivery uses the exact physical titles above. `Submitted At` is system-managed and is intentionally not included in the writable contract.
 
 ## Calculations And Validation To Preserve
 
