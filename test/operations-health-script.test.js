@@ -12,6 +12,9 @@ test('operations monitor covers every local production dependency and writes ato
     }
     assert.match(monitor, /oldestActiveAgeSeconds/);
     assert.match(monitor, /needsReviewCount/);
+    assert.match(monitor, /JSON\.parse\(input\)/);
+    assert.match(monitor, /applications\.map/);
+    assert.match(monitor, /PM2 process-list normalization failed/);
     assert.match(monitor, /Move-Item[^\n]+-Force/);
     assert.match(monitor, /if \(-not \$healthy\) \{ exit 1 \}/);
 });
