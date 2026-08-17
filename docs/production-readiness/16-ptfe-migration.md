@@ -4,7 +4,7 @@
 
 PTFE is the second department migration. It must preserve the current production calculations, entry rules, master-log mapping, and End Shift Job x Job behavior while moving authoritative identity, active work, durable capture, and synchronization status to the common server platform proven by PL.
 
-PL production behavior is not changed by this work package. PTFE remains on the compatibility page and direct-Smartsheet endpoints until the PTFE feature chain, destination contracts, isolated UAT, rollback rehearsal, and supervised cutover are separately approved.
+PL production behavior was not changed by this work package. PTFE moved from the compatibility page to the isolated database-backed `/ptfe/` page only after the feature chain, destination contracts, isolated UAT, rollback rehearsal, named approval, monitor, backup, and supervised cutover gates passed. The compatibility implementation remains available during observation.
 
 ## Implementation Status
 
@@ -26,7 +26,7 @@ The repository implementation slices and non-production destination proof are co
 - The guarded production expansion utility preflights both sheets before changing either one, defaults to dry-run, requires an exact confirmation phrase to apply, and adds only a missing text/number `Submission ID` column.
 - The live read-only audit confirmed both production destinations matched their preserved writable contracts and were missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes. The guarded production apply then added the two text/number columns, and post-change validation returned READY for the 59-column Master Log and 21-column Job x Job Log with zero existing rows changed.
 
-These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026; associate representative Keisha Black and lead Cody Atchley approved on August 17. The five-minute production monitor and both production `Submission ID` expansions were installed and proved healthy/READY on August 17. A fresh verified backup and supervised production cutover/reconciliation remain required.
+Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026; associate representative Keisha Black and lead Cody Atchley approved on August 17. The five-minute production monitor and both production `Submission ID` expansions were installed and proved healthy/READY on August 17. The fresh verified backup and supervised production cutover/reconciliation also passed that day: one job, one event, and their two Job x Job rows reached both production destinations once, with no unfinished or duplicate record. PTFE is now in production observation.
 
 ## Dedicated Integration Destinations
 

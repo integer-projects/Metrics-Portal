@@ -27,7 +27,7 @@ The audit does not replace the detailed requirements in the other documents. A r
 | PTFE non-production integration | Complete | Two dedicated empty test sheets accepted exact-ID Master Log and Job Log rows, rejected duplicate replay, passed mapped-value verification, and were cleaned. | Repeat through the isolated database/outbox during target UAT. |
 | PTFE target UAT and rollback | Complete | Corrected Start, full browser parity, low-yield validation, refresh/conflict behavior, automatic status, worker recovery, partial End Shift retry, exact database/outbox and 6/5 sheet reconciliation, compatibility Rollback, and guarded Stop cleanup all passed on August 13 with production unchanged. Associate representative Keisha Black and lead Cody Atchley approved on August 17. | None. |
 | PTFE production destination expansion | Complete | The guarded apply added one text/number `Submission ID` column to each production destination, changed zero existing rows, and post-change validation returned READY for both sheets. | None. |
-| PTFE production cutover | Ready to execute | UAT, rollback, named approval, healthy production monitor, and both production destination expansions passed; cutover procedures are documented and the feature flags default off. | Requires a fresh backup, supervised enablement, first job/event/End Shift, and reconciliation in PostgreSQL, both outboxes, and both destinations. |
+| PTFE production cutover | Complete | Fresh backup, rollback environment, guarded enablement, health/features/monitor checks, one production job, one event, two-row End Shift, first-attempt PostgreSQL/outbox delivery, production remote row IDs, and zero unfinished/duplicate rows passed August 17. | Retain rollback during observation and complete support handoff before closing Phase 5. |
 | PI migration | Sequenced later | PI compatibility contract and current route are inventoried. The roadmap intentionally starts PI only after the reusable PTFE migration pattern is accepted. | Repeat PTFE implementation, destination, UAT, rollback, cutover, and observation gates for PI. |
 | Daily backup and restore | Complete | A protected backup environment, daily off-server scheduled task, SHA-256 verification, and isolated PostgreSQL restore drill have passed; production task results remained successful through August 13. | Assign permanent task and quarterly drill ownership. |
 | Backup retention | External gate | Guarded dry-run-first 14-daily/8-weekly/12-monthly tooling verified the real share without deleting files. | Confirm company retention policy and share snapshot/copy behavior before apply or scheduling. |
@@ -41,10 +41,10 @@ The audit does not replace the detailed requirements in the other documents. A r
 
 The remaining work must proceed in this order:
 
-1. Take a fresh verified backup, pull the approved evidence state, enable PTFE flags in the supervised window, and reconcile the first production job, event, Pull or low-yield rule, and End Shift across PostgreSQL, both outboxes, and both Smartsheets.
-2. Observe PTFE before starting PI. Continue PL observation and close its support handoff in parallel.
+1. Observe PTFE, review its queue/monitor daily, obtain production support-handoff acceptance, and retain the rollback environment and compatibility page until the observation close decision.
+2. Continue PL observation and close its support handoff in parallel; start PI only after the PTFE observation is accepted as the reusable pattern.
 3. Close the external TLS/DNS, routed-alert, retention-policy, permanent-owner, and quarterly-drill gates before declaring the overall program production ready.
 
 ## Current Stop Conditions
 
-Do not enable PTFE production flags outside the supervised cutover. Technical target-server UAT, rollback, named department approval, production monitor proof, and both production `Submission ID` columns are complete. The remaining immediate gate is a fresh verified backup followed by controlled enablement and reconciliation. Do not start PI implementation until PTFE production acceptance establishes the reusable department pattern. Do not schedule backup deletion until the storage-policy gate is closed.
+PTFE production flags are enabled after successful supervised cutover. Do not remove its rollback environment or compatibility implementation until observation and support handoff close. Do not start PI implementation until PTFE production observation establishes the reusable department pattern. Do not schedule backup deletion until the storage-policy gate is closed.

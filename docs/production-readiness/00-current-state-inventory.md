@@ -8,14 +8,15 @@ Inventory date: 2026-06-19.
 
 ## Production-State Addendum
 
-The remainder of this document preserves the Phase 0 baseline that motivated the program. The following state supersedes that baseline for current production as of August 13, 2026:
+The remainder of this document preserves the Phase 0 baseline that motivated the program. The following state supersedes that baseline for current production as of August 17, 2026:
 
 - PostgreSQL 18.4 is installed on the production server, listens only on loopback, and contains the migrated Metrics Portal schema.
 - `metrics-portal` serves the three-department application on port 3002 and `metrics-portal-worker` runs as a separate PM2 process.
 - PL has moved to `/pl/`, server sessions, durable workspaces, PostgreSQL submissions, and asynchronous Smartsheet synchronization.
-- PTFE and PI still use the combined compatibility page, browser-local active state, and direct-Smartsheet submission endpoints.
+- PTFE has moved to `/ptfe/`, server sessions, durable workspaces, PostgreSQL submissions, asynchronous Master Log synchronization, and durable per-row Job x Job End Shift synchronization.
+- PI still uses the combined compatibility page, browser-local active state, and direct-Smartsheet submission endpoints.
 - The legacy `PL-Portal` process on port 3000 was stopped on August 13 after successful PL observation; it remains installed for temporary rollback.
-- Automated JavaScript, HTML, documentation, PowerShell, database, API, workspace, worker, and PL model tests now exist.
+- Automated JavaScript, HTML, documentation, PowerShell, database, API, workspace, worker, PL, and PTFE tests now exist.
 - Daily off-server backups are scheduled at 1:00 AM and have passed hash verification; an isolated restore drill has passed.
 
 This addendum is the authoritative current-state overlay. Historical statements below such as “there is no database” describe the original June 19 baseline, not the deployed system.

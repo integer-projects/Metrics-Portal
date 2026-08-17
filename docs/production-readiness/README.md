@@ -51,16 +51,16 @@ Read and maintain these documents in order:
 
 ## Current Production Baseline
 
-As of August 13, 2026:
+As of August 17, 2026:
 
 - The Metrics Portal web process runs under PM2 as `metrics-portal` on port 3002.
 - The PL synchronization worker runs separately under PM2 as `metrics-portal-worker`.
-- PL uses the isolated `/pl/` page, PostgreSQL-backed sessions and workspaces, durable database capture, and asynchronous delivery to the production PL Smartsheet master log.
-- PTFE and PI continue using the combined compatibility page and synchronous direct-Smartsheet submission paths until their migration phases.
+- PL uses the isolated `/pl/` page, and PTFE uses the isolated `/ptfe/` page. Both now use PostgreSQL-backed sessions and workspaces, durable database capture, and asynchronous delivery to their production Smartsheet destinations.
+- PI continues using the combined compatibility page and synchronous direct-Smartsheet submission paths until its migration phase.
 - PostgreSQL 18.4 is local-only on the application server and uses separate migration, runtime, and backup roles.
 - A daily 1:00 AM off-server database backup task is active; backup integrity and isolated restoration have been proven.
 - The retired `PL-Portal` PM2 process is stopped but retained temporarily as a rollback artifact.
-- PL production health, real job/event delivery, outbox convergence, and backup scheduling have passed post-cutover checks.
+- PL production health remains stable. PTFE's supervised production job, event, and two-row End Shift passed database/outbox and two-destination reconciliation with no failure or duplicate.
 
 ## Target Outcome
 
