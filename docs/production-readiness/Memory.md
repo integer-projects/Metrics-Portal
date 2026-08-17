@@ -56,14 +56,14 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 
 ## Active Work
 
-- Continue the PL observation through September 2, 2026 and begin the PTFE production observation, with daily queue/monitor review and support handoff for both departments. Retain both rollback paths until their close decisions.
+- Continue the PL observation through September 2, 2026 and the PTFE observation through September 16, 2026, with daily queue/monitor review and support handoff for both departments. Retain both rollback paths until their close decisions.
 
 ## Next Actions
 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
 2. Obtain named acceptance of the updated PL associate and supervisor/support SOPs and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
-4. Observe PTFE production, review the queue and monitor daily, obtain support-handoff acceptance, and retain its rollback environment and compatibility page until the close decision.
+4. Observe PTFE production through September 16, review the queue and monitor daily, obtain support-handoff acceptance, and retain its rollback environment and compatibility page until the close decision.
 5. Start PI only after PTFE observation accepts the reusable department pattern.
 6. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
 
@@ -146,7 +146,7 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Validation performed: Cutover health was alive/ready at checkout `286b0d1`; PL and PTFE database/session flags were true, PI false, and the local monitor healthy with task result `0`. Reconciliation returned one Master Log job, one Master Log event, and two Job x Job rows. All four submission/outbox states were `submitted/submitted`, each used attempt one and had a production remote row ID; unfinished/failed and duplicate-remote-row queries returned zero rows.
 - Deployment status: PTFE production database routing is live. PL remains live, PI remains compatible/disabled, and both Metrics Portal PM2 processes are online.
 - Risks/blockers: Observation, support handoff, routed alerting, TLS/DNS, permanent task ownership, retention policy, and quarterly drill ownership remain. The cutover has no current data-integrity blocker.
-- Exact next action: Run daily PTFE queue/monitor review during observation, confirm ordinary floor use with the department lead, and record any issue immediately without removing rollback assets.
+- Exact next action: Run daily PTFE queue/monitor review through September 16, confirm ordinary floor use with the department lead, and record any issue immediately without removing rollback assets.
 
 ### 2026-08-17 - PTFE production destinations expanded and revalidated
 
