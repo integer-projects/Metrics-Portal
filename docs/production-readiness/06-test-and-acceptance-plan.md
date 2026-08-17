@@ -95,7 +95,7 @@ PL completed associate and supervisor UAT with Ashley West and Joey Cox, technic
 
 ## PTFE Acceptance Status
 
-Johnny Bercegeay completed the isolated technical PTFE rehearsal on August 13, 2026. The target evidence covers normal and low-yield job rules, events, refresh persistence, stale-tab protection, automatic synchronization status, worker recovery, partial End Shift retry without duplicates, database/outbox and two-sheet reconciliation, compatibility rollback, and complete guarded cleanup. No technical blocker remains from the isolated rehearsal. Keisha Black is the designated PTFE associate representative and Cody Atchley is the designated PTFE lead approver. Their written acceptance, after repeating the approved business workflow or reviewing the completed evidence, remains required before production cutover.
+Johnny Bercegeay completed the isolated technical PTFE rehearsal on August 13, 2026. The target evidence covers normal and low-yield job rules, events, refresh persistence, stale-tab protection, automatic synchronization status, worker recovery, partial End Shift retry without duplicates, database/outbox and two-sheet reconciliation, compatibility rollback, and complete guarded cleanup. Keisha Black, PTFE associate representative, and Cody Atchley, PTFE lead, both approved the workflow on August 17, 2026. PTFE user acceptance is complete; production monitor, destination, backup, and supervised-cutover gates remain separate prerequisites.
 
 ## Severity
 

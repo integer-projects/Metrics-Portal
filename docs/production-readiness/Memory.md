@@ -44,26 +44,26 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Implemented the isolated PTFE database page, guarded login/API routing, versioned server-workspace controller, server-owned idempotent job/event-to-shift transition, and partial-safe per-row End Shift database capture without enabling production PTFE flags.
 - Implemented and live-proved exact two-destination PTFE contracts against dedicated non-production Master Log and Job Log sheets, including permanent-ID replay and complete synthetic cleanup.
 - Implemented guarded PTFE production-destination validation and dry-run-first `Submission ID` expansion; the live read-only audit found only that column missing on each production destination and planned no row changes.
-- Implemented isolated PTFE target-server Start, Rollback, and Stop orchestration for port 3103, a disposable database, separate web/worker processes, and both test sheets. Target execution and named UAT approval remain pending.
+- Implemented and completed isolated PTFE target-server Start, browser/failure UAT, Rollback, and Stop orchestration for port 3103, a disposable database, separate web/worker processes, and both test sheets. Keisha Black and Cody Atchley approved the workflow on August 17, 2026.
 - Implemented a five-minute local operations monitor, guarded tiered backup-retention tooling, and safe compatibility administrative audit events. The monitor and audit update are not yet deployed to the target server; retention apply remains prohibited pending policy confirmation.
 - Added the completion audit that maps every program requirement to authoritative evidence, remaining proof, execution order, and current stop conditions.
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
 - The first PTFE target Start proved both dedicated sheets empty and migrated the isolated database, then stopped before launching the portal because the outbox proof compared the test IDs with already-overridden runtime destination IDs. The source fix now retains the original production IDs separately for the safety comparison; failed state cleanup and a fresh Start remain required.
-- The complete PTFE target rehearsal passed on isolated port 3103. Browser UAT confirmed PL-compatible quantity entry, a synced persistent event, stale-tab protection, low-yield Pull validation/capture, numeric/status regressions, worker restart recovery, and partial End Shift retry without duplicates. Final reconciliation found two jobs, four events, and five Job x Job submissions, all submitted, with zero unfinished outboxes and zero duplicate IDs; the dedicated sheets matched at six Master Log rows and five Job x Job rows. Rollback restored compatibility routing, and guarded Stop removed all 11 sheet rows, the disposable database, state, and isolated processes while production remained unchanged. Named PTFE associate/supervisor acceptance remains before production prerequisites and cutover.
+- The complete PTFE target rehearsal passed on isolated port 3103. Browser UAT confirmed PL-compatible quantity entry, a synced persistent event, stale-tab protection, low-yield Pull validation/capture, numeric/status regressions, worker restart recovery, and partial End Shift retry without duplicates. Final reconciliation found two jobs, four events, and five Job x Job submissions, all submitted, with zero unfinished outboxes and zero duplicate IDs; the dedicated sheets matched at six Master Log rows and five Job x Job rows. Rollback restored compatibility routing, and guarded Stop removed all 11 sheet rows, the disposable database, state, and isolated processes while production remained unchanged. Associate representative Keisha Black and lead Cody Atchley approved on August 17, completing PTFE UAT acceptance.
 
 ## Active Work
 
-- Continue the 30-day PL stabilization observation through September 2, 2026, finish PL SOP/support handoff, and close the named PTFE acceptance and production prerequisites without changing PTFE routing before approval.
+- Continue the 30-day PL stabilization observation through September 2, 2026, finish PL SOP/support handoff, and close the remaining PTFE production prerequisites without changing PTFE routing before the supervised cutover.
 
 ## Next Actions
 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
 2. Obtain named acceptance of the updated PL associate and supervisor/support SOPs and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
-4. Obtain written PTFE acceptance from a named associate representative and supervisor/lead using the completed technical evidence or a supervised workflow repeat.
-5. Install and prove the five-minute local operations monitor on the target before PTFE production cutover.
-6. After named UAT approval, add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
+4. Install and prove the five-minute local operations monitor on the target before PTFE production cutover.
+5. Add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
+6. Take and verify a fresh backup, then execute and reconcile the supervised PTFE production cutover.
 7. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
 
 ## Open Decisions
@@ -73,7 +73,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Internal DNS name and certificate issuer.
 - Monitoring and alert transport destination.
 - Production maintenance and department cutover windows.
-- Named department representatives for PI UAT. PTFE reviewers are designated as associate Keisha Black and lead Cody Atchley; their acceptance is pending.
+- Named department representatives for PI UAT. PTFE associate Keisha Black and lead Cody Atchley approved on August 17, 2026.
 - Final owner and target date for PL SOP/support handoff.
 
 ## Known Risks And Blockers
@@ -1180,3 +1180,16 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 - Deployment status: Documentation only. Production PTFE remains on compatibility/direct-Smartsheet routing.
 - Risks/blockers: Keisha Black and Cody Atchley have not yet supplied their acceptance statements.
 - Exact next action: Obtain both reviewers' written acceptance, record it, then install and prove the local five-minute operations monitor.
+
+### 2026-08-17 - PTFE named user acceptance approved
+
+- Branch: `codex/ptfe-uat-approval` from merge `11e1932`.
+- Commit or PR: Pending documentation evidence update.
+- Phase/work package: Phase 5 PTFE user acceptance close.
+- Work completed: Recorded PTFE associate representative Keisha Black and PTFE lead Cody Atchley as approving the completed PTFE workflow and UAT evidence.
+- Files or schema changed: Roadmap, acceptance plan, PTFE work package, completion audit, README, and program memory only. No application, database, Smartsheet, configuration, process, or production behavior changed.
+- Decisions made: PTFE target UAT, rollback, cleanup, and named department acceptance are complete. Production PTFE remains disabled until the local monitor, both production `Submission ID` columns, fresh backup, and supervised cutover/reconciliation pass.
+- Validation performed: All local links in 37 Markdown files passed validation, and diff hygiene passed.
+- Deployment status: Documentation only. Production PL remains active; PTFE and PI remain on compatibility/direct-Smartsheet routing.
+- Risks/blockers: The five-minute production monitor is not installed, and both PTFE production destinations still lack `Submission ID`.
+- Exact next action: Install and prove the local five-minute operations monitor on the server, then schedule the guarded PTFE production destination expansion.

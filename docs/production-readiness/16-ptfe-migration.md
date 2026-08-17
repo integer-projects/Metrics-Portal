@@ -26,7 +26,7 @@ The repository implementation slices and non-production destination proof are co
 - The guarded production expansion utility preflights both sheets before changing either one, defaults to dry-run, requires an exact confirmation phrase to apply, and adds only a missing text/number `Submission ID` column.
 - The live read-only audit confirmed both production destinations match their preserved writable contracts and are missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes.
 
-These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026. Named PTFE associate/supervisor approval, applying the guarded `Submission ID` expansion in an approved window, monitor installation, and the production cutover gates below remain required.
+These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026; associate representative Keisha Black and lead Cody Atchley approved on August 17. Applying the guarded `Submission ID` expansion in an approved window, monitor installation, and the production cutover gates below remain required.
 
 ## Dedicated Integration Destinations
 
@@ -67,7 +67,7 @@ The database/outbox proof retains the original production destination IDs in ded
 
 The corrected target Start passed on August 13, 2026 at merge `8239cbb`: the prior failed state was removed, both test sheets were confirmed empty, all migrations applied to the disposable database, one Master Log and one Job x Job submission each converged through the outbox in one attempt, both synthetic Smartsheet rows and database rows were removed, the isolated portal and worker became ready on port 3103, and live production ports remained unchanged.
 
-The complete target rehearsal passed on August 13. Browser evidence covered exact quantity replacement, disabled number spinners and wheel mutation, automatic pending-to-synced status, job/event capture, configured validation and low-yield Pull blocking, refresh persistence, stale-tab conflict recovery, End Shift, worker pause/resume recovery, and deterministic partial End Shift retry. Final read-only reconciliation found two jobs, four events, and five Job x Job submissions, all `submitted`, with no unfinished outbox work and no duplicate submission IDs. The dedicated sheets contained exactly six Master Log rows and five Job x Job rows. Rollback restored compatibility routing, and guarded Stop removed all 11 test-sheet rows, the disposable database, state, and isolated processes while confirming production remained unchanged. Named department approval remains the only UAT acceptance item.
+The complete target rehearsal passed on August 13. Browser evidence covered exact quantity replacement, disabled number spinners and wheel mutation, automatic pending-to-synced status, job/event capture, configured validation and low-yield Pull blocking, refresh persistence, stale-tab conflict recovery, End Shift, worker pause/resume recovery, and deterministic partial End Shift retry. Final read-only reconciliation found two jobs, four events, and five Job x Job submissions, all `submitted`, with no unfinished outbox work and no duplicate submission IDs. The dedicated sheets contained exactly six Master Log rows and five Job x Job rows. Rollback restored compatibility routing, and guarded Stop removed all 11 test-sheet rows, the disposable database, state, and isolated processes while confirming production remained unchanged. Keisha Black and Cody Atchley approved on August 17, completing the PTFE UAT acceptance gate.
 
 For the required worker-restart recovery scenario, use the guarded `PauseWorker` and `ResumeWorker` actions against the same state-recorded PTFE checkout. `PauseWorker` verifies and stops only the recorded isolated `smartsheet-worker.js` process while leaving the isolated web/database and production processes unchanged. After a controlled browser submission is safely stored as pending, `ResumeWorker` prompts for the isolated database application-role password, reconstructs only the isolated worker environment, starts a new recorded worker, and preserves separate recovery logs. Neither action changes production feature flags, processes, destinations, or data.
 
@@ -252,7 +252,7 @@ Before PTFE database routing can be enabled:
 
 ## UAT And Cutover Gates
 
-1. Obtain written acceptance from designated associate representative Keisha Black and lead Cody Atchley.
+1. Completed August 17, 2026: associate representative Keisha Black and lead Cody Atchley approved the PTFE workflow.
 2. Run the compatibility parity script across every active PTFE sequence plus an event and End Shift.
 3. Run the port `3103` isolated-browser refresh, duplicate-tab, retry, sign-out, partial End Shift, and worker-restart scenarios.
 4. Confirm both test destinations contain the expected rows and permanent IDs, then clean all synthetic rows.
@@ -265,5 +265,5 @@ Before PTFE database routing can be enabled:
 
 ## Stop Conditions
 
-Do not enable PTFE production database routing if either destination contract is not READY, any Critical/High defect is open, exact-ID replay is unproven, End Shift can clear uncaptured rows, the backup/worker is unhealthy, or named PTFE UAT approval is missing.
+Do not enable PTFE production database routing if either destination contract is not READY, any Critical/High defect is open, exact-ID replay is unproven, End Shift can clear uncaptured rows, or the backup/worker/monitor is unhealthy. Named PTFE UAT approval passed August 17, 2026.
 
