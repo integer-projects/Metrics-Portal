@@ -101,7 +101,7 @@ A department is production ready only when all of the following are true:
 | Durable submissions | Complete | CI, target database/outbox proof, exact-ID delivery validation, and restart/retry tests passed |
 | PL migration | Complete | PL UAT and sign-off, rollback rehearsal, database cutover, production job/event delivery, post-cutover health checks, and legacy process stop passed |
 | PL stabilization | In progress | No stuck production submissions or reported issues through the August 13 review; current associate/supervisor SOPs are complete, while 30-day observation and named support-handoff acceptance remain |
-| PTFE migration | In progress | Source, two-destination integration, full target-server UAT, worker/partial-shift recovery, rollback, reconciliation, and cleanup passed; named approval, monitor installation, production column expansion, and cutover remain |
+| PTFE migration | In progress | Source, two-destination integration, full target-server UAT, worker/partial-shift recovery, rollback, reconciliation, cleanup, and named approval passed; monitor installation, production column expansion, and cutover remain |
 | PI migration | Not started | PI user acceptance and cutover approval |
 | Operations handoff | In progress | PostgreSQL bootstrap, daily verified backups, restore drill, production health checks, PM2 worker operation, local monitor tooling, retention tooling, and admin-audit source passed; target installation plus alert routing, TLS/DNS, policy/ownership, and support handoff remain |
 
