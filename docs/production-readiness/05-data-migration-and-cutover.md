@@ -128,6 +128,8 @@ Completed PL cutover evidence and remaining observation:
 - The legacy `PL-Portal` process was stopped on August 13 after the post-cutover health review; its files and PM2 entry remain available during the rollback-retention period.
 - Continue the agreed 30-day observation through September 2, 2026. Do not delete the legacy portal or remove PL rollback flags before that review closes.
 
+PTFE production destination preparation passed August 17, 2026. The guarded dry run found each production destination missing only `Submission ID`, planned zero existing-row changes, and returned ready to apply. The guarded apply added one text/number `Submission ID` column to the PTFE Master Log and one to the PTFE Job x Job Log. Post-change validation returned READY for both destinations at 59 and 21 total columns respectively, with zero existing rows changed. PTFE routing remained disabled after the expansion.
+
 ## Reconciliation
 
 During each observation window, compare:
