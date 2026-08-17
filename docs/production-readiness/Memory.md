@@ -46,6 +46,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Implemented guarded PTFE production-destination validation and dry-run-first `Submission ID` expansion; the live read-only audit found only that column missing on each production destination and planned no row changes.
 - Implemented and completed isolated PTFE target-server Start, browser/failure UAT, Rollback, and Stop orchestration for port 3103, a disposable database, separate web/worker processes, and both test sheets. Keisha Black and Cody Atchley approved the workflow on August 17, 2026.
 - Deployed and proved the five-minute local operations monitor on the target server. After the focused PM2 parser correction merged as `504fb5b`, the scheduled execution returned result `0` with both PM2 processes, PostgreSQL, portal liveness/readiness, Smartsheet outbox, scheduled backup result/freshness, and disk healthy. Guarded retention apply remains prohibited pending policy confirmation.
+- Added one text/number `Submission ID` column to each PTFE production destination through the guarded dry-run-first utility. Post-change validation returned READY for the 59-column Master Log and 21-column Job x Job Log, changed zero existing rows, and confirmed PTFE database/session routing remained disabled.
 - Added the completion audit that maps every program requirement to authoritative evidence, remaining proof, execution order, and current stop conditions.
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
@@ -61,9 +62,8 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
 2. Obtain named acceptance of the updated PL associate and supervisor/support SOPs and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
-4. Add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
-5. Take and verify a fresh backup, then execute and reconcile the supervised PTFE production cutover.
-6. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
+4. Take and verify a fresh backup, then execute and reconcile the supervised PTFE production cutover.
+5. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
 
 ## Open Decisions
 
@@ -107,6 +107,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 
 - PostgreSQL 18.4 and the migrated application schema are installed on the target; manual and scheduled off-server backups plus an isolated restore drill have passed. The PL production Smartsheet destination has the required `Submission ID` column.
 - The target server checkout is at approved merge `504fb5b`; `metrics-portal` and `metrics-portal-worker` are online, PL remains enabled, and PTFE/PI remain disabled. The five-minute operations task is installed and its all-healthy target proof passed.
+- Both production PTFE destinations now contain the required text/number `Submission ID` column and pass their exact contracts. PTFE remains disabled pending the fresh-backup supervised cutover.
 - PTFE and PI database/session flags remain disabled until their own destination, UAT, rollback, and cutover gates pass.
 - The legacy `PL-Portal` is stopped but retained as a rollback artifact through the PL observation window.
 - Production deployments must use an approved commit or release tag and the documented release checklist.
@@ -131,6 +132,19 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 ```
 
 ## Session History
+
+### 2026-08-17 - PTFE production destinations expanded and revalidated
+
+- Branch: `codex/ptfe-production-destination-proof` from monitor-proof merge `7ff7eae`.
+- Commit or PR: Pending documentation evidence commit and PR.
+- Phase/work package: Phase 5 PTFE production destination and cutover readiness.
+- Work completed: Ran the production two-destination validator, guarded expansion dry run, exact-confirmation apply, post-change validator, and feature-state check. Added only the required `Submission ID` column to the PTFE Master Log and Job x Job Log.
+- Files or schema changed: Two production Smartsheet column definitions and production-readiness evidence only. No existing Smartsheet row, PostgreSQL schema, application source, feature flag, PM2 process, or department route changed.
+- Decisions made: The destination expansion gate is complete. PTFE remains disabled until the same supervised window takes a fresh backup, enables both PTFE flags, and reconciles the first real job, event, and End Shift.
+- Validation performed: Dry run reported Master Log ADD at 58 columns and Job x Job ADD at 20 columns, zero existing rows changed, and READY TO APPLY. Apply verified 59 and 21 columns respectively. Post-change validation reported `Submission ID type: TEXT_NUMBER` and READY for both destinations. The feature endpoint returned HTTP 200 with PTFE database submissions and PTFE sessions both false.
+- Deployment status: Production Smartsheet contracts are ready. Production PL remains active; PTFE and PI routes remain disabled/compatible.
+- Risks/blockers: A fresh verified database backup and supervised PTFE enablement/reconciliation remain before production acceptance.
+- Exact next action: Take the fresh verified backup, preserve a timestamped pre-cutover environment copy, enable only `PTFE_SERVER_SESSIONS_ENABLED` and `PTFE_DATABASE_SUBMISSIONS_ENABLED`, restart the web and worker, verify health/features, then perform and reconcile the controlled production workflow.
 
 ### 2026-08-17 - Production monitor installed and proved healthy
 

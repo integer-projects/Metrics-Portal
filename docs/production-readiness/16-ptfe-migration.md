@@ -24,9 +24,9 @@ The repository implementation slices and non-production destination proof are co
 - Focused browser rehearsal passed for rendered job calculations, database capture, server-owned shift append, refresh persistence, and event capture with no console errors.
 - Read-only two-destination validation now verifies exact writable titles, duplicate titles, formulas, and `Submission ID` type for both PTFE production sheets.
 - The guarded production expansion utility preflights both sheets before changing either one, defaults to dry-run, requires an exact confirmation phrase to apply, and adds only a missing text/number `Submission ID` column.
-- The live read-only audit confirmed both production destinations match their preserved writable contracts and are missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes.
+- The live read-only audit confirmed both production destinations matched their preserved writable contracts and were missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes. The guarded production apply then added the two text/number columns, and post-change validation returned READY for the 59-column Master Log and 21-column Job x Job Log with zero existing rows changed.
 
-These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026; associate representative Keisha Black and lead Cody Atchley approved on August 17. The five-minute production monitor was installed and proved fully healthy on August 17. Applying the guarded `Submission ID` expansion in an approved window and the production cutover gates below remain required.
+These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026; associate representative Keisha Black and lead Cody Atchley approved on August 17. The five-minute production monitor and both production `Submission ID` expansions were installed and proved healthy/READY on August 17. A fresh verified backup and supervised production cutover/reconciliation remain required.
 
 ## Dedicated Integration Destinations
 
