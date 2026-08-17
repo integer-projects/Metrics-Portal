@@ -29,7 +29,28 @@ function Get-Pm2Applications {
         if ($raw -eq '[]') { return @() }
         throw 'PM2 did not return a readable application list.'
     }
-    @($raw.Substring($start) | ConvertFrom-Json)
+    $javascript = @'
+let input = '';
+process.stdin.setEncoding('utf8');
+process.stdin.on('data', chunk => { input += chunk; });
+process.stdin.on('end', () => {
+    const applications = JSON.parse(input);
+    const summary = applications.map(application => ({
+        name: application.name,
+        pid: application.pid,
+        pm2_env: {
+            status: application.pm2_env && application.pm2_env.status,
+            restart_time: application.pm2_env && application.pm2_env.restart_time
+        }
+    }));
+    process.stdout.write(JSON.stringify(summary));
+});
+'@
+    $summary = ($raw.Substring($start) | & node -e $javascript | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or -not $summary) {
+        throw 'PM2 process-list normalization failed.'
+    }
+    @($summary | ConvertFrom-Json)
 }
 
 try {
