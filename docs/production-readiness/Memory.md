@@ -45,7 +45,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Implemented and live-proved exact two-destination PTFE contracts against dedicated non-production Master Log and Job Log sheets, including permanent-ID replay and complete synthetic cleanup.
 - Implemented guarded PTFE production-destination validation and dry-run-first `Submission ID` expansion; the live read-only audit found only that column missing on each production destination and planned no row changes.
 - Implemented and completed isolated PTFE target-server Start, browser/failure UAT, Rollback, and Stop orchestration for port 3103, a disposable database, separate web/worker processes, and both test sheets. Keisha Black and Cody Atchley approved the workflow on August 17, 2026.
-- Deployed the five-minute local operations monitor to the target server. Its first scheduled execution proved PostgreSQL, portal liveness/readiness and deployed commit, Smartsheet outbox health, scheduled backup result/freshness, and disk space healthy, but exposed a PowerShell JSON limitation while reading PM2's full environment payload. A focused parser fix now normalizes only the non-secret PM2 fields required by the monitor; final target re-run remains required. Guarded retention apply remains prohibited pending policy confirmation.
+- Deployed and proved the five-minute local operations monitor on the target server. After the focused PM2 parser correction merged as `504fb5b`, the scheduled execution returned result `0` with both PM2 processes, PostgreSQL, portal liveness/readiness, Smartsheet outbox, scheduled backup result/freshness, and disk healthy. Guarded retention apply remains prohibited pending policy confirmation.
 - Added the completion audit that maps every program requirement to authoritative evidence, remaining proof, execution order, and current stop conditions.
 - Replaced the obsolete PL multi-user/hour-by-hour training content with current associate and supervisor/support SOPs for the isolated database-backed page, asynchronous Smartsheet status, tab conflicts, quality rules, retries/resolution, daily health, and incident escalation.
 - Added safe deployed-commit identity to the web process, worker, structured startup logs, health APIs, and local operations-monitor evidence so an approved release can be matched to the running source.
@@ -61,10 +61,9 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 1. Continue daily PL queue and backup-result review through the 30-day observation close on September 2, 2026.
 2. Obtain named acceptance of the updated PL associate and supervisor/support SOPs and record the observation close decision.
 3. Retain the stopped legacy `PL-Portal` through the observation window; do not delete it before the close review.
-4. Deploy the focused PM2 parser fix and re-run the installed five-minute local operations monitor to obtain an all-healthy persisted result before PTFE production cutover.
-5. Add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
-6. Take and verify a fresh backup, then execute and reconcile the supervised PTFE production cutover.
-7. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
+4. Add `Submission ID` to both PTFE production destinations in an approved window and revalidate both contracts.
+5. Take and verify a fresh backup, then execute and reconcile the supervised PTFE production cutover.
+6. Complete internal DNS/TLS, routed synchronization alerts, retention-policy confirmation, unattended task ownership, and quarterly restore-drill ownership as Phase 7 hardening.
 
 ## Open Decisions
 
@@ -84,7 +83,6 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 - Production currently uses an internal HTTP endpoint; TLS/DNS and secure-cookie enforcement remain open.
 - Synchronization health is inspectable, but routed automatic alerts are not yet configured.
 - The backup task currently depends on the server account's interactive-logon model.
-- The installed local operations monitor currently reports a false PM2 failure because Windows PowerShell cannot convert PM2's full JSON environment object when keys differ only by case. The focused source fix reduces the payload to name, status, PID, and restart count through Node before PowerShell conversion; it still requires merge, server pull, and target re-run proof.
 
 ## Latest Validation
 
@@ -108,7 +106,7 @@ Do not store passwords, tokens, connection strings, employee-sensitive data, or 
 ## Deployment State
 
 - PostgreSQL 18.4 and the migrated application schema are installed on the target; manual and scheduled off-server backups plus an isolated restore drill have passed. The PL production Smartsheet destination has the required `Submission ID` column.
-- The target server is deployed at approved merge `469945a`; `metrics-portal` and `metrics-portal-worker` are online, PL remains enabled, and PTFE/PI remain disabled. The five-minute operations task is installed, but final all-healthy proof awaits the focused PM2 parser hotfix and one target re-run.
+- The target server checkout is at approved merge `504fb5b`; `metrics-portal` and `metrics-portal-worker` are online, PL remains enabled, and PTFE/PI remain disabled. The five-minute operations task is installed and its all-healthy target proof passed.
 - PTFE and PI database/session flags remain disabled until their own destination, UAT, rollback, and cutover gates pass.
 - The legacy `PL-Portal` is stopped but retained as a rollback artifact through the PL observation window.
 - Production deployments must use an approved commit or release tag and the documented release checklist.
@@ -134,18 +132,18 @@ Append a concise entry below whenever work is performed. Keep the current-state 
 
 ## Session History
 
-### 2026-08-17 - Production monitor installed and PM2 parser hardened
+### 2026-08-17 - Production monitor installed and proved healthy
 
-- Branch: `codex/operations-monitor-pm2-parser` from approved production merge `469945a`.
-- Commit or PR: Pending focused hotfix commit and PR.
+- Branch: `codex/operations-monitor-pm2-parser` from approved production merge `469945a`, followed by evidence branch `codex/operations-monitor-proof`.
+- Commit or PR: Parser hotfix PR #35 merged as `504fb5b`; target proof documentation pending in the evidence branch.
 - Phase/work package: Phase 7 local operations monitoring and Phase 5 PTFE production prerequisite.
-- Work completed: Advanced the target checkout from `5508c37` to approved merge `469945a` after a fresh verified off-server backup, preserved the old environment backup under the secrets archive, installed locked dependencies, restarted and saved the web/worker processes, verified deployed commit and feature flags, installed the five-minute monitor, and ran it once. The first run passed every operational check except PM2 parsing; Windows PowerShell rejected duplicate case-insensitive keys in PM2's complete environment payload. Updated the monitor to have Node parse that payload and return only application name, PID, status, and restart count before PowerShell conversion.
+- Work completed: Advanced the target checkout from `5508c37` to approved merge `469945a` after a fresh verified off-server backup, preserved the old environment backup under the secrets archive, installed locked dependencies, restarted and saved the web/worker processes, verified deployed commit and feature flags, installed the five-minute monitor, and ran it once. The first run exposed only a false PM2 parse failure caused by case-colliding environment keys. Merged the focused Node normalization fix as `504fb5b`, pulled it to the target, and re-ran the installed task successfully.
 - Files or schema changed: Operations monitor, focused static contract test, and program memory. The production task and server checkout changed as recorded; no database schema, production Smartsheet row, feature flag, or department routing changed.
 - Decisions made: Do not weaken or bypass the PM2 requirement. Normalize the PM2 payload to the minimum non-secret fields rather than asking Windows PowerShell to deserialize the full environment object.
-- Validation performed: Target backup `metrics-portal-20260817-085411.dump` passed hash verification; server update/restart passed; health returned HTTP 200 with commit `469945a7e8482e6809d5d6de16cad1b8587125ea`; features showed PL enabled and PTFE/PI disabled. First monitor execution passed PostgreSQL, liveness, readiness, outbox, backup task, backup freshness, and disk checks; only PM2 parsing failed falsely. A Windows PowerShell regression fixture containing both `Path` and `PATH` proved the normalized two-process summary converts correctly. The full suite passed 130 tests with 127 passes and three expected database-only skips; JavaScript, HTML, PowerShell, Markdown-link, production dependency, and diff checks passed.
-- Deployment status: Monitor task is installed every five minutes. Parser fix is source-only until focused validation, merge, server pull, and task re-run.
-- Risks/blockers: An all-healthy target monitor result remains a mandatory PTFE cutover prerequisite. Production PTFE remains disabled.
-- Exact next action: Validate and merge the focused parser fix, pull it to the server, restart the scheduled monitor task, and confirm `OverallStatus = healthy` and `LastTaskResult = 0` before changing either PTFE production destination.
+- Validation performed: Target backup `metrics-portal-20260817-085411.dump` passed hash verification; server update/restart passed; health returned HTTP 200 with commit `469945a7e8482e6809d5d6de16cad1b8587125ea`; features showed PL enabled and PTFE/PI disabled. A Windows PowerShell regression fixture containing both `Path` and `PATH` proved the normalized two-process summary converts correctly. The full suite passed 130 tests with 127 passes and three expected database-only skips; JavaScript, HTML, PowerShell, Markdown-link, production dependency, and diff checks passed. GitHub CI passed. The final target task returned `LastTaskResult = 0`; both PM2 processes, PostgreSQL, liveness/readiness, empty outbox, backup task/freshness, and 74.2 GB free space were healthy.
+- Deployment status: Monitor task and parser fix are deployed at server checkout `504fb5b`; the task runs every five minutes and the all-healthy persisted result is proven. Production PTFE remains disabled.
+- Risks/blockers: Both PTFE production destinations still require the guarded `Submission ID` expansion before cutover.
+- Exact next action: Run the read-only PTFE production contract validator and expansion dry run, then apply the two guarded columns in the approved window and revalidate both contracts.
 
 ### 2026-08-13 - PTFE durable foundation and isolated page implemented
 

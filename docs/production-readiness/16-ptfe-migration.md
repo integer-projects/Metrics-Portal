@@ -26,7 +26,7 @@ The repository implementation slices and non-production destination proof are co
 - The guarded production expansion utility preflights both sheets before changing either one, defaults to dry-run, requires an exact confirmation phrase to apply, and adds only a missing text/number `Submission ID` column.
 - The live read-only audit confirmed both production destinations match their preserved writable contracts and are missing only `Submission ID`; the dry run planned one addition per sheet and zero existing-row changes.
 
-These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026; associate representative Keisha Black and lead Cody Atchley approved on August 17. Applying the guarded `Submission ID` expansion in an approved window, monitor installation, and the production cutover gates below remain required.
+These slices do not route any production PTFE traffic. Target-server database/outbox and browser UAT, failure recovery, rollback, and complete cleanup passed on August 13, 2026; associate representative Keisha Black and lead Cody Atchley approved on August 17. The five-minute production monitor was installed and proved fully healthy on August 17. Applying the guarded `Submission ID` expansion in an approved window and the production cutover gates below remain required.
 
 ## Dedicated Integration Destinations
 
