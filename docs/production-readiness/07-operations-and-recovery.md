@@ -59,6 +59,8 @@ Get-Content 'C:\serverdata\monitoring\metrics-portal-health.json' -Raw |
 
 The current interactive-logon task identity is an interim local monitor, like the backup task. Company-approved email, Teams, or enterprise monitoring transport remains an operations/IT decision; installation of the local task does not claim that routed alerting is complete.
 
+Target proof completed August 17, 2026. The five-minute task returned result `0`, and its persisted result reported both PM2 processes online, PostgreSQL running, portal liveness/readiness healthy, an empty healthy outbox, a successful fresh verified backup, and 74.2 GB free. The target parser hotfix is deployed at merge `504fb5b`; the running web process correctly reports its own deployed application commit from its last restart, while the scheduled monitor always executes the current script from the server checkout.
+
 ## Monitoring And Alerts
 
 Monitor at minimum:
